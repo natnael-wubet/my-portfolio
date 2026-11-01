@@ -3,349 +3,327 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Natnael Wubet | Cybersecurity & Full-Stack Engineer</title>
+    <title>Natnael Wubet | Security Researcher • Full-Stack Engineer • Game Dev</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <canvas id="matrix-bg"></canvas>
+    <div class="scanlines"></div>
+    <canvas id="matrix"></canvas>
     
     <nav class="nav">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <span class="bracket">[</span>NW<span class="bracket">]</span>
-            </div>
+        <div class="nav-inner">
+            <a href="#home" class="nav-brand">[NATNAEL::WUBET]</a>
+            <button class="nav-toggle" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
             <ul class="nav-menu">
-                <li><a href="#home" class="nav-link"><span class="prompt">~/</span>home</a></li>
-                <li><a href="#profile" class="nav-link"><span class="prompt">~/</span>profile</a></li>
-                <li><a href="#arsenal" class="nav-link"><span class="prompt">~/</span>arsenal</a></li>
-                <li><a href="#operations" class="nav-link"><span class="prompt">~/</span>operations</a></li>
-                <li><a href="#missions" class="nav-link"><span class="prompt">~/</span>missions</a></li>
-                <li><a href="#comms" class="nav-link"><span class="prompt">~/</span>comms</a></li>
+                <li><a href="#home">/home</a></li>
+                <li><a href="#identity">/identity</a></li>
+                <li><a href="#certs">/certificates</a></li>
+                <li><a href="#arsenal">/arsenal</a></li>
+                <li><a href="#projects">/repositories</a></li>
+                <li><a href="#live">/deployments</a></li>
+                <li><a href="#missions">/missions</a></li>
+                <li><a href="#links">/comms</a></li>
             </ul>
-            <div class="nav-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
         </div>
     </nav>
 
-    <section id="home" class="hero">
-        <div class="hero-container">
-            <div class="terminal-window">
-                <div class="terminal-header">
-                    <div class="terminal-buttons">
-                        <span class="btn-close"></span>
-                        <span class="btn-min"></span>
-                        <span class="btn-max"></span>
-                    </div>
-                    <div class="terminal-title">natnael@wubet: ~</div>
+    <header id="home" class="hero">
+        <div class="hero-grid">
+            <div class="hero-content">
+                <div class="glitch-wrapper">
+                    <h1 class="hero-title glitch" data-text="NATNAEL WUBET">NATNAEL WUBET</h1>
                 </div>
-                <div class="terminal-body">
-                    <div class="terminal-line">
-                        <span class="prompt">natnael@wubet:~$</span> <span class="command">whoami</span>
+                <div class="hero-subtitle">
+                    <span class="typewriter">[SECURITY_RESEARCHER] • [FULL_STACK_ENGINEER] • [GAME_DEVELOPER]</span>
+                </div>
+                <p class="hero-bio">Breaking systems to understand them. Building solutions to empower others. From network scanners to nationwide ticketing platforms.</p>
+                <div class="hero-actions">
+                    <a href="#projects" class="btn btn-cyber"><span>>></span> BROWSE_REPOS</a>
+                    <a href="assets/certificates/Natnael_Wubet_CV.pdf" download class="btn btn-cyber btn-cyan"><span>>></span> DOWNLOAD_CV</a>
+                    <a href="#live" class="btn btn-cyber btn-magenta"><span>>></span> LIVE_DEMOS</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-num">48+</div>
+                        <div class="stat-label">PUBLIC REPOS</div>
                     </div>
-                    <div class="terminal-output">
-                        <span class="highlight">Natnael Wubet</span> | Software Engineer | Full-Stack Developer | Security Researcher
+                    <div class="stat">
+                        <div class="stat-num">6+</div>
+                        <div class="stat-label">AWARDS</div>
                     </div>
-                    <div class="terminal-line">
-                        <span class="prompt">natnael@wubet:~$</span> <span class="command">cat /etc/role</span>
-                    </div>
-                    <div class="terminal-output">Building exploits, crafting experiences, breaking & fixing things</div>
-                    <div class="terminal-line">
-                        <span class="prompt">natnael@wubet:~$</span> <span class="command">./init_portfolio.sh</span>
-                    </div>
-                    <div class="terminal-output typing" id="typing-text"></div>
-                    <div class="terminal-line cursor-line">
-                        <span class="prompt">natnael@wubet:~$</span> <span class="cursor">_</span>
+                    <div class="stat">
+                        <div class="stat-num">CCNA</div>
+                        <div class="stat-label">CERTIFIED</div>
                     </div>
                 </div>
             </div>
-            <div class="hero-cta">
-                <a href="#operations" class="cyber-btn">
-                    <span class="cyber-btn-text">[ EXECUTE MISSIONS ]</span>
-                    <span class="cyber-btn-glitch"></span>
-                </a>
-                <a href="assets/Natnael_Wubet_CV.pdf" download class="cyber-btn cyber-btn-alt">
-                    <span class="cyber-btn-text">[ DOWNLOAD PAYLOAD ]</span>
-                    <span class="cyber-btn-glitch"></span>
-                </a>
+            <div class="hero-visual">
+                <div class="holo-card">
+                    <div class="holo-header">USER_PROFILE.dat</div>
+                    <div class="holo-body">
+                        <div class="holo-line"><span class="holo-key">HANDLE:</span> natnael-wubet</div>
+                        <div class="holo-line"><span class="holo-key">CLASS:</span> Software Engineer</div>
+                        <div class="holo-line"><span class="holo-key">FOCUS:</span> Security + Development</div>
+                        <div class="holo-line"><span class="holo-key">LOCATION:</span> ETHIOPIA</div>
+                        <div class="holo-line"><span class="holo-key">STATUS:</span> <span class="status-online">ONLINE</span></div>
+                        <div class="holo-divider"></div>
+                        <div class="holo-line"><span class="holo-key">GITHUB:</span> github.com/natnael-wubet</div>
+                        <div class="holo-line"><span class="holo-key">LINKEDIN:</span> linkedin.com/in/naty-wubet-65bb5b193</div>
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
+    </header>
 
-    <section id="profile" class="profile">
+    <section id="identity" class="section">
         <div class="container">
-            <div class="section-header">
-                <h2 class="section-title glitch" data-text="PROFILE.sys">PROFILE.sys</h2>
-                <div class="section-line"></div>
+            <div class="section-head">
+                <h2 class="section-title"><span class="prefix">[</span>IDENTITY<span class="prefix">]</span></h2>
+                <div class="section-subtitle">// BIOGRAPHICAL_DATA</div>
             </div>
-            <div class="profile-grid">
-                <div class="profile-card">
-                    <div class="profile-image-container">
-                        <img src="img/cvimg-000.jpg" alt="Natnael Wubet" class="profile-image">
-                        <div class="profile-scan"></div>
-                    </div>
+            <div class="identity-grid">
+                <div class="identity-card">
+                    <p>Security-focused software engineer with hands-on experience in network reconnaissance, penetration testing tool development, and full-stack engineering. I bridge the gap between offensive security research and practical application development - from building custom network scanners to deploying nationwide e-ticketing systems.</p>
+                    <p>Proven innovator with multiple hackathon victories and competition wins, sponsored by Bahir Dar STEM Center, recognized by UNESCO, icogLabs, US Embassy, and Humanity+.</p>
                 </div>
-                <div class="profile-info">
-                    <div class="info-block">
-                        <div class="info-header">> IDENTITY</div>
-                        <p class="info-text">Award-winning developer with expertise spanning full-stack development, network security, penetration testing, game development, and robotics. Proven track record of innovation across national and international competitions.</p>
-                    </div>
-                    <div class="info-block">
-                        <div class="info-header">> SPECIALIZATION</div>
-                        <div class="spec-grid">
-                            <div class="spec-item">[SEC] Penetration Testing & Network Scanners</div>
-                            <div class="spec-item">[WEB] Full-Stack Applications</div>
-                            <div class="spec-item">[GAME] Interactive Experiences & Mini-Apps</div>
-                            <div class="spec-item">[ROBO] Embedded Systems & C++</div>
-                        </div>
-                    </div>
-                    <div class="info-block">
-                        <div class="info-header">> CREDENTIALS</div>
-                        <div class="cred-item">
-                            <i class="fas fa-certificate"></i>
-                            <span>CCNA: Introduction to Networks - Cisco Certified</span>
-                        </div>
+                <div class="identity-img">
+                    <div class="img-frame">
+                        <img src="img/cvimg-001.jpg" alt="Natnael Wubet">
+                        <div class="img-overlay"></div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="arsenal" class="arsenal">
+    <section id="certs" class="section section-alt">
         <div class="container">
-            <div class="section-header">
-                <h2 class="section-title glitch" data-text="ARSENAL.bin">ARSENAL.bin</h2>
-                <div class="section-line"></div>
+            <div class="section-head">
+                <h2 class="section-title"><span class="prefix">[</span>CERTIFICATES<span class="prefix">]</span></h2>
+                <div class="section-subtitle">// CREDENTIALS_VERIFIED</div>
+            </div>
+            <div class="certs-grid">
+                <a href="assets/certificates/CCNA_Introduction_to_Networks_certificate_natyw4122_gmail_com_91649e3d.pdf" target="_blank" class="cert-card">
+                    <div class="cert-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="cert-info">
+                        <div class="cert-name">CCNA: Introduction to Networks</div>
+                        <div class="cert-issuer">CISCO SYSTEMS</div>
+                        <div class="cert-status">VERIFIED</div>
+                    </div>
+                    <div class="cert-arrow">[VIEW]</div>
+                </a>
+                <a href="assets/certificates/CCNAITNUpdated20250401-27-k1jgbt.pdf" target="_blank" class="cert-card">
+                    <div class="cert-icon"><i class="fas fa-network-wired"></i></div>
+                    <div class="cert-info">
+                        <div class="cert-name">CCNA ITN Updated Course Completion</div>
+                        <div class="cert-issuer">CISCO NETWORKING ACADEMY</div>
+                        <div class="cert-status">VERIFIED</div>
+                    </div>
+                    <div class="cert-arrow">[VIEW]</div>
+                </a>
+                <a href="assets/certificates/cv2.pdf" target="_blank" class="cert-card">
+                    <div class="cert-icon"><i class="fas fa-file-alt"></i></div>
+                    <div class="cert-info">
+                        <div class="cert-name">Full Curriculum Vitae</div>
+                        <div class="cert-issuer">COMPLETE PROFILE</div>
+                        <div class="cert-status">FULL DOC</div>
+                    </div>
+                    <div class="cert-arrow">[VIEW]</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="arsenal" class="section">
+        <div class="container">
+            <div class="section-head">
+                <h2 class="section-title"><span class="prefix">[</span>ARSENAL<span class="prefix">]</span></h2>
+                <div class="section-subtitle">// TOOLKIT & EXPERTISE</div>
             </div>
             <div class="arsenal-grid">
-                <div class="arsenal-category">
-                    <div class="category-header">> LANGUAGES</div>
-                    <div class="skill-bar">
-                        <div class="skill-name">Python</div>
-                        <div class="skill-level"><div class="skill-fill" style="width: 95%"></div></div>
-                    </div>
-                    <div class="skill-bar">
-                        <div class="skill-name">JavaScript/TypeScript</div>
-                        <div class="skill-level"><div class="skill-fill" style="width: 95%"></div></div>
-                    </div>
-                    <div class="skill-bar">
-                        <div class="skill-name">C/C++</div>
-                        <div class="skill-level"><div class="skill-fill" style="width: 90%"></div></div>
-                    </div>
-                    <div class="skill-bar">
-                        <div class="skill-name">PowerShell</div>
-                        <div class="skill-level"><div class="skill-fill" style="width: 88%"></div></div>
+                <div class="arsenal-panel">
+                    <div class="panel-header">> PROGRAMMING_LANGUAGES</div>
+                    <div class="panel-body">
+                        <div class="arsenal-item"><span class="item-bullet">►</span> Python</div>
+                        <div class="arsenal-item"><span class="item-bullet">►</span> JavaScript / TypeScript</div>
+                        <div class="arsenal-item"><span class="item-bullet">►</span> C / C++</div>
+                        <div class="arsenal-item"><span class="item-bullet">►</span> PowerShell</div>
+                        <div class="arsenal-item"><span class="item-bullet">►</span> Lua</div>
                     </div>
                 </div>
-                <div class="arsenal-category">
-                    <div class="category-header">> FRAMEWORKS & TOOLS</div>
-                    <div class="tech-pills">
-                        <span class="tech-pill">Node.js</span>
-                        <span class="tech-pill">React</span>
-                        <span class="tech-pill">Firebase</span>
-                        <span class="tech-pill">Telegram Bot API</span>
-                        <span class="tech-pill">Git</span>
-                        <span class="tech-pill">Linux</span>
-                        <span class="tech-pill">Networking</span>
-                        <span class="tech-pill">Robotics</span>
+                <div class="arsenal-panel">
+                    <div class="panel-header">> SECURITY_OPERATIONS</div>
+                    <div class="panel-body">
+                        <div class="arsenal-item"><span class="item-bullet">►</span> Network Scanning & Enumeration</div>
+                        <div class="arsenal-item"><span class="item-bullet">►</span> Penetration Testing Tools</div>
+                        <div class="arsenal-item"><span class="item-bullet">►</span> Password Attack Frameworks</div>
+                        <div class="arsenal-item"><span class="item-bullet">►</span> Exploit Delivery Systems</div>
+                        <div class="arsenal-item"><span class="item-bullet">►</span> Network Analysis</div>
                     </div>
                 </div>
-                <div class="arsenal-category">
-                    <div class="category-header">> DOMAINS</div>
-                    <div class="domain-list">
-                        <div class="domain-item">▸ Offensive Security & Reconnaissance</div>
-                        <div class="domain-item">▸ Web Application Development</div>
-                        <div class="domain-item">▸ Game Design & Development</div>
-                        <div class="domain-item">▸ Mobile & Telegram Mini Apps</div>
-                        <div class="domain-item">▸ IoT & Robotics Systems</div>
+                <div class="arsenal-panel">
+                    <div class="panel-header">> DEVELOPMENT_STACK</div>
+                    <div class="panel-body">
+                        <div class="arsenal-item"><span class="item-bullet">►</span> Full-Stack Web Apps</div>
+                        <div class="arsenal-item"><span class="item-bullet">►</span> Game Development</div>
+                        <div class="arsenal-item"><span class="item-bullet">►</span> Telegram Mini Apps</div>
+                        <div class="arsenal-item"><span class="item-bullet">►</span> Firebase / Cloud</div>
+                        <div class="arsenal-item"><span class="item-bullet">►</span> Robotics (Lego Mindstorm)</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="operations" class="operations">
+    <section id="live" class="section section-alt">
         <div class="container">
-            <div class="section-header">
-                <h2 class="section-title glitch" data-text="OPERATIONS.log">OPERATIONS.log</h2>
-                <div class="section-line"></div>
+            <div class="section-head">
+                <h2 class="section-title"><span class="prefix">[</span>LIVE_DEPLOYMENTS<span class="prefix">]</span></h2>
+                <div class="section-subtitle">// PRODUCTION_OPERATIONS</div>
             </div>
-            <div class="operations-grid">
-                <div class="op-card">
-                    <div class="op-header">
-                        <span class="op-id">OP-001</span>
-                        <span class="op-status">DEPLOYED</span>
+            <div class="live-grid">
+                <div class="live-card">
+                    <div class="live-header">
+                        <span class="live-status">● LIVE</span>
+                        <span class="live-domain">ticketye.web.app</span>
                     </div>
-                    <h3 class="op-title">TICKETYE</h3>
-                    <p class="op-desc">Ethiopian nationwide bus e-ticketing system. Revolutionizing public transportation ticketing infrastructure.</p>
-                    <div class="op-meta">
-                        <span class="op-tag">WEB</span>
-                        <span class="op-tag">FULL-STACK</span>
+                    <h3 class="live-title">TICKETYE</h3>
+                    <p class="live-desc">Ethiopian nationwide bus e-ticket system - digitizing public transportation ticketing at scale</p>
+                    <div class="live-tags">
+                        <span>WEB</span><span>FULLSTACK</span><span>ET-TICKETING</span>
                     </div>
-                    <div class="op-links">
-                        <a href="https://ticketye.web.app/" target="_blank" class="op-link">[LIVE]</a>
-                        <a href="https://github.com/natnael-wubet/ticketye_app" target="_blank" class="op-link">[SOURCE]</a>
-                    </div>
+                    <a href="https://ticketye.web.app/" target="_blank" class="live-btn">[LAUNCH]</a>
                 </div>
-                <div class="op-card">
-                    <div class="op-header">
-                        <span class="op-id">OP-002</span>
-                        <span class="op-status">DEPLOYED</span>
+                <div class="live-card">
+                    <div class="live-header">
+                        <span class="live-status">● LIVE</span>
+                        <span class="live-domain">cars-7d4f4.web.app</span>
                     </div>
-                    <h3 class="op-title">RIM ADDIS</h3>
-                    <p class="op-desc">Automotive marketplace platform connecting buyers and sellers in Ethiopia's growing car market.</p>
-                    <div class="op-meta">
-                        <span class="op-tag">WEB</span>
-                        <span class="op-tag">FIREBASE</span>
+                    <h3 class="live-title">RIM ADDIS</h3>
+                    <p class="live-desc">Automotive marketplace platform for car sales in Ethiopia</p>
+                    <div class="live-tags">
+                        <span>WEB</span><span>FIREBASE</span><span>MARKETPLACE</span>
                     </div>
-                    <div class="op-links">
-                        <a href="https://cars-7d4f4.web.app/" target="_blank" class="op-link">[LIVE]</a>
-                    </div>
+                    <a href="https://cars-7d4f4.web.app/" target="_blank" class="live-btn">[LAUNCH]</a>
                 </div>
-                <div class="op-card">
-                    <div class="op-header">
-                        <span class="op-id">OP-003</span>
-                        <span class="op-status">ACTIVE</span>
+                <div class="live-card">
+                    <div class="live-header">
+                        <span class="live-status">● ACTIVE</span>
+                        <span class="live-domain">t.me/bigxoGameBot</span>
                     </div>
-                    <h3 class="op-title">BIGXO_GAME</h3>
-                    <p class="op-desc">Custom-built game from scratch. Available as Telegram Mini App and standalone mobile application.</p>
-                    <div class="op-meta">
-                        <span class="op-tag">GAME</span>
-                        <span class="op-tag">TELEGRAM</span>
-                        <span class="op-tag">MOBILE</span>
+                    <h3 class="live-title">BIGXO GAME</h3>
+                    <p class="live-desc">Original game built from scratch - Telegram Mini App & mobile application</p>
+                    <div class="live-tags">
+                        <span>GAME</span><span>TELEGRAM_MINIAPP</span><span>MOBILE</span>
                     </div>
-                    <div class="op-links">
-                        <a href="https://t.me/bigxoGameBot" target="_blank" class="op-link">[PLAY]</a>
-                    </div>
-                </div>
-                <div class="op-card">
-                    <div class="op-header">
-                        <span class="op-id">OP-004</span>
-                        <span class="op-status">OPEN_SOURCE</span>
-                    </div>
-                    <h3 class="op-title">CONANIM</h3>
-                    <p class="op-desc">Console graphics engine with Processing/p5.js inspired API. Create animations directly in terminal.</p>
-                    <div class="op-meta">
-                        <span class="op-tag">PYTHON</span>
-                        <span class="op-tag">ENGINE</span>
-                    </div>
-                    <div class="op-links">
-                        <a href="https://github.com/natnael-wubet/ConAnim" target="_blank" class="op-link">[REPO]</a>
-                    </div>
-                </div>
-            </div>
-            <div class="github-cta">
-                <a href="https://github.com/natnael-wubet" target="_blank" class="cyber-btn">
-                    <span class="cyber-btn-text">[ ACCESS ALL REPOSITORIES ]</span>
-                    <span class="cyber-btn-glitch"></span>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <section id="missions" class="missions">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title glitch" data-text="MISSIONS.completed">MISSIONS.completed</h2>
-                <div class="section-line"></div>
-            </div>
-            <div class="missions-timeline">
-                <div class="mission-item">
-                    <div class="mission-marker"></div>
-                    <div class="mission-content">
-                        <div class="mission-rank">RANK: 3RD</div>
-                        <h3 class="mission-title">SOLVEIT HACKATHON</h3>
-                        <div class="mission-org">icogLabs | US Embassy | Humanity+</div>
-                        <p class="mission-desc">Engineered "Hallo Reminder" with team. Awarded 25,000 ETB for outstanding innovation.</p>
-                        <div class="mission-reward">REWARD: 25,000 ETB</div>
-                    </div>
-                </div>
-                <div class="mission-item">
-                    <div class="mission-marker"></div>
-                    <div class="mission-content">
-                        <div class="mission-rank">RANK: 1ST</div>
-                        <h3 class="mission-title">SOFTWARE DEV HACKATHON</h3>
-                        <div class="mission-org">Bahir Dar University STEM Center</div>
-                        <p class="mission-desc">Month-long intensive development competition. Secured first place.</p>
-                        <div class="mission-reward">REWARD: Samsung Galaxy A1</div>
-                    </div>
-                </div>
-                <div class="mission-item">
-                    <div class="mission-marker"></div>
-                    <div class="mission-content">
-                        <div class="mission-rank">RANK: 3RD</div>
-                        <h3 class="mission-title">WORLD SCIENCE DAY</h3>
-                        <div class="mission-org">Addis Ababa | Bahir Dar STEM Center</div>
-                        <p class="mission-desc">Presented custom penetration testing & network scanning tools. Secured Dell Core i7 laptop for STEM center.</p>
-                        <div class="mission-reward">REWARD: Dell Core i7 Laptop</div>
-                    </div>
-                </div>
-                <div class="mission-item">
-                    <div class="mission-marker"></div>
-                    <div class="mission-content">
-                        <div class="mission-rank">PARTICIPANT</div>
-                        <h3 class="mission-title">UNESCO INNOVATION COMPETITION</h3>
-                        <div class="mission-org">UNESCO</div>
-                        <p class="mission-desc">Represented as Software Engineer in international innovation challenge.</p>
-                    </div>
-                </div>
-                <div class="mission-item">
-                    <div class="mission-marker"></div>
-                    <div class="mission-content">
-                        <div class="mission-rank">COMPETITOR</div>
-                        <h3 class="mission-title">LEGO MINDSTORM ROBOTICS</h3>
-                        <div class="mission-org">Science Fair Competition</div>
-                        <p class="mission-desc">Programmed autonomous robotic systems using C++.</p>
-                    </div>
+                    <a href="https://t.me/bigxoGameBot" target="_blank" class="live-btn">[PLAY]</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="comms" class="comms">
+    <section id="projects" class="section">
         <div class="container">
-            <div class="section-header">
-                <h2 class="section-title glitch" data-text="COMMS.link">COMMS.link</h2>
-                <div class="section-line"></div>
+            <div class="section-head">
+                <h2 class="section-title"><span class="prefix">[</span>PUBLIC_REPOSITORIES<span class="prefix">]</span></h2>
+                <div class="section-subtitle">// GITHUB_SCAN_RESULTS - 48 REPOS FOUND</div>
+            </div>
+            <div class="repo-controls">
+                <button class="repo-filter active" data-filter="all">ALL</button>
+                <button class="repo-filter" data-filter="security">SECURITY</button>
+                <button class="repo-filter" data-filter="web">WEB</button>
+                <button class="repo-filter" data-filter="game">GAME</button>
+                <button class="repo-filter" data-filter="tools">TOOLS</button>
+            </div>
+            <div class="repos-grid" id="reposGrid"></div>
+            <div class="repos-footer">
+                <a href="https://github.com/natnael-wubet" target="_blank" class="btn btn-cyber"><span>>></span> VIEW_ALL_ON_GITHUB</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="missions" class="section section-alt">
+        <div class="container">
+            <div class="section-head">
+                <h2 class="section-title"><span class="prefix">[</span>MISSIONS_COMPLETED<span class="prefix">]</span></h2>
+                <div class="section-subtitle">// ACHIEVEMENT_LOG</div>
+            </div>
+            <div class="missions-grid">
+                <div class="mission-card">
+                    <div class="mission-rank">RANK 03</div>
+                    <div class="mission-time">RECENT</div>
+                    <h3 class="mission-title">SOLVEIT</h3>
+                    <div class="mission-org">icogLabs • US Embassy • Humanity+</div>
+                    <p class="mission-text">Team project "Hallo Reminder" - 3rd Place winner. Awarded 25,000 ETB.</p>
+                    <div class="mission-badge">PRIZE: 25,000 ETB</div>
+                </div>
+                <div class="mission-card mission-gold">
+                    <div class="mission-rank">RANK 01</div>
+                    <div class="mission-time">VICTORY</div>
+                    <h3 class="mission-title">SOFTWARE DEV COMPETITION</h3>
+                    <div class="mission-org">Bahir Dar University STEM Center</div>
+                    <p class="mission-text">Month-long hackathon - First place overall.</p>
+                    <div class="mission-badge">PRIZE: Samsung Galaxy A1</div>
+                </div>
+                <div class="mission-card">
+                    <div class="mission-rank">RANK 03</div>
+                    <div class="mission-time">INNOVATION</div>
+                    <h3 class="mission-title">WORLD SCIENCE DAY</h3>
+                    <div class="mission-org">Addis Ababa • Bahir Dar STEM Center</div>
+                    <p class="mission-text">Presented penetration & network scanners. Secured Dell Core i7 laptop for STEM center.</p>
+                    <div class="mission-badge">PRIZE: Dell Core i7</div>
+                </div>
+                <div class="mission-card">
+                    <div class="mission-rank">PARTICIPANT</div>
+                    <div class="mission-time">GLOBAL</div>
+                    <h3 class="mission-title">UNESCO INNOVATION COMPETITION</h3>
+                    <div class="mission-org">UNESCO</div>
+                    <p class="mission-text">Selected as Software Engineer representative.</p>
+                </div>
+                <div class="mission-card">
+                    <div class="mission-rank">COMPETITOR</div>
+                    <div class="mission-time">ROBOTICS</div>
+                    <h3 class="mission-title">LEGO MINDSTORM</h3>
+                    <div class="mission-org">Science Fair</div>
+                    <p class="mission-text">Programmed autonomous robots using C++.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="links" class="section">
+        <div class="container">
+            <div class="section-head">
+                <h2 class="section-title"><span class="prefix">[</span>COMMUNICATIONS<span class="prefix">]</span></h2>
+                <div class="section-subtitle">// ESTABLISH_CONNECTION</div>
             </div>
             <div class="comms-grid">
-                <a href="https://github.com/natnael-wubet" target="_blank" class="comm-card">
-                    <div class="comm-icon"><i class="fab fa-github"></i></div>
-                    <div class="comm-info">
-                        <div class="comm-label">GITHUB</div>
-                        <div class="comm-handle">@natnael-wubet</div>
+                <a href="https://github.com/natnael-wubet" target="_blank" class="comm-link">
+                    <i class="fab fa-github"></i>
+                    <div>
+                        <div class="comm-name">GITHUB</div>
+                        <div class="comm-url">github.com/natnael-wubet</div>
                     </div>
-                    <div class="comm-arrow">→</div>
                 </a>
-                <a href="https://www.linkedin.com/in/naty-wubet-65bb5b193/" target="_blank" class="comm-card">
-                    <div class="comm-icon"><i class="fab fa-linkedin"></i></div>
-                    <div class="comm-info">
-                        <div class="comm-label">LINKEDIN</div>
-                        <div class="comm-handle">naty-wubet-65bb5b193</div>
+                <a href="https://www.linkedin.com/in/naty-wubet-65bb5b193/" target="_blank" class="comm-link">
+                    <i class="fab fa-linkedin"></i>
+                    <div>
+                        <div class="comm-name">LINKEDIN</div>
+                        <div class="comm-url">linkedin.com/in/naty-wubet-65bb5b193</div>
                     </div>
-                    <div class="comm-arrow">→</div>
                 </a>
-                <a href="https://t.me/bigxoGameBot" target="_blank" class="comm-card">
-                    <div class="comm-icon"><i class="fab fa-telegram"></i></div>
-                    <div class="comm-info">
-                        <div class="comm-label">TELEGRAM</div>
-                        <div class="comm-handle">@bigxoGameBot</div>
+                <a href="https://naty-wubet.web.app" target="_blank" class="comm-link">
+                    <i class="fas fa-globe"></i>
+                    <div>
+                        <div class="comm-name">PORTFOLIO</div>
+                        <div class="comm-url">naty-wubet.web.app</div>
                     </div>
-                    <div class="comm-arrow">→</div>
-                </a>
-                <a href="assets/Natnael_Wubet_CV.pdf" download class="comm-card">
-                    <div class="comm-icon"><i class="fas fa-file-pdf"></i></div>
-                    <div class="comm-info">
-                        <div class="comm-label">RESUME</div>
-                        <div class="comm-handle">Download PDF</div>
-                    </div>
-                    <div class="comm-arrow">→</div>
                 </a>
             </div>
         </div>
@@ -353,17 +331,14 @@
 
     <footer class="footer">
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-text">
-                    <span class="prompt">natnael@wubet:~$</span> echo "© 2026 Natnael Wubet | All rights reserved"
-                </div>
-                <div class="footer-text">
-                    <span class="prompt">natnael@wubet:~$</span> exit 0
-                </div>
+            <div class="footer-inner">
+                <div class="footer-text">[SYSTEM] © 2026 NATNAEL WUBET // ALL_RIGHTS_RESERVED</div>
+                <div class="footer-text">[STATUS] CONNECTION_SECURED // ENCRYPTED</div>
             </div>
         </div>
     </footer>
 
+    <script src="js/repos.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
