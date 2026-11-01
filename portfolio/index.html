@@ -3,353 +3,316 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Natnael Wubet — Developer Portfolio</title>
+    <title>Natnael Wubet — Builder of Things</title>
+    <meta name="description" content="Natnael Wubet - Developer, Experimenter, Innovator. 11 years of building across web, mobile, AI, games, systems and security.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="noise"></div>
-    <div class="cursor"></div>
-    <div class="cursor-follower"></div>
+    <div class="grain"></div>
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-outline" id="cursor-outline"></div>
 
     <nav class="nav">
-        <div class="nav-wrap">
-            <a href="#intro" class="logo">NATNAEL<span class="dot">.</span>WUBET</a>
-            <button class="menu-btn"><span></span><span></span><span></span></button>
-            <ul class="menu">
-                <li><a href="#about">About</a></li>
-                <li><a href="#gallery">Gallery</a></li>
-                <li><a href="#projects">Creations</a></li>
-                <li><a href="#certs">Credentials</a></li>
-                <li><a href="#awards">Recognition</a></li>
-                <li><a href="#contact">Connect</a></li>
-            </ul>
+        <div class="nav-container">
+            <a href="#home" class="nav-logo magnetic">NW</a>
+            <div class="nav-links">
+                <a href="#work" class="nav-link magnetic">Work</a>
+                <a href="#lab" class="nav-link magnetic">Lab</a>
+                <a href="#journey" class="nav-link magnetic">Journey</a>
+                <a href="#connect" class="nav-link magnetic">Connect</a>
+            </div>
+            <button class="nav-menu-btn magnetic" aria-label="Menu">
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
 
-    <section id="intro" class="hero">
-        <div class="hero-bg">
-            <div class="hero-grid"></div>
+    <div class="menu-overlay">
+        <div class="menu-content">
+            <div class="menu-links">
+                <a href="#home" class="menu-link"><span class="menu-num">01</span> Home</a>
+                <a href="#work" class="menu-link"><span class="menu-num">02</span> Work</a>
+                <a href="#lab" class="menu-link"><span class="menu-num">03</span> Lab</a>
+                <a href="#journey" class="menu-link"><span class="menu-num">04</span> Journey</a>
+                <a href="#connect" class="menu-link"><span class="menu-num">05</span> Connect</a>
+            </div>
+            <div class="menu-footer">
+                <a href="mailto:natyw4122@gmail.com">natyw4122@gmail.com</a>
+                <a href="https://t.me/nnaty_w20">@nnaty_w20</a>
+            </div>
         </div>
-        <div class="hero-inner">
-            <div class="hero-content">
-                <div class="hero-kicker">11 YEARS OF BUILDING</div>
+    </div>
+
+    <main data-scroll-container>
+        <section id="home" class="hero" data-scroll-section>
+            <div class="hero-bg">
+                <div class="hero-shape shape-1"></div>
+                <div class="hero-shape shape-2"></div>
+                <div class="hero-shape shape-3"></div>
+            </div>
+            <div class="hero-container">
+                <div class="hero-top">
+                    <div class="hero-kicker">
+                        <span class="kicker-line"></span>
+                        <span>DEVELOPER • EXPERIMENTER • INNOVATOR</span>
+                    </div>
+                </div>
                 <h1 class="hero-title">
-                    <span class="line">DEVELOPER</span>
-                    <span class="line">EXPERIMENTER</span>
-                    <span class="line">INNOVATOR<span class="accent">_</span></span>
+                    <div class="title-row">
+                        <span class="title-char">N</span><span class="title-char">A</span><span class="title-char">T</span><span class="title-char">N</span><span class="title-char">A</span><span class="title-char">E</span><span class="title-char">L</span>
+                    </div>
+                    <div class="title-row">
+                        <span class="title-char">W</span><span class="title-char">U</span><span class="title-char">B</span><span class="title-char">E</span><span class="title-char">T</span>
+                    </div>
                 </h1>
-                <p class="hero-desc">Highly versatile developer spanning simulation, web, mobile, AI, games, Linux, hardware integration & security. Bridging disciplines to ship ideas that matter.</p>
-                <div class="hero-ctas">
-                    <a href="#projects" class="btn btn-main">Explore Work <i class="fas fa-arrow-right"></i></a>
-                    <a href="assets/cv.pdf" download class="btn btn-ghost">Download CV</a>
-                </div>
-            </div>
-            <div class="hero-visual">
-                <div class="portrait-frame">
-                    <img src="img/photo_2026-01-12_21-58-02.jpg" alt="Natnael Wubet" onerror="this.src='img/photo_2026-01-12_21-26-25.jpg'">
-                    <div class="frame-deco"></div>
-                </div>
-            </div>
-        </div>
-        <div class="scroll-hint">
-            <span>SCROLL</span>
-            <div class="scroll-line"></div>
-        </div>
-    </section>
-
-    <section id="about" class="about">
-        <div class="container">
-            <div class="section-head">
-                <span class="section-num">01</span>
-                <h2 class="section-title">ABOUT</h2>
-            </div>
-            <div class="about-grid">
-                <div class="about-text">
-                    <p class="lead">Passionate about building across the spectrum — from low-level tools to full-scale platforms.</p>
-                    <p>With a foundation rooted in experimentation, I've created everything from penetration testing utilities and console graphics engines to nationwide bus ticketing systems and original games. Active in Bahir Dar STEM Center, GDC, BDU American Corner, and BIT Clubs.</p>
-                    <div class="contact-inline">
-                        <a href="mailto:natyw4122@gmail.com"><i class="fas fa-envelope"></i> natyw4122@gmail.com</a>
-                        <a href="tel:+251918191930"><i class="fas fa-phone"></i> +251 91 819 1930</a>
-                        <a href="https://t.me/nnaty_w20" target="_blank"><i class="fab fa-telegram"></i> @nnaty_w20</a>
+                <div class="hero-bottom">
+                    <p class="hero-desc">11 years of crafting across simulation, web, mobile, AI, games, Linux systems, hardware integration & security. Turning ideas into working reality.</p>
+                    <div class="hero-cta-group">
+                        <a href="#work" class="cta-btn magnetic">
+                            <span class="cta-text">View Creations</span>
+                            <span class="cta-icon"><i class="fas fa-arrow-down"></i></span>
+                        </a>
+                        <a href="assets/cv.pdf" download class="cta-link magnetic">Download CV</a>
                     </div>
                 </div>
-                <div class="domains">
-                    <div class="domain-item">SIMULATION PROGRAMMING</div>
-                    <div class="domain-item">WEB & MOBILE DEVELOPMENT</div>
-                    <div class="domain-item">ARTIFICIAL INTELLIGENCE</div>
-                    <div class="domain-item">GAME DEVELOPMENT</div>
-                    <div class="domain-item">LINUX SYSTEMS & CUSTOMIZATION</div>
-                    <div class="domain-item">HARDWARE INTEGRATION</div>
-                    <div class="domain-item">SYSTEM BUILDING</div>
-                </div>
             </div>
-        </div>
-    </section>
+            <div class="hero-scroll-indicator">
+                <span>Scroll to explore</span>
+                <div class="scroll-bar"></div>
+            </div>
+        </section>
 
-    <section id="gallery" class="gallery">
-        <div class="container">
-            <div class="section-head">
-                <span class="section-num">02</span>
-                <h2 class="section-title">VISUALS</h2>
-            </div>
-            <div class="gallery-grid">
-                <div class="gallery-item large">
-                    <img src="img/photo_2026-01-12_21-24-20.jpg" alt="Natnael">
-                    <div class="gallery-overlay"><span>BUILD</span></div>
-                </div>
-                <div class="gallery-item">
-                    <img src="img/photo_2026-01-12_21-24-28.jpg" alt="Natnael">
-                    <div class="gallery-overlay"><span>CREATE</span></div>
-                </div>
-                <div class="gallery-item">
-                    <img src="img/photo_2026-01-12_21-24-37.jpg" alt="Natnael">
-                    <div class="gallery-overlay"><span>INNOVATE</span></div>
-                </div>
-                <div class="gallery-item">
-                    <img src="img/photo_2026-01-12_21-24-50.jpg" alt="Natnael">
-                    <div class="gallery-overlay"><span>CODE</span></div>
-                </div>
-                <div class="gallery-item">
-                    <img src="img/photo_2026-01-12_21-26-25.jpg" alt="Natnael">
-                    <div class="gallery-overlay"><span>SHIP</span></div>
-                </div>
-                <div class="gallery-item">
-                    <img src="img/photo_2026-02-20_22-20-15.jpg" alt="Natnael">
-                    <div class="gallery-overlay"><span>THINK</span></div>
+        <section class="about-preview" data-scroll-section>
+            <div class="about-preview-container">
+                <div class="about-preview-grid">
+                    <div class="about-preview-text">
+                        <h2 class="about-preview-title" data-scroll data-scroll-speed="1">I build things that bridge disciplines</h2>
+                        <p class="about-preview-desc" data-scroll data-scroll-speed="0.8">From penetration testing tools and console graphics engines to nationwide ticketing platforms and original games. Active in Bahir Dar STEM Center, GDC, American Corner, BIT Clubs & Rotract Bahirdar.</p>
+                        <div class="about-preview-links">
+                            <a href="mailto:natyw4122@gmail.com" class="preview-link magnetic"><i class="fas fa-envelope"></i> natyw4122@gmail.com</a>
+                            <a href="tel:+251918191930" class="preview-link magnetic"><i class="fas fa-phone"></i> +251 91 819 1930</a>
+                            <a href="https://t.me/nnaty_w20" target="_blank" class="preview-link magnetic"><i class="fab fa-telegram"></i> @nnaty_w20</a>
+                        </div>
+                    </div>
+                    <div class="about-preview-image" data-scroll data-scroll-speed="1.2">
+                        <div class="image-reveal">
+                            <img src="img/photo_2026-01-12_21-26-25.jpg" alt="Natnael Wubet">
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="projects" class="projects">
-        <div class="container">
-            <div class="section-head">
-                <span class="section-num">03</span>
-                <h2 class="section-title">CREATIONS</h2>
-                <p class="section-desc">Live projects and experiments</p>
+        <section id="work" class="work" data-scroll-section>
+            <div class="work-header">
+                <div class="work-header-container">
+                    <span class="section-label">SELECTED WORK</span>
+                    <h2 class="work-title">Live & Deployed</h2>
+                </div>
             </div>
-            <div class="featured-grid">
-                <article class="featured-card">
-                    <div class="card-bg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
-                    <div class="card-content">
-                        <span class="card-tag">LIVE PLATFORM</span>
-                        <h3 class="card-title">TICKETYE</h3>
-                        <p class="card-desc">Ethiopian nationwide bus e-ticket system. Digitizing public transport across the nation.</p>
-                        <div class="card-links">
-                            <a href="https://ticketye.web.app/" target="_blank" class="card-link">Visit Site <i class="fas fa-external-link-alt"></i></a>
-                            <a href="https://github.com/natnael-wubet/ticketye_app" target="_blank" class="card-link">Source <i class="fab fa-github"></i></a>
+            <div class="work-items">
+                <article class="work-item" data-scroll>
+                    <div class="work-item-bg"></div>
+                    <div class="work-item-container">
+                        <div class="work-item-number">01</div>
+                        <div class="work-item-content">
+                            <span class="work-item-tag">PLATFORM</span>
+                            <h3 class="work-item-title">Ticketye</h3>
+                            <p class="work-item-desc">Ethiopian nationwide bus e-ticket system revolutionizing public transportation ticketing</p>
+                            <div class="work-item-meta">
+                                <span>Web App</span>
+                                <span>•</span>
+                                <span>Full Stack</span>
+                            </div>
+                        </div>
+                        <div class="work-item-links">
+                            <a href="https://ticketye.web.app/" target="_blank" class="work-link magnetic">Live Site <i class="fas fa-arrow-up-right-from-square"></i></a>
+                            <a href="https://github.com/natnael-wubet/ticketye_app" target="_blank" class="work-link magnetic">Source <i class="fab fa-github"></i></a>
                         </div>
                     </div>
                 </article>
-                <article class="featured-card">
-                    <div class="card-bg" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
-                    <div class="card-content">
-                        <span class="card-tag">LIVE APP</span>
-                        <h3 class="card-title">RIM ADDIS</h3>
-                        <p class="card-desc">Cross-platform automotive marketplace connecting buyers and sellers.</p>
-                        <div class="card-links">
-                            <a href="https://cars-7d4f4.web.app/" target="_blank" class="card-link">Visit Site <i class="fas fa-external-link-alt"></i></a>
+                <article class="work-item" data-scroll>
+                    <div class="work-item-bg"></div>
+                    <div class="work-item-container">
+                        <div class="work-item-number">02</div>
+                        <div class="work-item-content">
+                            <span class="work-item-tag">MARKETPLACE</span>
+                            <h3 class="work-item-title">Rim Addis</h3>
+                            <p class="work-item-desc">Cross-platform automotive marketplace connecting buyers and sellers across Ethiopia</p>
+                            <div class="work-item-meta">
+                                <span>Web App</span>
+                                <span>•</span>
+                                <span>Firebase</span>
+                            </div>
+                        </div>
+                        <div class="work-item-links">
+                            <a href="https://cars-7d4f4.web.app/" target="_blank" class="work-link magnetic">Live Site <i class="fas fa-arrow-up-right-from-square"></i></a>
                         </div>
                     </div>
                 </article>
             </div>
-            <div class="repos-section">
-                <h3 class="repos-title">OPEN SOURCE ARCHIVE</h3>
-                <div class="repo-filters">
-                    <button class="repo-filter active" data-filter="all">ALL</button>
-                    <button class="repo-filter" data-filter="game">GAME</button>
-                    <button class="repo-filter" data-filter="tool">TOOL</button>
-                    <button class="repo-filter" data-filter="security">SECURITY</button>
-                    <button class="repo-filter" data-filter="config">CONFIG</button>
-                </div>
-                <div class="repos-list" id="reposList"></div>
-                <div class="repos-more">
-                    <a href="https://github.com/natnael-wubet" target="_blank" class="btn btn-ghost">View All 48 Repos <i class="fab fa-github"></i></a>
-                </div>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="certs" class="certs">
-        <div class="container">
-            <div class="section-head">
-                <span class="section-num">04</span>
-                <h2 class="section-title">CREDENTIALS</h2>
+        <section id="lab" class="lab" data-scroll-section>
+            <div class="lab-container">
+                <div class="lab-header">
+                    <span class="section-label">THE LAB</span>
+                    <h2 class="lab-title">Experiments & Tools</h2>
+                    <p class="lab-subtitle">48 public repositories spanning security, games, systems, and creative tools</p>
+                </div>
+                <div class="lab-filters">
+                    <button class="lab-filter active magnetic" data-filter="all">All</button>
+                    <button class="lab-filter magnetic" data-filter="game">Games</button>
+                    <button class="lab-filter magnetic" data-filter="security">Security</button>
+                    <button class="lab-filter magnetic" data-filter="tool">Tools</button>
+                    <button class="lab-filter magnetic" data-filter="config">Configs</button>
+                </div>
+                <div class="lab-grid" id="labGrid"></div>
+                <div class="lab-footer">
+                    <a href="https://github.com/natnael-wubet" target="_blank" class="cta-btn magnetic">
+                        <span class="cta-text">View All on GitHub</span>
+                        <span class="cta-icon"><i class="fab fa-github"></i></span>
+                    </a>
+                </div>
             </div>
-            <div class="certs-list">
-                <a href="assets/certificates/CCNA_Introduction_to_Networks_certificate_natyw4122_gmail_com_91649e3d.pdf" target="_blank" class="cert-row">
-                    <div class="cert-row-main">
-                        <span class="cert-badge">CISCO</span>
-                        <div class="cert-info">
-                            <h4>CCNA: Introduction to Networks</h4>
+        </section>
+
+        <section id="journey" class="journey" data-scroll-section>
+            <div class="journey-container">
+                <div class="journey-header">
+                    <span class="section-label">THE JOURNEY</span>
+                    <h2 class="journey-title">Awards & Recognition</h2>
+                </div>
+                <div class="journey-timeline">
+                    <div class="timeline-item" data-scroll>
+                        <div class="timeline-year">#1</div>
+                        <div class="timeline-content">
+                            <h3>D5 GameCon</h3>
+                            <p>First Place Winner</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-scroll>
+                        <div class="timeline-year">#3</div>
+                        <div class="timeline-content">
+                            <h3>GDC</h3>
+                            <p>Third Place</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-scroll>
+                        <div class="timeline-year">1ST</div>
+                        <div class="timeline-content">
+                            <h3>Software Development Hackathon</h3>
+                            <p>Bahirdar University STEM Center • Samsung Galaxy A1</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-scroll>
+                        <div class="timeline-year">3RD</div>
+                        <div class="timeline-content">
+                            <h3>SolveIT</h3>
+                            <p>icogLabs • US Embassy • Humanity+ • "Hallo Reminder" • 25,000 ETB</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-scroll>
+                        <div class="timeline-year">3RD</div>
+                        <div class="timeline-content">
+                            <h3>World Science Day</h3>
+                            <p>Addis Ababa • Penetration & Network Scanners • Dell Core i7 for STEM Center</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-scroll>
+                        <div class="timeline-year">CERT</div>
+                        <div class="timeline-content">
+                            <h3>CCNA: Introduction to Networks</h3>
                             <p>Cisco Networking Academy</p>
+                            <div class="timeline-links">
+                                <a href="assets/certificates/CCNA_Introduction_to_Networks_certificate_natyw4122_gmail_com_91649e3d.pdf" target="_blank" class="magnetic">View Certificate</a>
+                                <a href="assets/certificates/CCNAITNUpdated20250401-27-k1jgbt.pdf" target="_blank" class="magnetic">View Completion</a>
+                            </div>
                         </div>
                     </div>
-                    <span class="cert-action">VIEW <i class="fas fa-arrow-right"></i></span>
-                </a>
-                <a href="assets/certificates/CCNAITNUpdated20250401-27-k1jgbt.pdf" target="_blank" class="cert-row">
-                    <div class="cert-row-main">
-                        <span class="cert-badge">CISCO</span>
-                        <div class="cert-info">
-                            <h4>CCNA ITN Updated</h4>
-                            <p>Course Completion Certificate</p>
-                        </div>
-                    </div>
-                    <span class="cert-action">VIEW <i class="fas fa-arrow-right"></i></span>
-                </a>
-                <a href="assets/cv.pdf" target="_blank" class="cert-row">
-                    <div class="cert-row-main">
-                        <span class="cert-badge">CV</span>
-                        <div class="cert-info">
-                            <h4>Complete Curriculum Vitae</h4>
-                            <p>Full Professional Profile</p>
-                        </div>
-                    </div>
-                    <span class="cert-action">VIEW <i class="fas fa-arrow-right"></i></span>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <section id="awards" class="awards">
-        <div class="container">
-            <div class="section-head">
-                <span class="section-num">05</span>
-                <h2 class="section-title">RECOGNITION</h2>
-            </div>
-            <div class="awards-grid">
-                <div class="award-card">
-                    <div class="award-year">WINNER</div>
-                    <h3 class="award-title">D5 GameCon</h3>
-                    <p class="award-desc">#1 Place</p>
                 </div>
-                <div class="award-card">
-                    <div class="award-year">TOP 3</div>
-                    <h3 class="award-title">GDC</h3>
-                    <p class="award-desc">We were #3</p>
-                </div>
-                <div class="award-card">
-                    <div class="award-year">1ST PLACE</div>
-                    <h3 class="award-title">Software Dev Hackathon</h3>
-                    <p class="award-desc">BDU STEM Center • Samsung Galaxy A1</p>
-                </div>
-                <div class="award-card">
-                    <div class="award-year">3RD PLACE</div>
-                    <h3 class="award-title">SolveIT</h3>
-                    <p class="award-desc">icogLabs • US Embassy • Humanity+ • "Hallo Reminder" • 25,000 ETB</p>
-                </div>
-                <div class="award-card">
-                    <div class="award-year">3RD PLACE</div>
-                    <h3 class="award-title">World Science Day</h3>
-                    <p class="award-desc">Addis Ababa • Presented penetration & network scanners • Dell Core i7 for STEM Center</p>
-                </div>
-                <div class="award-card">
-                    <div class="award-year">PARTICIPANT</div>
-                    <h3 class="award-title">UNESCO Innovation Competition</h3>
-                    <p class="award-desc">Software Engineer</p>
-                </div>
-            </div>
-            <div class="community">
-                <h3 class="community-title">COMMUNITY & INVOLVEMENT</h3>
-                <div class="community-tags">
-                    <span>BDU STEM Center</span>
-                    <span>GDC Bahir Dar</span>
-                    <span>Bahirdar American Corner</span>
-                    <span>BIT Club</span>
-                    <span>Rotract Bahirdar</span>
-                    <a href="https://t.me/RacBD" target="_blank">RacBD Volunteer</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="contact" class="contact">
-        <div class="container">
-            <div class="contact-inner">
-                <div class="contact-left">
-                    <div class="section-head">
-                        <span class="section-num">06</span>
-                        <h2 class="section-title">CONNECT</h2>
-                    </div>
-                    <p class="contact-lead">Let's build something extraordinary together.</p>
-                </div>
-                <div class="contact-right">
-                    <div class="contact-links">
-                        <a href="mailto:natyw4122@gmail.com" class="contact-item">
-                            <i class="fas fa-envelope"></i>
-                            <span>natyw4122@gmail.com</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                        <a href="tel:+251918191930" class="contact-item">
-                            <i class="fas fa-phone"></i>
-                            <span>+251 91 819 1930</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                        <a href="https://t.me/nnaty_w20" target="_blank" class="contact-item">
-                            <i class="fab fa-telegram"></i>
-                            <span>@nnaty_w20</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                        <a href="https://github.com/natnael-wubet" target="_blank" class="contact-item">
-                            <i class="fab fa-github"></i>
-                            <span>github.com/natnael-wubet</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                        <a href="https://www.linkedin.com/in/naty-wubet-65bb5b193/" target="_blank" class="contact-item">
-                            <i class="fab fa-linkedin"></i>
-                            <span>linkedin.com/in/naty-wubet-65bb5b193</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                        <a href="https://www.instagram.com/natu.wubet/" target="_blank" class="contact-item">
-                            <i class="fab fa-instagram"></i>
-                            <span>@natu.wubet</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                        <a href="https://www.reddit.com/user/natyw/" target="_blank" class="contact-item">
-                            <i class="fab fa-reddit"></i>
-                            <span>reddit.com/user/natyw</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                        <a href="https://www.youtube.com/@abyssscience8601" target="_blank" class="contact-item">
-                            <i class="fab fa-youtube"></i>
-                            <span>@abyssscience8601</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                        <a href="https://www.tiktok.com/@natynatyw" target="_blank" class="contact-item">
-                            <i class="fab fa-tiktok"></i>
-                            <span>@natynatyw</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                        <a href="https://naty-wubet.web.app" target="_blank" class="contact-item">
-                            <i class="fas fa-globe"></i>
-                            <span>naty-wubet.web.app</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
+                <div class="journey-communities">
+                    <h3 class="communities-title">Communities</h3>
+                    <div class="communities-grid">
+                        <span>BDU STEM Center</span>
+                        <span>GDC Bahir Dar</span>
+                        <span>Bahirdar American Corner</span>
+                        <span>BIT Club</span>
+                        <span>Rotract Bahirdar</span>
+                        <a href="https://t.me/RacBD" target="_blank">Rotract Bahirdar Channel</a>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-inner">
-                <div class="footer-left">
-                    <span class="logo">NATNAEL<span class="dot">.</span>WUBET</span>
-                    <p>© 2026 All rights reserved</p>
+        <section id="connect" class="connect" data-scroll-section>
+            <div class="connect-bg">
+                <div class="connect-shape"></div>
+            </div>
+            <div class="connect-container">
+                <div class="connect-header">
+                    <span class="section-label">LET'S TALK</span>
+                    <h2 class="connect-title">Start a conversation</h2>
                 </div>
-                <div class="footer-right">
-                    <a href="#intro">Back to top <i class="fas fa-arrow-up"></i></a>
+                <div class="connect-grid">
+                    <div class="connect-main">
+                        <a href="mailto:natyw4122@gmail.com" class="connect-email magnetic">natyw4122@gmail.com</a>
+                        <a href="tel:+251918191930" class="connect-phone magnetic">+251 91 819 1930</a>
+                    </div>
+                    <div class="connect-socials">
+                        <a href="https://github.com/natnael-wubet" target="_blank" class="social-link magnetic"><i class="fab fa-github"></i> GitHub</a>
+                        <a href="https://www.linkedin.com/in/naty-wubet-65bb5b193/" target="_blank" class="social-link magnetic"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                        <a href="https://t.me/nnaty_w20" target="_blank" class="social-link magnetic"><i class="fab fa-telegram"></i> Telegram</a>
+                        <a href="https://www.instagram.com/natu.wubet/" target="_blank" class="social-link magnetic"><i class="fab fa-instagram"></i> Instagram</a>
+                        <a href="https://www.reddit.com/user/natyw/" target="_blank" class="social-link magnetic"><i class="fab fa-reddit"></i> Reddit</a>
+                        <a href="https://www.youtube.com/@abyssscience8601" target="_blank" class="social-link magnetic"><i class="fab fa-youtube"></i> YouTube</a>
+                        <a href="https://www.tiktok.com/@natynatyw" target="_blank" class="social-link magnetic"><i class="fab fa-tiktok"></i> TikTok</a>
+                        <a href="https://naty-wubet.web.app" target="_blank" class="social-link magnetic"><i class="fas fa-globe"></i> Portfolio</a>
+                    </div>
+                </div>
+                <div class="connect-footer">
+                    <div class="footer-brand">NATNAEL WUBET</div>
+                    <div class="footer-copy">© 2026 • Crafted with obsession</div>
+                    <a href="#home" class="footer-top magnetic">Back to top <i class="fas fa-arrow-up"></i></a>
                 </div>
             </div>
-        </div>
-    </footer>
+        </section>
+    </main>
 
-    <script src="js/repos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
+    <script src="js/lab.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
+
+        <section class="pdf-showcase" data-scroll-section>
+            <div class="pdf-showcase-header">
+                <span class="section-label">FROM THE SOURCE</span>
+                <h2 class="work-title">CV In 3D</h2>
+                <p class="lab-subtitle">Pulled directly from <code>cv.pdf</code> via extracted page imagery</p>
+            </div>
+            <div class="pdf-stage" id="pdfStage">
+                <div class="pdf-cards" id="pdfCards">
+                    <figure class="pdf-card"><img src="img/pdf/cvimg-000.jpg" alt="CV page 1"></figure>
+                    <figure class="pdf-card"><img src="img/pdf/cvimg-001.jpg" alt="CV page 2"></figure>
+                    <figure class="pdf-card"><img src="img/pdf/cvimg-002.jpg" alt="CV page 3"></figure>
+                    <figure class="pdf-card"><img src="img/pdf/cvimg-003.jpg" alt="CV page 4"></figure>
+                    <figure class="pdf-card"><img src="img/pdf/cvimg-004.jpg" alt="CV page 5"></figure>
+                    <figure class="pdf-card"><img src="img/pdf/cvimg-005.jpg" alt="CV page 6"></figure>
+                    <figure class="pdf-card"><img src="img/pdf/cvimg-006.jpg" alt="CV page 7"></figure>
+                    <figure class="pdf-card"><img src="img/pdf/cvimg-007.jpg" alt="CV page 8"></figure>
+                </div>
+                <div class="pdf-caption">
+                    <span class="pdf-caption-label">Scroll to rotate</span>
+                    <span class="pdf-caption-title">Natnael Wubet · Curriculum Vitae</span>
+                </div>
+            </div>
+        </section>
