@@ -1,41 +1,47 @@
-// Matrix
-const canvas = document.getElementById('matrix');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+// Cursor
+const cursor = document.querySelector('.cursor');
+const follower = document.querySelector('.cursor-follower');
 
-const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノ';
-const fontSize = 12;
-const columns = canvas.width / fontSize;
-const drops = Array(Math.floor(columns)).fill(1);
+document.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    
+    setTimeout(() => {
+        follower.style.left = e.clientX + 'px';
+        follower.style.top = e.clientY + 'px';
+    }, 100);
+});
 
-function draw() {
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#00ff88';
-    ctx.font = fontSize + 'px monospace';
-    for (let i = 0; i < drops.length; i++) {
-        const text = chars[Math.floor(Math.random() * chars.length)];
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-            drops[i] = 0;
-        }
-        drops[i]++;
+document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'scale(1.5)';
+        follower.style.transform = 'scale(1.5)';
+    });
+    el.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'scale(1)';
+        follower.style.transform = 'scale(1)';
+    });
+});
+
+// Mobile menu
+const menuBtn = document.querySelector('.menu-btn');
+const menu = document.querySelector('.menu');
+
+menuBtn.addEventListener('click', () => {
+    menu.classList.toggle('active');
+});
+
+document.querySelectorAll('.menu a').forEach(link => {
+    link.addEventListener('click', () => {
+        menu.classList.remove('active');
+    });
+});
+
+// Parallax on scroll
+window.addEventListener('scroll', () => {
+    const scrolled = window.pageYOffset;
+    const parallax = document.querySelector('.hero-grid');
+    if (parallax) {
+        parallax.style.transform = `perspective(500px) rotateX(60deg) translateY(${scrolled * 0.3}px)`;
     }
-}
-setInterval(draw, 35);
-
-window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-});
-
-// Mobile nav
-const navToggle = document.querySelector('.nav-toggle');
-const navMenu = document.querySelector('.nav-menu');
-navToggle.addEventListener('click', () => {
-    navMenu.classList.toggle('active');
-});
-document.querySelectorAll('.nav-menu a').forEach(a => {
-    a.addEventListener('click', () => navMenu.classList.remove('active'));
 });
