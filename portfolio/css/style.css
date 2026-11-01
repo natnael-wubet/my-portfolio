@@ -78,3 +78,163 @@
     font-family: 'Clash Display', sans-serif;
     font-size: clamp(1.5rem, 4vw, 3rem);
 }
+
+/* Enhanced 3D PDF Showcase */
+.pdf-showcase {
+    position: relative;
+    padding: 12rem 0 14rem;
+    overflow: hidden;
+    background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
+}
+
+.pdf-showcase::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    filter: blur(80px);
+}
+
+.pdf-stage {
+    position: relative;
+    height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 2500px;
+    transform-style: preserve-3d;
+}
+
+.pdf-cards {
+    position: relative;
+    width: min(380px, 65vw);
+    height: min(540px, 85vw);
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+.pdf-card {
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 
+        0 100px 200px -80px rgba(99, 102, 241, 0.8),
+        0 60px 120px -60px rgba(0, 0, 0, 0.95),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    transition: box-shadow 0.3s ease;
+}
+
+.pdf-card:hover {
+    box-shadow: 
+        0 120px 240px -60px rgba(139, 92, 246, 0.9),
+        0 80px 160px -40px rgba(0, 0, 0, 0.98);
+}
+
+.pdf-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    user-select: none;
+    pointer-events: none;
+}
+
+.pdf-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 50%, transparent 100%);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.pdf-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 20%, rgba(139, 92, 246, 0.2), transparent 60%);
+    pointer-events: none;
+    mix-blend-mode: screen;
+}
+
+.pdf-reflection {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: scaleY(-1) translateY(20px);
+    opacity: 0.15;
+    filter: blur(2px);
+    pointer-events: none;
+}
+
+.pdf-caption {
+    position: absolute;
+    bottom: -6rem;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    z-index: 10;
+}
+
+.pdf-caption-label {
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.8em;
+    font-size: 0.65rem;
+    color: rgba(168, 85, 247, 0.8);
+}
+
+.pdf-caption-title {
+    font-family: 'Clash Display', sans-serif;
+    font-size: clamp(1.8rem, 5vw, 3.5rem);
+    background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.6) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.pdf-hint {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    opacity: 0.4;
+}
+
+.pdf-hint.left {
+    left: 2rem;
+}
+
+.pdf-hint.right {
+    right: 2rem;
+    transform: translateY(-50%) rotate(180deg);
+}
+
+@media (max-width: 968px) {
+    .pdf-hint {
+        display: none;
+    }
+    .pdf-stage {
+        height: 70vh;
+    }
+}
