@@ -24,7 +24,13 @@ import { cvPages } from "../data/content";
   </div>
 
   <div class="relative h-[min(78vh,720px)] w-full">
-    <canvas id="vault-canvas" class="vault-canvas" data-pages={JSON.stringify(cvPages)}></canvas>
+    <!-- soft stage glow so the ring sits in a lit volume rather than a void -->
+    <div
+      class="pointer-events-none absolute inset-0"
+      aria-hidden="true"
+      style="background: radial-gradient(ellipse 62% 52% at 50% 58%, rgba(212,255,63,0.055) 0%, rgba(52,211,224,0.03) 42%, transparent 72%);"
+    ></div>
+    <canvas id="vault-canvas" class="vault-canvas relative" data-pages={JSON.stringify(cvPages)}></canvas>
     <div class="pointer-events-none absolute inset-0 flex items-end justify-center pb-8">
       <div class="flex items-center gap-4 font-mono text-[0.625rem] tracking-[0.3em] text-[--color-fog] uppercase">
         <span class="hidden sm:inline">Drag</span>
@@ -56,15 +62,17 @@ import { cvPages } from "../data/content";
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
-    camera.position.set(0, 0.7, 13.5);
-    camera.lookAt(0, 0, 0);
+    camera.position.set(0, 0.35, 12.5);
+    camera.lookAt(0, -0.35, 0);
 
     // ── Lights ───────────────────────────────────────────
-    scene.add(new THREE.AmbientLight(0xffffff, 1.35));
-    const key = new THREE.DirectionalLight(0xd4ff3f, 1.1);
+    // Pages are lit mostly by their own emissive map (below) so text stays
+    // legible from any angle; the coloured lights only add shape and tint.
+    scene.add(new THREE.AmbientLight(0xffffff, 1.6));
+    const key = new THREE.DirectionalLight(0xd4ff3f, 1.4);
     key.position.set(4, 5, 6);
     scene.add(key);
-    const rim = new THREE.DirectionalLight(0x34d3e0, 0.9);
+    const rim = new THREE.DirectionalLight(0x34d3e0, 1.1);
     rim.position.set(-5, -2, -4);
     scene.add(rim);
 
@@ -73,13 +81,13 @@ import { cvPages } from "../data/content";
     scene.add(group);
 
     const loader = new THREE.TextureLoader();
-    const radius = 6.2;
+    const radius = 6.4;
     const step = (Math.PI * 2) / pageList.length;
 
     // CV frames are a mix of portrait and landscape, so each panel is sized to
     // its own texture instead of forcing one aspect ratio over all of them.
-    const MAX_H = 2.6;
-    const MAX_W = 3.4;
+    const MAX_H = 3.0;
+    const MAX_W = 4.0;
     const sizeFor = (aspect: number): [number, number] =>
       aspect < 1 ? [MAX_H * aspect, MAX_H] : [MAX_W, MAX_W / aspect];
 
@@ -88,9 +96,11 @@ import { cvPages } from "../data/content";
     pageList.forEach((src, i) => {
       const mat = new THREE.MeshStandardMaterial({
         color: 0x111417,
-        roughness: 0.85,
+        roughness: 0.8,
         metalness: 0.02,
         side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 1,
       });
       const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), mat);
       const angle = i * step;
@@ -106,11 +116,24 @@ import { cvPages } from "../data/content";
           tex.colorSpace = THREE.SRGBColorSpace;
           tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
           mat.map = tex;
+          // Self-lit: the page reads as a lit document instead of a dark card
+          // catching whatever the directional lights happen to point at.
+          mat.emissive.set(0xffffff);
+          mat.emissiveMap = tex;
+          mat.emissiveIntensity = 0.62;
           mat.color.set(0xffffff);
           mat.needsUpdate = true;
           const [w, h] = sizeFor((tex.image?.width ?? 1) / (tex.image?.height ?? 1));
           mesh.geometry.dispose();
           mesh.geometry = new THREE.PlaneGeometry(w, h);
+
+          // Thin frame behind the page so it reads as a mounted document.
+          const frame = new THREE.Mesh(
+            new THREE.PlaneGeometry(w + 0.07, h + 0.07),
+            new THREE.MeshBasicMaterial({ color: 0x171c21, side: THREE.DoubleSide, transparent: true, opacity: 0.95 })
+          );
+          frame.position.z = -0.006;
+          mesh.add(frame);
         },
         undefined,
         () => {
@@ -203,9 +226,9 @@ import { cvPages } from "../data/content";
       camera.updateProjectionMatrix();
       // Keep the whole ring framed: pull back further on narrow viewports so
       // the near panel doesn't swallow the frame.
-      camera.position.z = w < 720 ? 17 : w < 1100 ? 15 : 13.5;
-      camera.position.y = w < 720 ? 0.4 : 0.7;
-      camera.lookAt(0, 0, 0);
+      camera.position.z = w < 720 ? 16 : w < 1100 ? 14 : 12.5;
+      camera.position.y = w < 720 ? 0.15 : 0.35;
+      camera.lookAt(0, w < 720 ? -0.2 : -0.35, 0);
     };
     resize();
     const ro = new ResizeObserver(resize);
@@ -235,7 +258,8 @@ import { cvPages } from "../data/content";
       currentRotation += (targetRotation - currentRotation) * 0.075;
       group.rotation.y = currentRotation;
 
-      // Face the camera-ish and fade edges
+      // Face the camera-ish and dim only the far side — the near panel stays
+      // fully lit, and side panels keep enough presence to read as a ring.
       panels.forEach((panel) => {
         const world = new THREE.Vector3();
         panel.getWorldPosition(world);
@@ -243,8 +267,7 @@ import { cvPages } from "../data/content";
         const normal = new THREE.Vector3(0, 0, 1).applyQuaternion(panel.getWorldQuaternion(new THREE.Quaternion()));
         const facing = normal.dot(toCam);
         const mat = panel.material as THREE.MeshStandardMaterial;
-        mat.opacity = THREE.MathUtils.clamp((facing + 0.25) / 1.25, 0.12, 1);
-        mat.transparent = true;
+        mat.opacity = THREE.MathUtils.clamp(0.42 + 0.58 * (facing * 0.5 + 0.5), 0.42, 1);
       });
 
       // Counter
