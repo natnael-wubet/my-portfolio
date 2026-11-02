@@ -91,25 +91,10 @@ import { cvPages } from "../data/content";
     const sizeFor = (aspect: number): [number, number] =>
       aspect < 1 ? [MAX_H * aspect, MAX_H] : [MAX_W, MAX_W / aspect];
 
-    const panels: THREE.Mesh[] = [];
-
-    pageList.forEach((src, i) => {
-      const mat = new THREE.MeshStandardMaterial({
-        color: 0x111417,
-        roughness: 0.8,
-        metalness: 0.02,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 1,
-      });
-      const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), mat);
-      const angle = i * step;
-      mesh.position.set(Math.sin(angle) * radius, 0, Math.cos(angle) * radius);
-      mesh.rotation.y = angle;
-      mesh.userData.index = i;
-      group.add(mesh);
-      panels.push(mesh);
-
+    // Texture fetch is split out so it can be deferred: the eight CV frames
+    // are ~640KB of JPEG, and there is no reason to make every visitor
+    // download them before they have scrolled anywhere near the vault.
+    const fetchTexture = (src: string, mat: THREE.MeshStandardMaterial, mesh: THREE.Mesh) => {
       loader.load(
         src,
         (tex) => {
@@ -152,7 +137,42 @@ import { cvPages } from "../data/content";
           mat.needsUpdate = true;
         }
       );
+    };
+
+    const panels: THREE.Mesh[] = [];
+    const pendingTextures: Array<() => void> = [];
+
+    pageList.forEach((src, i) => {
+      const mat = new THREE.MeshStandardMaterial({
+        color: 0x111417,
+        roughness: 0.8,
+        metalness: 0.02,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 1,
+      });
+      const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), mat);
+      const angle = i * step;
+      mesh.position.set(Math.sin(angle) * radius, 0, Math.cos(angle) * radius);
+      mesh.rotation.y = angle;
+      mesh.userData.index = i;
+      group.add(mesh);
+      panels.push(mesh);
+
+      pendingTextures.push(() => fetchTexture(src, mat, mesh));
     });
+
+    // Flush the deferred texture fetches when the vault gets close.
+    const texturePrimer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        texturePrimer.disconnect();
+        pendingTextures.forEach((run) => run());
+        pendingTextures.length = 0;
+      },
+      { rootMargin: "1200px 0px" }
+    );
+    texturePrimer.observe(section);
 
     // ── Thin orbital rails ───────────────────────────────
     const railMat = new THREE.MeshBasicMaterial({ color: 0x2a3036, transparent: true, opacity: 0.7 });
