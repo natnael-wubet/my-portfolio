@@ -1,6 +1,6 @@
 ---
 import { deployments } from "../data/deployments";
-import { domains } from "../data/content";
+import { domains, repos } from "../data/content";
 
 const liveCount = deployments.filter((d) => !d.archived).length;
 ---
@@ -62,7 +62,7 @@ const liveCount = deployments.filter((d) => !d.archived).length;
         {
           [
             { k: "Live deployments", v: String(liveCount), s: "verified at build" },
-            { k: "Public repositories", v: "48", s: "on GitHub" },
+            { k: "Public repositories", v: String(repos.length), s: "on GitHub" },
             { k: "Competitions won", v: "4", s: "1st & 3rd place" },
             { k: "Years shipping", v: "11", s: "since 2014" },
           ].map((stat) => (

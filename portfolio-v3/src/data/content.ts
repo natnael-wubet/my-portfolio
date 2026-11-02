@@ -5,6 +5,8 @@ export interface Repo {
   url: string;
   group: "Security" | "Game" | "Tool" | "Config" | "Web";
   stars?: number;
+  /** True when the repo is someone else's project he mirrored. */
+  fork?: boolean;
 }
 
 export const repos: Repo[] = [
@@ -15,18 +17,19 @@ export const repos: Repo[] = [
   { name: "pong", description: "Classic pong rebuilt from scratch", language: "Processing", url: "https://github.com/natnael-wubet/pong", group: "Game" },
 
   // Security
-  { name: "PAYLOADer", description: "Craft and deliver custom payload scripts", language: "PowerShell", url: "https://github.com/natnael-wubet/PAYLOADer", group: "Security", stars: 8 },
+  { name: "PAYLOADer", description: "Craft and deliver custom payload scripts", language: "PowerShell", url: "https://github.com/natnael-wubet/PAYLOADer", group: "Security", stars: 1 },
   { name: "Ddos", description: "DDoS attack script for web servers", language: "PowerShell", url: "https://github.com/natnael-wubet/Ddos", group: "Security", stars: 8 },
   { name: "windows--password-cracker", description: "Numeric + dictionary attack on locked Windows accounts", language: "PowerShell", url: "https://github.com/natnael-wubet/windows--password-cracker", group: "Security", stars: 8 },
   { name: "exploit_over_http", description: "Deliver scripts across HTTP", language: "PowerShell", url: "https://github.com/natnael-wubet/exploit_over_http", group: "Security", stars: 2 },
-  { name: "exploit_over_tcp", description: "Deliver PowerShell over raw TCP", language: "PowerShell", url: "https://github.com/natnael-wubet/exploit_over_tcp", group: "Security" },
+  { name: "exploit_over_tcp", description: "Deliver PowerShell over raw TCP", language: "PowerShell", url: "https://github.com/natnael-wubet/exploit_over_tcp", group: "Security", stars: 1 },
   { name: "web-credential-password-attack", description: "Credential attacks against web auth (routers, APs)", language: "PowerShell", url: "https://github.com/natnael-wubet/web-credential-password-attack", group: "Security", stars: 3 },
-  { name: "ssh-password-attack", description: "SSH brute-force toolkit", language: "PowerShell", url: "https://github.com/natnael-wubet/ssh-password-attack", group: "Security" },
-  { name: "ftp-password-attack", description: "FTP credential cracker", language: "—", url: "https://github.com/natnael-wubet/ftp-password-attack", group: "Security" },
-  { name: "hash_cracker", description: "Hash cracking utility", language: "PowerShell", url: "https://github.com/natnael-wubet/hash_cracker", group: "Security" },
-  { name: "file-locker", description: "Encrypt and lock any file with AES", language: "PowerShell", url: "https://github.com/natnael-wubet/file-locker", group: "Security" },
-  { name: "Powershell_compiler", description: "Compile PowerShell into standalone executables", language: "PowerShell", url: "https://github.com/natnael-wubet/Powershell_compiler", group: "Security" },
+  { name: "ssh-password-attack", description: "SSH brute-force toolkit", language: "PowerShell", url: "https://github.com/natnael-wubet/ssh-password-attack", group: "Security", stars: 1 },
+  { name: "ftp-password-attack", description: "FTP credential cracker", language: "—", url: "https://github.com/natnael-wubet/ftp-password-attack", group: "Security", stars: 1 },
+  { name: "hash_cracker", description: "Hash cracking utility", language: "PowerShell", url: "https://github.com/natnael-wubet/hash_cracker", group: "Security", stars: 1 },
+  { name: "file-locker", description: "Encrypt and lock any file with AES", language: "PowerShell", url: "https://github.com/natnael-wubet/file-locker", group: "Security", stars: 1 },
+  { name: "Powershell_compiler", description: "Compile PowerShell into standalone executables", language: "PowerShell", url: "https://github.com/natnael-wubet/Powershell_compiler", group: "Security", stars: 1 },
   { name: "payloads", description: "Reusable payload script collection", language: "PowerShell", url: "https://github.com/natnael-wubet/payloads", group: "Security" },
+  { name: "windows-password-cracker", description: "Numeric + dictionary attack on locked Windows user accounts", language: "—", url: "https://github.com/natnael-wubet/windows-password-cracker", group: "Security", stars: 1 },
 
   // Tool
   { name: "ConAnim", description: "Console graphics engine with a Processing/p5 API", language: "Python", url: "https://github.com/natnael-wubet/ConAnim", group: "Tool", stars: 3 },
@@ -50,6 +53,7 @@ export const repos: Repo[] = [
   { name: "shama", description: "Web application", language: "JavaScript", url: "https://github.com/natnael-wubet/shama", group: "Web" },
   { name: "ubaj", description: "Web project", language: "—", url: "https://github.com/natnael-wubet/ubaj", group: "Web" },
   { name: "naty-wubet", description: "This portfolio", language: "JavaScript", url: "https://github.com/natnael-wubet/naty-wubet", group: "Web" },
+  { name: "scribble-diffusion", description: "Turn a rough sketch into a refined image using AI", language: "JavaScript", url: "https://github.com/natnael-wubet/scribble-diffusion", group: "Web", fork: true },
 
   // Config
   { name: "natis_neovim_config", description: "Personal Neovim configuration", language: "Lua", url: "https://github.com/natnael-wubet/natis_neovim_config", group: "Config" },
@@ -60,6 +64,9 @@ export const repos: Repo[] = [
   { name: "zenbrowserconfig", description: "Zen Browser configuration", language: "CSS", url: "https://github.com/natnael-wubet/zenbrowserconfig", group: "Config" },
   { name: "css_basic", description: "CSS fundamentals", language: "HTML", url: "https://github.com/natnael-wubet/css_basic", group: "Config" },
   { name: "public_p", description: "Public scratch projects", language: "—", url: "https://github.com/natnael-wubet/public_p", group: "Config" },
+  { name: "AstroNvim", description: "Aesthetic, feature-rich Neovim distribution", language: "—", url: "https://github.com/natnael-wubet/AstroNvim", group: "Config", fork: true },
+  { name: "kickstart.nvim", description: "Launch point for a personal Neovim configuration", language: "—", url: "https://github.com/natnael-wubet/kickstart.nvim", group: "Config", fork: true },
+  { name: "zeninternet", description: "Website theming for the Zen browser", language: "—", url: "https://github.com/natnael-wubet/zeninternet", group: "Config", fork: true },
 ];
 
 export interface Award {

@@ -1,8 +1,15 @@
 ---
-import { socials } from "../data/content";
+import { socials, repos, awards } from "../data/content";
+import { deployments } from "../data/deployments";
 
 const primary = socials.filter((s) => ["GitHub", "LinkedIn", "Telegram", "Email"].includes(s.label));
 const rest = socials.filter((s) => !["GitHub", "LinkedIn", "Telegram", "Email"].includes(s.label));
+
+const stats = {
+  live: deployments.filter((d) => !d.archived).length,
+  repos: repos.length,
+  awards: awards.length,
+};
 ---
 
 <section id="connect" class="relative border-t border-[var(--color-line)]">
@@ -63,7 +70,7 @@ const rest = socials.filter((s) => !["GitHub", "LinkedIn", "Telegram", "Email"].
               <span class="term-prompt">➜</span>
               <input class="term-input" id="term-input" type="text" placeholder="type 'hire' or 'help'…" autocomplete="off" spellcheck="false" />
             </div>
-            <div id="term-out" class="min-h-[1.5rem] whitespace-pre-wrap text-[var(--color-signal)]"></div>
+            <div id="term-out" class="min-h-[1.5rem] whitespace-pre-wrap text-[var(--color-signal)]" data-stats={JSON.stringify(stats)}></div>
           </div>
         </div>
 
@@ -94,13 +101,18 @@ const rest = socials.filter((s) => !["GitHub", "LinkedIn", "Telegram", "Email"].
   const input = document.getElementById("term-input") as HTMLInputElement | null;
   const out = document.getElementById("term-out") as HTMLDivElement | null;
 
+  // Counts ride on the output node as JSON so this stays a real module and the
+  // numbers can never drift from the data file.
+  type Stats = { live: number; repos: number; awards: number };
+  const stats: Stats = out?.dataset.stats ? JSON.parse(out.dataset.stats) : { live: 0, repos: 0, awards: 0 };
+
   const respond = (raw: string) => {
     const cmd = raw.trim().toLowerCase();
     if (!cmd) return;
     const map: Record<string, string> = {
       hire: "email natyw4122@gmail.com — usually replies within a day.",
       help: "commands: hire · work · stack · github · tg · clear",
-      work: "12 live deployments · 48 repos · 4 competition placements",
+      work: `${stats.live} live deployments · ${stats.repos} repos · ${stats.awards} competition placements`,
       stack: "react · typescript · ionic · capacitor · next · vue · python · three.js · firebase · supabase",
       github: "→ github.com/natnael-wubet",
       tg: "→ t.me/nnaty_w20",
