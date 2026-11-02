@@ -15,14 +15,14 @@ const photos = [
 ];
 ---
 
-<section id="photos" class="relative border-t border-[--color-line]">
+<section id="photos" class="relative border-t border-[var(--color-line)]">
   <div class="shell py-24 lg:py-32">
     <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
       <div class="flex flex-col gap-5">
         <span class="eyebrow">Off-screen · personal</span>
         <h2 class="display display-lg">The person,<br />not the profile</h2>
       </div>
-      <p class="max-w-sm text-sm text-[--color-fog-2]">
+      <p class="max-w-sm text-sm text-[var(--color-fog-2)]">
         Personal photos, no retouching. They start in grayscale and come back to colour on hover — the same rule as
         everything else here: you only get the signal when you go looking for it.
       </p>
@@ -32,7 +32,7 @@ const photos = [
         Row height is set explicitly rather than via aspect-ratio: a 2-col-wide
         tile with aspect-square would become twice as tall as its neighbours and
         strand an empty cell beside it. */}
-    <div class="mt-12 grid grid-cols-2 auto-rows-[12rem] gap-px bg-[--color-line] lg:grid-cols-4 lg:auto-rows-[17rem]">
+    <div class="mt-12 grid grid-cols-2 auto-rows-[12rem] gap-px bg-[var(--color-line)] lg:grid-cols-4 lg:auto-rows-[17rem]">
       {
         photos.map((p, i) => (
           <figure class={`photo-tile ${p.span} m-0 h-full w-full`}>
@@ -48,7 +48,7 @@ const photos = [
               <span class="font-mono text-[0.5625rem] tracking-[0.2em] text-white/75 uppercase">
                 Natnael Wubet
               </span>
-              <span class="font-mono text-[0.5625rem] tracking-[0.2em] text-[--color-signal]">
+              <span class="font-mono text-[0.5625rem] tracking-[0.2em] text-[var(--color-signal)]">
                 {String(i + 1).padStart(2, "0")}
               </span>
             </figcaption>

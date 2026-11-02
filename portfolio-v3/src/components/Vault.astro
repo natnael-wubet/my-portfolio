@@ -2,19 +2,19 @@
 import { cvPages } from "../data/content";
 ---
 
-<section id="vault" class="relative border-t border-[--color-line]">
+<section id="vault" class="relative border-t border-[var(--color-line)]">
   <div class="shell py-24 lg:py-32">
     <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
       <div class="flex flex-col gap-5">
         <span class="eyebrow">Section 04 · The Vault</span>
         <h2 class="display display-lg">Every page,<br />in three dimensions</h2>
-        <p class="max-w-xl text-[--color-fog-2]">
-          These frames are the actual rendered pages of <span class="text-[--color-chalk]">cv.pdf</span>, extracted from the
+        <p class="max-w-xl text-[var(--color-fog-2)]">
+          These frames are the actual rendered pages of <span class="text-[var(--color-chalk)]">cv.pdf</span>, extracted from the
           source document and mapped onto a volumetric carousel. Drag to rotate.
         </p>
       </div>
       <div class="flex flex-col items-start gap-3 md:items-end">
-        <div class="flex items-center gap-3 font-mono text-[0.6875rem] tracking-[0.2em] text-[--color-fog] uppercase">
+        <div class="flex items-center gap-3 font-mono text-[0.6875rem] tracking-[0.2em] text-[var(--color-fog)] uppercase">
           <span class="status" data-state="live"><span class="status-dot"></span>WebGL</span>
           <span id="vault-counter">01 / {String(cvPages.length).padStart(2, "0")}</span>
         </div>
@@ -32,11 +32,11 @@ import { cvPages } from "../data/content";
     ></div>
     <canvas id="vault-canvas" class="vault-canvas relative" data-pages={JSON.stringify(cvPages)}></canvas>
     <div class="pointer-events-none absolute inset-0 flex items-end justify-center pb-8">
-      <div class="flex items-center gap-4 font-mono text-[0.625rem] tracking-[0.3em] text-[--color-fog] uppercase">
+      <div class="flex items-center gap-4 font-mono text-[0.625rem] tracking-[0.3em] text-[var(--color-fog)] uppercase">
         <span class="hidden sm:inline">Drag</span>
-        <span class="h-px w-10 bg-[--color-line-2]"></span>
+        <span class="h-px w-10 bg-[var(--color-line-2)]"></span>
         <span id="vault-hint">Scroll to advance</span>
-        <span class="h-px w-10 bg-[--color-line-2]"></span>
+        <span class="h-px w-10 bg-[var(--color-line-2)]"></span>
         <span class="hidden sm:inline">Rotate</span>
       </div>
     </div>

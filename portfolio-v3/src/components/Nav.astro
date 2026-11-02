@@ -20,11 +20,11 @@ const links = [
         alt="Natnael Wubet"
         width="96"
         height="96"
-        class="h-9 w-9 flex-none border border-[--color-line-2] object-cover transition-all duration-500 group-hover:border-[--color-signal] group-hover:shadow-[0_0_18px_-4px_#d4ff3f]"
+        class="h-9 w-9 flex-none border border-[var(--color-line-2)] object-cover transition-all duration-500 group-hover:border-[var(--color-signal)] group-hover:shadow-[0_0_18px_-4px_#d4ff3f]"
       />
       <span class="flex flex-col leading-none">
         <span class="font-display text-sm font-semibold tracking-tight">Natnael Wubet</span>
-        <span class="font-mono text-[0.625rem] tracking-[0.18em] text-[--color-fog] uppercase">Software Engineer</span>
+        <span class="font-mono text-[0.625rem] tracking-[0.18em] text-[var(--color-fog)] uppercase">Software Engineer</span>
       </span>
     </a>
 
@@ -33,9 +33,9 @@ const links = [
         links.map((l, i) => (
           <a
             href={l.href}
-            class="group relative px-3 py-2 font-mono text-[0.6875rem] tracking-[0.18em] text-[--color-fog] uppercase no-underline transition-colors hover:text-[--color-chalk]"
+            class="group relative px-3 py-2 font-mono text-[0.6875rem] tracking-[0.18em] text-[var(--color-fog)] uppercase no-underline transition-colors hover:text-[var(--color-chalk)]"
           >
-            <span class="text-[--color-line-2] group-hover:text-[--color-signal]">{String(i + 1).padStart(2, "0")}</span>
+            <span class="text-[var(--color-line-2)] group-hover:text-[var(--color-signal)]">{String(i + 1).padStart(2, "0")}</span>
             <span class="ml-2">{l.label}</span>
           </a>
         ))
@@ -46,14 +46,14 @@ const links = [
       <button
         id="palette-trigger"
         type="button"
-        class="hidden items-center gap-3 border border-[--color-line] px-3 py-2 font-mono text-[0.6875rem] tracking-[0.12em] text-[--color-fog] uppercase transition-colors hover:border-[--color-line-2] hover:text-[--color-chalk] sm:flex"
+        class="hidden items-center gap-3 border border-[var(--color-line)] px-3 py-2 font-mono text-[0.6875rem] tracking-[0.12em] text-[var(--color-fog)] uppercase transition-colors hover:border-[var(--color-line-2)] hover:text-[var(--color-chalk)] sm:flex"
       >
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
           <circle cx="11" cy="11" r="7"></circle>
           <path d="m20 20-3.5-3.5"></path>
         </svg>
         Search
-        <kbd class="border border-[--color-line-2] px-1.5 py-0.5 text-[0.5625rem] text-[--color-fog-2]">⌘K</kbd>
+        <kbd class="border border-[var(--color-line-2)] px-1.5 py-0.5 text-[0.5625rem] text-[var(--color-fog-2)]">⌘K</kbd>
       </button>
 
       <a class="btn btn-primary btn-sm" href="/assets/cv.pdf" download>CV ↓</a>
@@ -61,26 +61,26 @@ const links = [
       <button
         id="nav-toggle"
         type="button"
-        class="grid h-9 w-9 place-items-center border border-[--color-line] md:hidden"
+        class="grid h-9 w-9 place-items-center border border-[var(--color-line)] md:hidden"
         aria-label="Menu"
       >
         <span class="flex flex-col gap-[3px]">
-          <span class="block h-px w-4 bg-[--color-chalk]"></span>
-          <span class="block h-px w-4 bg-[--color-chalk]"></span>
+          <span class="block h-px w-4 bg-[var(--color-chalk)]"></span>
+          <span class="block h-px w-4 bg-[var(--color-chalk)]"></span>
         </span>
       </button>
     </div>
   </div>
 
-  <div id="nav-menu" class="hidden border-t border-[--color-line] bg-[--color-ink-2] md:hidden">
+  <div id="nav-menu" class="hidden border-t border-[var(--color-line)] bg-[var(--color-ink-2)] md:hidden">
     <div class="shell flex flex-col py-2">
       {
         links.map((l, i) => (
           <a
             href={l.href}
-            class="flex items-center gap-4 border-b border-[--color-line] py-3.5 font-mono text-[0.75rem] tracking-[0.18em] text-[--color-fog-2] uppercase no-underline last:border-0"
+            class="flex items-center gap-4 border-b border-[var(--color-line)] py-3.5 font-mono text-[0.75rem] tracking-[0.18em] text-[var(--color-fog-2)] uppercase no-underline last:border-0"
           >
-            <span class="text-[--color-line-2]">{String(i + 1).padStart(2, "0")}</span>
+            <span class="text-[var(--color-line-2)]">{String(i + 1).padStart(2, "0")}</span>
             {l.label}
           </a>
         ))
