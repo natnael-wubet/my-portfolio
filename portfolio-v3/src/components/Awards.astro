@@ -1,0 +1,116 @@
+---
+import { awards, certifications, communities } from "../data/content";
+---
+
+<section id="awards" class="relative border-t border-[--color-line]">
+  <div class="shell py-24 lg:py-32">
+    <div class="flex flex-col gap-5">
+      <span class="eyebrow">Section 03 · Record</span>
+      <h2 class="display display-lg">Placed, ranked,<br />certified</h2>
+    </div>
+
+    <div class="mt-14 grid gap-12 lg:grid-cols-[1.35fr_1fr] lg:gap-16">
+      <!-- Awards -->
+      <div class="flex flex-col">
+        <div class="mb-4 flex items-center justify-between border-b border-[--color-line] pb-3">
+          <span class="section-label">Competitions</span>
+          <span class="section-index">{awards.length} entries</span>
+        </div>
+
+        <div class="flex flex-col">
+          {
+            awards.map((a, i) => (
+              <article class="group grid grid-cols-[auto_1fr] gap-5 border-b border-[--color-line] py-6 transition-colors hover:bg-[--color-ink-2] sm:grid-cols-[7rem_1fr] sm:gap-8">
+                <div class="flex flex-col gap-1">
+                  <span
+                    class="font-display text-3xl font-bold leading-none tracking-tight sm:text-4xl"
+                    style={{ color: a.rank.startsWith("1") ? "#d4ff3f" : a.rank.startsWith("3") ? "#34d3e0" : "#6b7480" }}
+                  >
+                    {a.rank}
+                  </span>
+                  <span class="font-mono text-[0.625rem] tracking-[0.18em] text-[--color-line-2] uppercase">{a.year}</span>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                  <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <h3 class="font-display text-lg font-semibold tracking-tight text-[--color-chalk]">{a.title}</h3>
+                    {a.prize && (
+                      <span class="border border-[--color-line-2] px-2 py-0.5 font-mono text-[0.5625rem] tracking-[0.14em] text-[--color-signal] uppercase">
+                        {a.prize}
+                      </span>
+                    )}
+                  </div>
+                  <span class="font-mono text-[0.6875rem] tracking-[0.1em] text-[--color-fog] uppercase">{a.org}</span>
+                  <p class="text-sm leading-relaxed text-[--color-fog-2]">{a.detail}</p>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- Certifications + communities -->
+      <div class="flex flex-col gap-10">
+        <div class="flex flex-col">
+          <div class="mb-4 flex items-center justify-between border-b border-[--color-line] pb-3">
+            <span class="section-label">Certifications</span>
+            <span class="section-index">{certifications.length} docs</span>
+          </div>
+
+          <div class="flex flex-col gap-3">
+            {
+              certifications.map((c) => (
+                <a
+                  href={c.file}
+                  target="_blank"
+                  rel="noopener"
+                  class="group flex items-start gap-4 border border-[--color-line] p-5 no-underline transition-colors hover:border-[--color-signal]"
+                >
+                  <span class="grid h-11 w-11 flex-none place-items-center border border-[--color-line-2] font-mono text-[0.625rem] tracking-[0.1em] text-[--color-fog] transition-colors group-hover:border-[--color-signal] group-hover:text-[--color-signal]">
+                    PDF
+                  </span>
+                  <span class="flex flex-col gap-1">
+                    <span class="font-display text-[0.95rem] font-semibold leading-snug text-[--color-chalk]">{c.name}</span>
+                    <span class="font-mono text-[0.625rem] tracking-[0.16em] text-[--color-fog] uppercase">{c.issuer}</span>
+                    <span class="text-sm leading-relaxed text-[--color-fog-2]">{c.detail}</span>
+                  </span>
+                  <span class="ml-auto font-mono text-[--color-line-2] transition-all group-hover:translate-x-1 group-hover:text-[--color-signal]">
+                    ↗
+                  </span>
+                </a>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="flex flex-col">
+          <div class="mb-4 flex items-center justify-between border-b border-[--color-line] pb-3">
+            <span class="section-label">Communities</span>
+            <span class="section-index">Bahir Dar</span>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            {
+              communities.map((c) =>
+                c.href ? (
+                  <a
+                    href={c.href}
+                    target="_blank"
+                    rel="noopener"
+                    class="border border-[--color-line] px-3 py-2 font-mono text-[0.625rem] tracking-[0.14em] text-[--color-fog-2] uppercase no-underline transition-colors hover:border-[--color-signal] hover:text-[--color-signal]"
+                  >
+                    {c.name} ↗
+                  </a>
+                ) : (
+                  <span class="border border-[--color-line] px-3 py-2 font-mono text-[0.625rem] tracking-[0.14em] text-[--color-fog] uppercase">
+                    {c.name}
+                  </span>
+                )
+              )
+            }
+          </div>
+        </div>
+
+        <a class="btn btn-primary w-full" href="/assets/cv.pdf" download>Download full CV ↓</a>
+      </div>
+    </div>
+  </div>
+</section>

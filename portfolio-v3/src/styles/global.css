@@ -1,0 +1,444 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #08090a;
+  --color-ink-2: #0d0f11;
+  --color-ink-3: #131619;
+  --color-line: #1e2226;
+  --color-line-2: #2a3036;
+  --color-fog: #6b7480;
+  --color-fog-2: #9aa4b0;
+  --color-chalk: #eef1f4;
+  --color-signal: #d4ff3f;
+  --color-signal-dim: #9fbf2c;
+  --color-amber: #ff9f1c;
+  --color-cyan: #34d3e0;
+  --color-rose: #ff5470;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
+  --font-display: "Space Grotesk", "Inter", sans-serif;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scrollbar-color: var(--color-line-2) var(--color-ink);
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-ink);
+    color: var(--color-chalk);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--color-signal);
+    color: #000;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  button {
+    font: inherit;
+    color: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  /* ─── Shell ─────────────────────────────────────────────── */
+  .shell {
+    width: 100%;
+    max-width: 1560px;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 4vw, 4rem);
+  }
+
+  /* ─── Grid overlay ──────────────────────────────────────── */
+  .rule-grid {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background-image: linear-gradient(
+        to right,
+        color-mix(in srgb, var(--color-line) 55%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--color-line) 40%, transparent) 1px,
+        transparent 1px
+      );
+    background-size: 96px 96px;
+    mask-image: radial-gradient(ellipse 120% 90% at 50% 0%, #000 20%, transparent 78%);
+    opacity: 0.5;
+  }
+
+  /* ─── Section eyebrow ───────────────────────────────────── */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--color-fog);
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 22px;
+    height: 1px;
+    background: var(--color-signal);
+  }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--color-fog);
+  }
+
+  .section-index {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.24em;
+    color: var(--color-line-2);
+  }
+
+  /* ─── Headings ──────────────────────────────────────────── */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 0.94;
+    letter-spacing: -0.03em;
+  }
+
+  .display-xl {
+    font-size: clamp(3.25rem, 11vw, 11rem);
+  }
+
+  .display-lg {
+    font-size: clamp(2.25rem, 6.5vw, 5.5rem);
+  }
+
+  /* ─── Status dot ────────────────────────────────────────── */
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--color-fog);
+    flex: none;
+  }
+
+  .status[data-state="live"] .status-dot {
+    background: var(--color-signal);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-signal) 18%, transparent);
+    animation: pulse-dot 2.4s ease-in-out infinite;
+  }
+
+  .status[data-state="down"] .status-dot {
+    background: var(--color-rose);
+  }
+
+  .status[data-state="unknown"] .status-dot {
+    background: var(--color-amber);
+  }
+
+  .status[data-state="archived"] .status-dot {
+    background: transparent;
+    border: 1px solid var(--color-fog);
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-signal) 18%, transparent); }
+    50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-signal) 0%, transparent); }
+  }
+
+  /* ─── Buttons ───────────────────────────────────────────── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    padding: 0.85rem 1.6rem;
+    border: 1px solid var(--color-line-2);
+    background: transparent;
+    color: var(--color-chalk);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background-color 0.22s ease,
+      border-color 0.22s ease,
+      color 0.22s ease,
+      transform 0.22s ease;
+  }
+
+  .btn:hover {
+    border-color: var(--color-chalk);
+    background: var(--color-chalk);
+    color: var(--color-ink);
+  }
+
+  .btn-primary {
+    border-color: var(--color-signal);
+    color: var(--color-signal);
+  }
+
+  .btn-primary:hover {
+    background: var(--color-signal);
+    border-color: var(--color-signal);
+    color: #000;
+  }
+
+  .btn-sm {
+    padding: 0.55rem 1rem;
+    font-size: 0.6875rem;
+  }
+
+  /* ─── Panel ─────────────────────────────────────────────── */
+  .panel {
+    border: 1px solid var(--color-line);
+    background: linear-gradient(180deg, var(--color-ink-2), var(--color-ink));
+  }
+
+  /* ─── Marquee ───────────────────────────────────────────── */
+  .marquee {
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 42s linear infinite;
+  }
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* ─── Terminal ──────────────────────────────────────────── */
+  .term-line {
+    display: flex;
+    gap: 0.6rem;
+    align-items: baseline;
+  }
+
+  .term-prompt {
+    color: var(--color-signal);
+    flex: none;
+  }
+
+  .term-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--color-chalk);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    flex: 1;
+    min-width: 0;
+    caret-color: var(--color-signal);
+  }
+
+  /* ─── Repo rows ─────────────────────────────────────────── */
+  .repo-row {
+    display: grid;
+    grid-template-columns: minmax(0, 22ch) minmax(0, 1fr) auto;
+    gap: 1.5rem;
+    align-items: baseline;
+    padding: 1.05rem 0;
+    border-bottom: 1px solid var(--color-line);
+    text-decoration: none;
+    transition: padding-left 0.25s ease, background-color 0.25s ease;
+  }
+
+  .repo-row:hover {
+    padding-left: 0.85rem;
+    background: color-mix(in srgb, var(--color-signal) 4%, transparent);
+  }
+
+  /* ─── Command palette ───────────────────────────────────── */
+  .palette-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(4, 5, 6, 0.82);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 12vh;
+  }
+
+  .palette-backdrop.open {
+    display: flex;
+  }
+
+  .palette {
+    width: min(720px, calc(100vw - 2rem));
+    border: 1px solid var(--color-line-2);
+    background: var(--color-ink-2);
+    box-shadow: 0 40px 120px -30px rgba(0, 0, 0, 0.9);
+    overflow: hidden;
+  }
+
+  .palette-input {
+    width: 100%;
+    padding: 1.15rem 1.25rem;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--color-line);
+    color: var(--color-chalk);
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    outline: none;
+  }
+
+  .palette-input::placeholder {
+    color: var(--color-fog);
+  }
+
+  .palette-list {
+    max-height: 52vh;
+    overflow-y: auto;
+  }
+
+  .palette-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 0.8rem 1.25rem;
+    border: none;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-line) 60%, transparent);
+  }
+
+  .palette-item[data-active="true"] {
+    background: color-mix(in srgb, var(--color-signal) 10%, transparent);
+  }
+
+  .palette-item[data-active="true"] .palette-item-name {
+    color: var(--color-signal);
+  }
+
+  .palette-empty {
+    padding: 2rem 1.25rem;
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    text-align: center;
+  }
+
+  /* ─── Vault (3D CV) ─────────────────────────────────────── */
+  .vault-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: pan-y;
+  }
+
+  /* ─── Photo strip ───────────────────────────────────────── */
+  .photo-tile {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-ink-3);
+  }
+
+  .photo-tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.08);
+    transition: filter 0.6s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .photo-tile:hover img {
+    filter: grayscale(0) contrast(1);
+    transform: scale(1.04);
+  }
+
+  /* ─── Scroll cue ────────────────────────────────────────── */
+  .scroll-cue {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--color-fog);
+  }
+
+  .scroll-cue-bar {
+    position: relative;
+    width: 48px;
+    height: 1px;
+    background: var(--color-line-2);
+    overflow: hidden;
+  }
+
+  .scroll-cue-bar::after {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    width: 40%;
+    background: var(--color-signal);
+    animation: cue 2.1s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  }
+
+  @keyframes cue {
+    0% { transform: translateX(-120%); }
+    100% { transform: translateX(320%); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

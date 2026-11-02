@@ -1,0 +1,56 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="relative border-t border-[--color-line] bg-[--color-ink-2]">
+  <div class="shell py-16">
+    <div class="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
+      <div class="flex flex-col gap-4">
+        <span class="flex items-center gap-3">
+          <span class="grid h-9 w-9 place-items-center border border-[--color-line-2] font-mono text-[0.6875rem] text-[--color-signal]">NW</span>
+          <span class="font-display text-base font-semibold tracking-tight">Natnael Wubet</span>
+        </span>
+        <p class="max-w-sm text-sm leading-relaxed text-[--color-fog-2]">
+          Software engineer working across games, protocols, platforms and security tooling. Based in Bahir Dar,
+          shipping worldwide.
+        </p>
+        <span class="status" data-state="live"><span class="status-dot"></span>All systems operational</span>
+      </div>
+
+      <nav class="flex flex-col gap-2.5">
+        <span class="section-label mb-1">Sections</span>
+        {
+          [
+            ["#work", "Deployments"],
+            ["#repos", "Repositories"],
+            ["#vault", "CV Vault"],
+            ["#awards", "Awards"],
+            ["#photos", "Photos"],
+            ["#connect", "Contact"],
+          ].map(([href, label]) => (
+            <a href={href} class="font-mono text-[0.75rem] tracking-[0.1em] text-[--color-fog-2] uppercase no-underline transition-colors hover:text-[--color-signal]">
+              {label}
+            </a>
+          ))
+        }
+      </nav>
+
+      <div class="flex flex-col gap-2.5">
+        <span class="section-label mb-1">Direct</span>
+        <a href="mailto:natyw4122@gmail.com" class="font-mono text-[0.75rem] text-[--color-fog-2] no-underline transition-colors hover:text-[--color-signal]">natyw4122@gmail.com</a>
+        <a href="tel:+251918191930" class="font-mono text-[0.75rem] text-[--color-fog-2] no-underline transition-colors hover:text-[--color-signal]">+251 91 819 1930</a>
+        <a href="https://t.me/nnaty_w20" target="_blank" rel="noopener" class="font-mono text-[0.75rem] text-[--color-fog-2] no-underline transition-colors hover:text-[--color-signal]">@nnaty_w20</a>
+        <a href="/assets/cv.pdf" download class="mt-2 btn btn-sm w-fit">CV ↓</a>
+      </div>
+    </div>
+
+    <div class="mt-12 flex flex-col gap-3 border-t border-[--color-line] pt-6 sm:flex-row sm:items-center sm:justify-between">
+      <span class="font-mono text-[0.625rem] tracking-[0.18em] text-[--color-line-2] uppercase">
+        © {year} Natnael Wubet · Built with Astro, Three.js &amp; Tailwind
+      </span>
+      <span class="font-mono text-[0.625rem] tracking-[0.18em] text-[--color-line-2] uppercase">
+        Probed live at build · <span class="text-[--color-signal]">v3.0</span>
+      </span>
+    </div>
+  </div>
+</footer>

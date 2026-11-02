@@ -1,0 +1,132 @@
+---
+import { repos } from "../data/content";
+
+const groups = ["Security", "Game", "Tool", "Web", "Config"] as const;
+const counts = Object.fromEntries(groups.map((g) => [g, repos.filter((r) => r.group === g).length]));
+const langColor: Record<string, string> = {
+  PowerShell: "#012456",
+  Python: "#3572A5",
+  JavaScript: "#f1e05a",
+  TypeScript: "#3178c6",
+  Processing: "#0096d6",
+  Lua: "#000080",
+  HTML: "#e34c26",
+  CSS: "#663399",
+  "—": "#2a3036",
+};
+---
+
+<section id="repos" class="relative border-t border-[--color-line]">
+  <div class="shell py-24 lg:py-32">
+    <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <div class="flex flex-col gap-5">
+        <span class="eyebrow">Section 02 · Source</span>
+        <h2 class="display display-lg">Every repository</h2>
+        <p class="max-w-xl text-[--color-fog-2]">
+          The full public footprint on GitHub — offensive tooling, games, desktop apps, configs and experiments.
+          Nothing curated, everything honest.
+        </p>
+      </div>
+      <a
+        class="btn btn-sm"
+        href="https://github.com/natnael-wubet?tab=repositories"
+        target="_blank"
+        rel="noopener">Open GitHub ↗</a
+      >
+    </div>
+
+    <!-- filter tabs -->
+    <div class="mt-10 flex flex-wrap gap-2" id="repo-filters">
+      <button class="filter-chip is-active" data-group="all" type="button">
+        All <span class="text-[--color-line-2]">{repos.length}</span>
+      </button>
+      {
+        groups.map((g) => (
+          <button class="filter-chip" data-group={g} type="button">
+            {g} <span class="text-[--color-line-2]">{counts[g]}</span>
+          </button>
+        ))
+      }
+    </div>
+
+    <div class="mt-8 border-t border-[--color-line]" id="repo-list">
+      {
+        repos.map((r) => (
+          <a
+            href={r.url}
+            target="_blank"
+            rel="noopener"
+            class="repo-row"
+            data-group={r.group}
+            data-search={`${r.name} ${r.description} ${r.language} ${r.group}`.toLowerCase()}
+          >
+            <span class="flex items-center gap-2.5 font-mono text-[0.8125rem] text-[--color-chalk]">
+              <span class="h-2 w-2 flex-none" style={{ background: langColor[r.language] ?? "#2a3036" }} />
+              <span class="truncate">{r.name}</span>
+            </span>
+            <span class="text-sm text-[--color-fog-2]">{r.description}</span>
+            <span class="flex items-center gap-4 font-mono text-[0.625rem] tracking-[0.14em] text-[--color-fog] uppercase">
+              {r.stars ? <span class="text-[--color-signal]">★ {r.stars}</span> : null}
+              <span class="hidden sm:inline">{r.language}</span>
+              <span class="text-[--color-line-2] transition-colors group-hover:text-[--color-signal]">↗</span>
+            </span>
+          </a>
+        ))
+      }
+      <p class="py-6 text-center font-mono text-[0.6875rem] tracking-[0.18em] text-[--color-line-2] uppercase" id="repo-empty" hidden>
+        No repositories match that filter
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-line);
+    background: transparent;
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .filter-chip:hover {
+    border-color: var(--color-line-2);
+    color: var(--color-chalk);
+  }
+
+  .filter-chip.is-active {
+    border-color: var(--color-signal);
+    color: var(--color-signal);
+    background: color-mix(in srgb, var(--color-signal) 8%, transparent);
+  }
+</style>
+
+<script>
+  const chips = Array.from(document.querySelectorAll<HTMLButtonElement>(".filter-chip"));
+  const rows = Array.from(document.querySelectorAll<HTMLElement>("#repo-list .repo-row"));
+  const empty = document.getElementById("repo-empty") as HTMLParagraphElement;
+
+  const apply = (group: string) => {
+    let shown = 0;
+    rows.forEach((row) => {
+      const match = group === "all" || row.dataset.group === group;
+      row.style.display = match ? "" : "none";
+      if (match) shown++;
+    });
+    empty.hidden = shown > 0;
+    chips.forEach((c) => c.classList.toggle("is-active", c.dataset.group === group));
+  };
+
+  chips.forEach((c) => c.addEventListener("click", () => apply(c.dataset.group ?? "all")));
+</script>

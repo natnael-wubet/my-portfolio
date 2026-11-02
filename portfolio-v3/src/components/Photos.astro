@@ -1,0 +1,41 @@
+---
+const photos = [
+  { src: "/img/portrait.jpg", span: "sm:col-span-2 sm:row-span-2 aspect-square sm:aspect-auto", label: "Portrait" },
+  { src: "/img/photo_2026-01-12_21-24-20.jpg", span: "", label: "01" },
+  { src: "/img/photo_2026-01-12_21-24-28.jpg", span: "", label: "02" },
+  { src: "/img/photo_2026-01-12_21-24-37.jpg", span: "", label: "03" },
+  { src: "/img/photo_2026-01-12_21-24-50.jpg", span: "", label: "04" },
+  { src: "/img/photo_2026-01-12_21-26-25.jpg", span: "", label: "05" },
+  { src: "/img/photo_2026-02-20_22-20-15.jpg", span: "", label: "06" },
+];
+---
+
+<section id="photos" class="relative border-t border-[--color-line]">
+  <div class="shell py-24 lg:py-32">
+    <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <div class="flex flex-col gap-5">
+        <span class="eyebrow">Section 05 · Off-screen</span>
+        <h2 class="display display-lg">Behind the terminal</h2>
+      </div>
+      <p class="max-w-sm text-sm text-[--color-fog-2]">
+        Hover to restore colour. Grayscale by default — the signal only shows when you go looking for it.
+      </p>
+    </div>
+
+    <div class="mt-12 grid grid-cols-2 gap-px bg-[--color-line] sm:grid-cols-3 lg:grid-cols-4">
+      {
+        photos.map((p, i) => (
+          <figure class={`photo-tile ${p.span} aspect-[4/5] m-0`}>
+            <img src={p.src} alt={p.label} loading="lazy" decoding="async" width="800" height="1000" />
+            <figcaption class="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-black/85 to-transparent p-3">
+              <span class="font-mono text-[0.5625rem] tracking-[0.2em] text-white/70 uppercase">{p.label}</span>
+              <span class="font-mono text-[0.5625rem] tracking-[0.2em] text-[--color-signal]">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+  </div>
+</section>

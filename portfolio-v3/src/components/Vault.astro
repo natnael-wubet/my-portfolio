@@ -1,0 +1,254 @@
+---
+import { cvPages } from "../data/content";
+---
+
+<section id="vault" class="relative border-t border-[--color-line]">
+  <div class="shell py-24 lg:py-32">
+    <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <div class="flex flex-col gap-5">
+        <span class="eyebrow">Section 04 · The Vault</span>
+        <h2 class="display display-lg">Every page,<br />in three dimensions</h2>
+        <p class="max-w-xl text-[--color-fog-2]">
+          These frames are the actual rendered pages of <span class="text-[--color-chalk]">cv.pdf</span>, extracted from the
+          source document and mapped onto a volumetric carousel. Drag to rotate.
+        </p>
+      </div>
+      <div class="flex flex-col items-start gap-3 md:items-end">
+        <div class="flex items-center gap-3 font-mono text-[0.6875rem] tracking-[0.2em] text-[--color-fog] uppercase">
+          <span class="status" data-state="live"><span class="status-dot"></span>WebGL</span>
+          <span id="vault-counter">01 / {String(cvPages.length).padStart(2, "0")}</span>
+        </div>
+        <a class="btn btn-sm" href="/assets/cv.pdf" download>Download PDF</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="relative h-[min(78vh,720px)] w-full">
+    <canvas id="vault-canvas" class="vault-canvas"></canvas>
+    <div class="pointer-events-none absolute inset-0 flex items-end justify-center pb-8">
+      <div class="flex items-center gap-4 font-mono text-[0.625rem] tracking-[0.3em] text-[--color-fog] uppercase">
+        <span class="hidden sm:inline">Drag</span>
+        <span class="h-px w-10 bg-[--color-line-2]"></span>
+        <span id="vault-hint">Scroll to advance</span>
+        <span class="h-px w-10 bg-[--color-line-2]"></span>
+        <span class="hidden sm:inline">Rotate</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script define:vars={{ pages: cvPages }}>
+  import * as THREE from "three";
+
+  type PageList = string[];
+  const pageList = pages as PageList;
+
+  const canvas = document.getElementById("vault-canvas") as HTMLCanvasElement;
+  const section = document.getElementById("vault") as HTMLElement;
+  const counter = document.getElementById("vault-counter") as HTMLElement;
+
+  if (canvas && pageList.length) {
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
+    camera.position.set(0, 0, 7.4);
+
+    // ── Lights ───────────────────────────────────────────
+    scene.add(new THREE.AmbientLight(0xffffff, 1.35));
+    const key = new THREE.DirectionalLight(0xd4ff3f, 1.1);
+    key.position.set(4, 5, 6);
+    scene.add(key);
+    const rim = new THREE.DirectionalLight(0x34d3e0, 0.9);
+    rim.position.set(-5, -2, -4);
+    scene.add(rim);
+
+    // ── Ring of textured planes ──────────────────────────
+    const group = new THREE.Group();
+    scene.add(group);
+
+    const loader = new THREE.TextureLoader();
+    const pageW = 2.1;
+    const pageH = 2.95;
+    const radius = 5.1;
+    const step = (Math.PI * 2) / pageList.length;
+
+    const panels: THREE.Mesh[] = [];
+    const panelGeo = new THREE.PlaneGeometry(pageW, pageH, 1, 1);
+
+    pageList.forEach((src, i) => {
+      const mat = new THREE.MeshStandardMaterial({
+        color: 0x111417,
+        roughness: 0.85,
+        metalness: 0.02,
+        side: THREE.DoubleSide,
+      });
+      const mesh = new THREE.Mesh(panelGeo, mat);
+      const angle = i * step;
+      mesh.position.set(Math.sin(angle) * radius, 0, Math.cos(angle) * radius);
+      mesh.rotation.y = angle;
+      mesh.userData.index = i;
+      group.add(mesh);
+      panels.push(mesh);
+
+      loader.load(
+        src,
+        (tex) => {
+          tex.colorSpace = THREE.SRGBColorSpace;
+          tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+          mat.map = tex;
+          mat.color.set(0xffffff);
+          mat.needsUpdate = true;
+        },
+        undefined,
+        () => {
+          // Fallback: procedural scanline texture so the slot never looks broken
+          const c = document.createElement("canvas");
+          c.width = 64;
+          c.height = 90;
+          const ctx = c.getContext("2d")!;
+          ctx.fillStyle = "#14181c";
+          ctx.fillRect(0, 0, 64, 90);
+          ctx.fillStyle = "#2a3036";
+          for (let y = 4; y < 90; y += 4) ctx.fillRect(6, y, 52, 1);
+          const tex = new THREE.CanvasTexture(c);
+          tex.colorSpace = THREE.SRGBColorSpace;
+          mat.map = tex;
+          mat.needsUpdate = true;
+        }
+      );
+    });
+
+    // ── Thin orbital rails ───────────────────────────────
+    const railMat = new THREE.MeshBasicMaterial({ color: 0x2a3036, transparent: true, opacity: 0.7 });
+    [radius + 0.55, radius - 0.55].forEach((r) => {
+      const rail = new THREE.Mesh(new THREE.TorusGeometry(r, 0.006, 6, 220), railMat);
+      rail.rotation.x = Math.PI / 2;
+      group.add(rail);
+    });
+
+    // ── Floor disc ───────────────────────────────────────
+    const floor = new THREE.Mesh(
+      new THREE.CircleGeometry(radius + 1.6, 96),
+      new THREE.MeshBasicMaterial({ color: 0x0d0f11, transparent: true, opacity: 0.55 })
+    );
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.y = -pageH / 2 - 0.35;
+    scene.add(floor);
+
+    const floorRing = new THREE.Mesh(
+      new THREE.RingGeometry(radius + 1.55, radius + 1.62, 128),
+      new THREE.MeshBasicMaterial({ color: 0xd4ff3f, transparent: true, opacity: 0.22 })
+    );
+    floorRing.rotation.x = -Math.PI / 2;
+    floorRing.position.y = -pageH / 2 - 0.34;
+    scene.add(floorRing);
+
+    // ── Interaction state ────────────────────────────────
+    let targetRotation = 0;
+    let currentRotation = 0;
+    let velocity = 0;
+    let dragging = false;
+    let lastX = 0;
+    let scrollBoost = 0;
+
+    const onPointerDown = (e: PointerEvent) => {
+      dragging = true;
+      lastX = e.clientX;
+      canvas.setPointerCapture(e.pointerId);
+    };
+    const onPointerMove = (e: PointerEvent) => {
+      if (!dragging) return;
+      const dx = e.clientX - lastX;
+      lastX = e.clientX;
+      targetRotation += dx * 0.0075;
+      velocity = dx * 0.0075;
+    };
+    const onPointerUp = (e: PointerEvent) => {
+      dragging = false;
+      if (canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId);
+    };
+
+    canvas.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", onPointerUp);
+
+    // Scroll anywhere in the section advances the ring
+    const onWheel = (e: WheelEvent) => {
+      const rect = section.getBoundingClientRect();
+      if (rect.top > window.innerHeight * 0.8 || rect.bottom < window.innerHeight * 0.2) return;
+      scrollBoost += e.deltaY * 0.0009;
+    };
+    window.addEventListener("wheel", onWheel, { passive: true });
+
+    // ── Sizing ───────────────────────────────────────────
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      const w = Math.max(rect.width, 1);
+      const h = Math.max(rect.height, 1);
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      // Pull camera back on narrow screens so pages stay in frame
+      camera.position.z = w < 720 ? 9.4 : w < 1100 ? 8.2 : 7.4;
+    };
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas);
+
+    // ── Loop ──────────────────────────────────────────────
+    const clock = new THREE.Clock();
+    let visible = true;
+    const io = new IntersectionObserver(
+      ([entry]) => (visible = entry.isIntersecting),
+      { threshold: 0.02 }
+    );
+    io.observe(section);
+
+    const tick = () => {
+      requestAnimationFrame(tick);
+      const dt = Math.min(clock.getDelta(), 0.05);
+
+      if (!dragging) {
+        targetRotation += velocity;
+        velocity *= 0.94;
+        targetRotation += scrollBoost;
+        scrollBoost *= 0.9;
+        targetRotation += dt * 0.055; // idle drift
+      }
+
+      currentRotation += (targetRotation - currentRotation) * 0.075;
+      group.rotation.y = currentRotation;
+
+      // Face the camera-ish and fade edges
+      panels.forEach((panel) => {
+        const world = new THREE.Vector3();
+        panel.getWorldPosition(world);
+        const toCam = camera.position.clone().sub(world).normalize();
+        const normal = new THREE.Vector3(0, 0, 1).applyQuaternion(panel.getWorldQuaternion(new THREE.Quaternion()));
+        const facing = normal.dot(toCam);
+        const mat = panel.material as THREE.MeshStandardMaterial;
+        mat.opacity = THREE.MathUtils.clamp((facing + 0.25) / 1.25, 0.12, 1);
+        mat.transparent = true;
+      });
+
+      // Counter
+      const idx = ((Math.round(-currentRotation / step) % pageList.length) + pageList.length) % pageList.length;
+      const label = `${String(idx + 1).padStart(2, "0")} / ${String(pageList.length).padStart(2, "0")}`;
+      if (counter.textContent !== label) counter.textContent = label;
+
+      if (visible) renderer.render(scene, camera);
+    };
+    tick();
+  }
+</script>
+
+<style>
+  #vault-counter {
+    font-family: var(--font-mono);
+    color: var(--color-chalk);
+  }
+</style>

@@ -1,0 +1,249 @@
+---
+import { deployments } from "../data/deployments";
+import { repos, socials, awards, certifications } from "../data/content";
+
+interface PaletteItem {
+  label: string;
+  meta: string;
+  href: string;
+  kind: string;
+  keywords: string;
+}
+
+const items: PaletteItem[] = [
+  ...deployments.map((d) => ({
+    label: d.name,
+    meta: `${d.platform} · ${d.tagline}`,
+    href: d.url,
+    kind: "Deploy",
+    keywords: `${d.name} ${d.tagline} ${d.description} ${d.stack.join(" ")} ${d.category}`,
+  })),
+  ...repos.map((r) => ({
+    label: r.name,
+    meta: `${r.group} · ${r.description}`,
+    href: r.url,
+    kind: "Repo",
+    keywords: `${r.name} ${r.description} ${r.language} ${r.group}`,
+  })),
+  ...awards.map((a) => ({
+    label: a.title,
+    meta: `${a.rank} · ${a.org}`,
+    href: "#awards",
+    kind: "Award",
+    keywords: `${a.title} ${a.org} ${a.detail} ${a.prize ?? ""} ${a.rank}`,
+  })),
+  ...certifications.map((c) => ({
+    label: c.name,
+    meta: c.issuer,
+    href: c.file,
+    kind: "Cert",
+    keywords: `${c.name} ${c.issuer} ${c.detail}`,
+  })),
+  ...socials.map((s) => ({
+    label: s.label,
+    meta: s.handle,
+    href: s.href,
+    kind: "Link",
+    keywords: `${s.label} ${s.handle}`,
+  })),
+  { label: "Download CV", meta: "Complete curriculum vitae (PDF)", href: "/assets/cv.pdf", kind: "Doc", keywords: "cv resume curriculum vitae pdf download" },
+  { label: "GitHub profile", meta: "@natnael-wubet", href: "https://github.com/natnael-wubet", kind: "Link", keywords: "github profile all repositories" },
+  { label: "Telegram", meta: "@nnaty_w20", href: "https://t.me/nnaty_w20", kind: "Link", keywords: "telegram contact chat" },
+  { label: "Big XO Mini App", meta: "Play in Telegram", href: "https://t.me/bigxoGameBot", kind: "Play", keywords: "bigxo game telegram mini app play xo" },
+];
+---
+
+<div class="palette-backdrop" id="palette" role="dialog" aria-modal="true" aria-label="Command palette">
+  <div class="palette">
+    <input
+      class="palette-input"
+      id="palette-input"
+      type="text"
+      placeholder="Search projects, repositories, awards, links…"
+      autocomplete="off"
+      spellcheck="false"
+      aria-controls="palette-list"
+    />
+    <div class="palette-list" id="palette-list" role="listbox"></div>
+  </div>
+</div>
+
+<script define:vars={{ paletteData: items }}>
+  type Item = {
+    label: string;
+    meta: string;
+    href: string;
+    kind: string;
+    keywords: string;
+  };
+
+  const data = paletteData as Item[];
+  const backdrop = document.getElementById("palette") as HTMLDivElement;
+  const input = document.getElementById("palette-input") as HTMLInputElement;
+  const list = document.getElementById("palette-list") as HTMLDivElement;
+
+  let active = 0;
+  let visible: Item[] = [];
+
+  function score(item: Item, q: string): number {
+    const hay = item.keywords.toLowerCase();
+    const label = item.label.toLowerCase();
+    if (label === q) return 100;
+    if (label.startsWith(q)) return 80;
+    if (label.includes(q)) return 60;
+    if (hay.includes(q)) return 30;
+    // subsequence match
+    let i = 0;
+    for (const ch of hay) {
+      if (ch === q[i]) i++;
+      if (i === q.length) return 10;
+    }
+    return 0;
+  }
+
+  function render(query: string) {
+    const q = query.trim().toLowerCase();
+    visible = q
+      ? data
+          .map((item) => ({ item, s: score(item, q) }))
+          .filter((x) => x.s > 0)
+          .sort((a, b) => b.s - a.s)
+          .slice(0, 40)
+          .map((x) => x.item)
+      : data.slice(0, 24);
+
+    active = 0;
+    list.innerHTML = "";
+
+    if (visible.length === 0) {
+      list.innerHTML = '<div class="palette-empty">No matches. Try “game”, “security”, “award”, “telegram”.</div>';
+      return;
+    }
+
+    visible.forEach((item, i) => {
+      const btn = document.createElement("button");
+      btn.className = "palette-item";
+      btn.type = "button";
+      btn.dataset.active = String(i === 0);
+      btn.setAttribute("role", "option");
+      btn.innerHTML = `
+        <span class="palette-item-kind">${item.kind}</span>
+        <span class="palette-item-name">${item.label}</span>
+        <span class="palette-item-meta">${item.meta}</span>
+      `;
+      btn.addEventListener("click", () => go(item));
+      list.appendChild(btn);
+    });
+  }
+
+  function setActive(i: number) {
+    const items = Array.from(list.querySelectorAll<HTMLElement>(".palette-item"));
+    if (!items.length) return;
+    active = (i + items.length) % items.length;
+    items.forEach((el, idx) => (el.dataset.active = String(idx === active)));
+    items[active].scrollIntoView({ block: "nearest" });
+  }
+
+  function go(item: Item) {
+    close();
+    if (item.href.startsWith("#")) {
+      document.querySelector(item.href)?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      window.open(item.href, "_blank", "noopener");
+    }
+  }
+
+  function open() {
+    backdrop.classList.add("open");
+    document.body.style.overflow = "hidden";
+    input.value = "";
+    render("");
+    requestAnimationFrame(() => input.focus());
+  }
+
+  function close() {
+    backdrop.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+      e.preventDefault();
+      backdrop.classList.contains("open") ? close() : open();
+      return;
+    }
+    if (e.key === "/" && !backdrop.classList.contains("open")) {
+      const tag = (document.activeElement as HTMLElement)?.tagName;
+      if (tag !== "INPUT" && tag !== "TEXTAREA") {
+        e.preventDefault();
+        open();
+      }
+      return;
+    }
+    if (!backdrop.classList.contains("open")) return;
+    if (e.key === "Escape") close();
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActive(active + 1);
+    }
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActive(active - 1);
+    }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (visible[active]) go(visible[active]);
+    }
+  });
+
+  input.addEventListener("input", () => render(input.value));
+  backdrop.addEventListener("click", (e) => {
+    if (e.target === backdrop) close();
+  });
+  document.addEventListener("palette:open", () => open());
+</script>
+
+<style>
+  .palette-item-kind {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-fog);
+    border: 1px solid var(--color-line-2);
+    padding: 0.15rem 0.5rem;
+    flex: none;
+    min-width: 4.5rem;
+    text-align: center;
+  }
+
+  .palette-item-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.95rem;
+    flex: none;
+    min-width: 12rem;
+    transition: color 0.15s ease;
+  }
+
+  .palette-item-meta {
+    color: var(--color-fog);
+    font-size: 0.8125rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 640px) {
+    .palette-item {
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .palette-item-name {
+      min-width: 0;
+    }
+    .palette-item-meta {
+      width: 100%;
+    }
+  }
+</style>

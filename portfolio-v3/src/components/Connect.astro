@@ -1,0 +1,122 @@
+---
+import { socials } from "../data/content";
+
+const primary = socials.filter((s) => ["GitHub", "LinkedIn", "Telegram", "Email"].includes(s.label));
+const rest = socials.filter((s) => !["GitHub", "LinkedIn", "Telegram", "Email"].includes(s.label));
+---
+
+<section id="connect" class="relative border-t border-[--color-line]">
+  <div class="shell py-24 lg:py-32">
+    <div class="grid gap-14 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
+      <div class="flex flex-col gap-8">
+        <div class="flex flex-col gap-5">
+          <span class="eyebrow">Section 06 · Contact</span>
+          <h2 class="display display-lg">Let's build<br />something<br /><span class="text-[--color-signal]">that ships.</span></h2>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          {
+            primary.map((s) => (
+              <a
+                href={s.href}
+                target={s.href.startsWith("mailto:") || s.href.startsWith("tel:") ? undefined : "_blank"}
+                rel="noopener"
+                class="group flex items-center gap-5 border border-[--color-line] p-5 no-underline transition-all hover:border-[--color-signal] hover:bg-[--color-ink-2]"
+              >
+                <span class="grid h-10 w-10 flex-none place-items-center border border-[--color-line-2] font-mono text-[0.625rem] uppercase transition-colors group-hover:border-[--color-signal] group-hover:text-[--color-signal]">
+                  {s.label.slice(0, 2)}
+                </span>
+                <span class="flex min-w-0 flex-col">
+                  <span class="font-mono text-[0.625rem] tracking-[0.2em] text-[--color-fog] uppercase">{s.label}</span>
+                  <span class="truncate font-display text-base font-semibold text-[--color-chalk] transition-colors group-hover:text-[--color-signal]">
+                    {s.handle}
+                  </span>
+                </span>
+                <span class="ml-auto font-mono text-[--color-line-2] transition-all group-hover:translate-x-1 group-hover:text-[--color-signal]">
+                  ↗
+                </span>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-8">
+        <!-- Terminal -->
+        <div class="panel flex flex-col overflow-hidden">
+          <div class="flex items-center gap-2 border-b border-[--color-line] px-4 py-3">
+            <span class="h-2 w-2 rounded-full bg-[--color-rose]/70"></span>
+            <span class="h-2 w-2 rounded-full bg-[--color-amber]/70"></span>
+            <span class="h-2 w-2 rounded-full bg-[--color-signal]/70"></span>
+            <span class="ml-3 font-mono text-[0.625rem] tracking-[0.16em] text-[--color-fog] uppercase">naty — contact</span>
+          </div>
+          <div class="flex flex-col gap-3 p-5 font-mono text-[0.8125rem] leading-relaxed">
+            <div class="term-line"><span class="term-prompt">➜</span><span class="text-[--color-fog-2]">whoami</span></div>
+            <div class="text-[--color-chalk]">natnael wubet — software engineer</div>
+            <div class="term-line"><span class="term-prompt">➜</span><span class="text-[--color-fog-2]">location</span></div>
+            <div class="text-[--color-chalk]">bahir dar, ethiopia <span class="text-[--color-fog]">· UTC+3</span></div>
+            <div class="term-line"><span class="term-prompt">➜</span><span class="text-[--color-fog-2]">status</span></div>
+            <div class="flex items-center gap-2">
+              <span class="status" data-state="live"><span class="status-dot"></span>open to work</span>
+            </div>
+            <div class="term-line mt-1">
+              <span class="term-prompt">➜</span>
+              <input class="term-input" id="term-input" type="text" placeholder="type 'hire' or 'help'…" autocomplete="off" spellcheck="false" />
+            </div>
+            <div id="term-out" class="min-h-[1.5rem] whitespace-pre-wrap text-[--color-signal]"></div>
+          </div>
+        </div>
+
+        <!-- other links -->
+        <div class="flex flex-wrap gap-2">
+          {
+            rest.map((s) => (
+              <a
+                href={s.href}
+                target={s.href.startsWith("mailto:") || s.href.startsWith("tel:") ? undefined : "_blank"}
+                rel="noopener"
+                class="group flex items-center gap-2.5 border border-[--color-line] px-3.5 py-2.5 no-underline transition-colors hover:border-[--color-signal]"
+              >
+                <span class="font-mono text-[0.625rem] tracking-[0.16em] text-[--color-fog] uppercase transition-colors group-hover:text-[--color-chalk]">
+                  {s.label}
+                </span>
+                <span class="font-mono text-[0.6875rem] text-[--color-fog-2]">{s.handle}</span>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const input = document.getElementById("term-input") as HTMLInputElement | null;
+  const out = document.getElementById("term-out") as HTMLDivElement | null;
+
+  const respond = (raw: string) => {
+    const cmd = raw.trim().toLowerCase();
+    if (!cmd) return;
+    const map: Record<string, string> = {
+      hire: "email natyw4122@gmail.com — usually replies within a day.",
+      help: "commands: hire · work · stack · github · tg · clear",
+      work: "12 live deployments · 48 repos · 4 competition placements",
+      stack: "react · typescript · ionic · capacitor · next · vue · python · three.js · firebase · supabase",
+      github: "→ github.com/natnael-wubet",
+      tg: "→ t.me/nnaty_w20",
+      hi: "hello. type 'help'.",
+      hello: "hello. type 'help'.",
+    };
+    if (cmd === "clear") {
+      out!.textContent = "";
+      return;
+    }
+    out!.textContent = map[cmd] ?? `command not found: ${cmd} — try 'help'`;
+  };
+
+  input?.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter") return;
+    respond(input.value);
+    input.value = "";
+  });
+</script>

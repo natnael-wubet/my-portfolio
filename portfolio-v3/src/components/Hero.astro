@@ -1,0 +1,261 @@
+---
+import { deployments } from "../data/deployments";
+import { domains } from "../data/content";
+
+const liveCount = deployments.filter((d) => !d.archived).length;
+---
+
+<section id="top" class="relative overflow-hidden pt-28 lg:pt-36">
+  <canvas id="hero-canvas" class="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true"></canvas>
+
+  <div class="shell relative z-10">
+    <div class="flex flex-col gap-10">
+      <!-- top meta row -->
+      <div class="flex flex-wrap items-center justify-between gap-4 border-b border-[--color-line] pb-4">
+        <span class="status" data-state="live"><span class="status-dot"></span>Available for work</span>
+        <span class="font-mono text-[0.6875rem] tracking-[0.2em] text-[--color-fog] uppercase">
+          Bahir Dar, Ethiopia · <span class="text-[--color-chalk]" id="local-time">--:--</span> EAT
+        </span>
+        <span class="hidden font-mono text-[0.6875rem] tracking-[0.2em] text-[--color-fog] uppercase sm:inline">
+          {liveCount} live deployments
+        </span>
+      </div>
+
+      <!-- headline -->
+      <div class="relative">
+        <h1 class="display display-xl text-[--color-chalk]" id="hero-title">
+          <span class="hero-line block overflow-hidden"><span class="hero-word inline-block">NATNAEL</span></span>
+          <span class="hero-line block overflow-hidden"
+            ><span class="hero-word inline-block">WUBET<span class="text-[--color-signal]">.</span></span></span
+          >
+        </h1>
+
+        <div class="mt-6 grid gap-8 border-t border-[--color-line] pt-6 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
+          <p class="max-w-2xl text-lg leading-relaxed text-[--color-fog-2] lg:text-xl">
+            I build <span class="text-[--color-chalk]">games with real stakes</span>,
+            <span class="text-[--color-chalk]">protocols that prove things</span>, and
+            <span class="text-[--color-chalk]">platforms that ship</span> — from a Telegram bingo room taking real
+            money, to a Bitcoin-anchored citation ledger, to the security tooling I started with.
+          </p>
+
+          <div class="flex flex-col gap-4">
+            <div class="flex flex-wrap gap-3">
+              <a class="btn btn-primary" href="#work">View work →</a>
+              <a class="btn" href="https://github.com/natnael-wubet" target="_blank" rel="noopener">GitHub</a>
+              <a class="btn" href="https://t.me/nnaty_w20" target="_blank" rel="noopener">Telegram</a>
+            </div>
+            <div class="flex items-center gap-4 font-mono text-[0.6875rem] tracking-[0.14em] text-[--color-fog] uppercase">
+              <span>⌘K or / to search everything</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- stats strip -->
+      <div class="grid grid-cols-2 gap-px border border-[--color-line] bg-[--color-line] md:grid-cols-4">
+        {
+          [
+            { k: "Live deployments", v: String(liveCount), s: "verified at build" },
+            { k: "Public repositories", v: "48", s: "on GitHub" },
+            { k: "Competitions won", v: "4", s: "1st & 3rd place" },
+            { k: "Years shipping", v: "5+", s: "since 2021" },
+          ].map((stat) => (
+            <div class="flex flex-col gap-1 bg-[--color-ink] p-5">
+              <span class="font-display text-3xl font-semibold tracking-tight text-[--color-chalk] lg:text-4xl">
+                {stat.v}
+              </span>
+              <span class="font-mono text-[0.625rem] tracking-[0.16em] text-[--color-fog] uppercase">{stat.k}</span>
+              <span class="font-mono text-[0.5625rem] tracking-[0.14em] text-[--color-line-2] uppercase">{stat.s}</span>
+            </div>
+          ))
+        }
+      </div>
+
+      <!-- domains marquee -->
+      <div class="marquee border-y border-[--color-line] py-4">
+        <div class="marquee-track">
+          {
+            [...domains, ...domains].map((d) => (
+              <span class="flex items-center gap-4 px-6 font-mono text-[0.6875rem] tracking-[0.2em] text-[--color-fog] uppercase whitespace-nowrap">
+                <span class="h-1 w-1 rounded-full bg-[--color-signal]" />
+                {d.label}
+              </span>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="flex justify-center pb-4">
+        <span class="scroll-cue">Scroll<span class="scroll-cue-bar"></span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // ── Local time (EAT, UTC+3) ──────────────────────────────
+  const timeEl = document.getElementById("local-time");
+  const tickTime = () => {
+    if (!timeEl) return;
+    const now = new Date();
+    const eat = new Date(now.getTime() + (now.getTimezoneOffset() + 180) * 60000);
+    timeEl.textContent = eat.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+  };
+  tickTime();
+  setInterval(tickTime, 10_000);
+
+  // ── Hero entrance ────────────────────────────────────────
+  const run = async () => {
+    try {
+      const { gsap } = await import("gsap");
+      const words = document.querySelectorAll<HTMLElement>(".hero-word");
+      gsap.set(words, { yPercent: 110 });
+      gsap.to(words, {
+        yPercent: 0,
+        duration: 1.05,
+        ease: "power4.out",
+        stagger: 0.09,
+        delay: 0.12,
+      });
+      gsap.from("#top .btn, #top .status, #top p", {
+        opacity: 0,
+        y: 16,
+        duration: 0.8,
+        ease: "power3.out",
+        stagger: 0.05,
+        delay: 0.5,
+      });
+    } catch {
+      /* animations are a bonus, never a requirement */
+    }
+  };
+  run();
+
+  // ── WebGL backdrop: a slow point-field lattice ───────────
+  const initBackdrop = async () => {
+    const canvas = document.getElementById("hero-canvas") as HTMLCanvasElement | null;
+    if (!canvas) return;
+
+    try {
+      const THREE = await import("three");
+
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setClearColor(0x000000, 0);
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
+      camera.position.set(0, 0, 12);
+
+      // Grid of points with a gentle wave
+      const COLS = 72;
+      const ROWS = 34;
+      const count = COLS * ROWS;
+      const positions = new Float32Array(count * 3);
+      const base = new Float32Array(count * 2);
+
+      let i = 0;
+      for (let x = 0; x < COLS; x++) {
+        for (let y = 0; y < ROWS; y++) {
+          const px = (x / (COLS - 1) - 0.5) * 44;
+          const py = (y / (ROWS - 1) - 0.5) * 22;
+          positions[i * 3] = px;
+          positions[i * 3 + 1] = py;
+          positions[i * 3 + 2] = 0;
+          base[i * 2] = px;
+          base[i * 2 + 1] = py;
+          i++;
+        }
+      }
+
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+
+      const mat = new THREE.PointsMaterial({
+        color: 0x6b7480,
+        size: 0.035,
+        transparent: true,
+        opacity: 0.55,
+        sizeAttenuation: true,
+      });
+
+      const points = new THREE.Points(geo, mat);
+      points.rotation.x = -0.42;
+      scene.add(points);
+
+      // A single acid-lime signal line crossing the field
+      const linePts: THREE.Vector3[] = [];
+      for (let s = 0; s <= 200; s++) {
+        const t = s / 200;
+        linePts.push(new THREE.Vector3((t - 0.5) * 44, Math.sin(t * Math.PI * 3) * 2.4, 0.4));
+      }
+      const lineGeo = new THREE.BufferGeometry().setFromPoints(linePts);
+      const line = new THREE.Line(lineGeo, new THREE.LineBasicMaterial({ color: 0xd4ff3f, transparent: true, opacity: 0.5 }));
+      line.rotation.x = -0.42;
+      scene.add(line);
+
+      const resize = () => {
+        const rect = canvas.getBoundingClientRect();
+        const w = Math.max(rect.width, 1);
+        const h = Math.max(rect.height, 1);
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      };
+      resize();
+      const ro = new ResizeObserver(resize);
+      ro.observe(canvas);
+
+      let mx = 0;
+      let my = 0;
+      let tx = 0;
+      let ty = 0;
+      window.addEventListener(
+        "pointermove",
+        (e) => {
+          tx = (e.clientX / window.innerWidth - 0.5) * 2;
+          ty = (e.clientY / window.innerHeight - 0.5) * 2;
+        },
+        { passive: true }
+      );
+
+      let visible = true;
+      const section = document.getElementById("top")!;
+      new IntersectionObserver(([en]) => (visible = en.isIntersecting), { threshold: 0.01 }).observe(section);
+
+      const clock = new THREE.Clock();
+      const posAttr = geo.getAttribute("position") as THREE.BufferAttribute;
+
+      const animate = () => {
+        requestAnimationFrame(animate);
+        const t = clock.getElapsedTime();
+
+        mx += (tx - mx) * 0.04;
+        my += (ty - my) * 0.04;
+
+        const arr = posAttr.array as Float32Array;
+        for (let p = 0; p < count; p++) {
+          const bx = base[p * 2];
+          const by = base[p * 2 + 1];
+          const z = Math.sin(bx * 0.28 + t * 0.6) * 0.9 + Math.cos(by * 0.42 + t * 0.42) * 0.7;
+          arr[p * 3 + 2] = z;
+        }
+        posAttr.needsUpdate = true;
+
+        points.rotation.z = mx * 0.06;
+        points.position.x = mx * 1.2;
+        points.position.y = -my * 0.7;
+        line.rotation.z = mx * 0.06;
+        line.position.copy(points.position);
+
+        if (visible) renderer.render(scene, camera);
+      };
+      animate();
+    } catch {
+      // WebGL unavailable — the section still reads perfectly without it
+      canvas.style.display = "none";
+    }
+  };
+
+  initBackdrop();
+</script>
