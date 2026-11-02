@@ -33,10 +33,12 @@ const links = [
         links.map((l, i) => (
           <a
             href={l.href}
-            class="group relative px-3 py-2 font-mono text-[0.6875rem] tracking-[0.18em] text-[var(--color-fog)] uppercase no-underline transition-colors hover:text-[var(--color-chalk)]"
+            data-nav={l.href.slice(1)}
+            class="nav-link group relative px-3 py-2 font-mono text-[0.6875rem] tracking-[0.18em] text-[var(--color-fog)] uppercase no-underline transition-colors hover:text-[var(--color-chalk)]"
           >
-            <span class="text-[var(--color-line-2)] group-hover:text-[var(--color-signal)]">{String(i + 1).padStart(2, "0")}</span>
+            <span class="nav-num text-[var(--color-line-2)] transition-colors group-hover:text-[var(--color-signal)]">{String(i + 1).padStart(2, "0")}</span>
             <span class="ml-2">{l.label}</span>
+            <span class="nav-underline" aria-hidden="true"></span>
           </a>
         ))
       }
@@ -115,4 +117,65 @@ const links = [
   toggle?.addEventListener("click", () => menu.classList.toggle("hidden"));
 
   menu?.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => menu.classList.add("hidden")));
+
+  // ── Active section indicator ────────────────────────────────
+  // Track whichever section owns the band just under the header, so the nav
+  // reads as an instrument dial rather than a static list.
+  const navLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>("#nav a[data-nav]"));
+  if (navLinks.length && "IntersectionObserver" in window) {
+    const sections = navLinks
+      .map((a) => document.getElementById(a.dataset.nav ?? ""))
+      .filter((s): s is HTMLElement => !!s);
+
+    const setActive = (id: string) => {
+      navLinks.forEach((a) => {
+        const on = a.dataset.nav === id;
+        a.classList.toggle("is-active", on);
+        if (on) a.setAttribute("aria-current", "true");
+        else a.removeAttribute("aria-current");
+      });
+    };
+
+    // A thin band across the top of the viewport decides the active section —
+    // stable against long sections and short ones alike.
+    const io = new IntersectionObserver(
+      (entries) => {
+        const hit = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (hit) setActive(hit.target.id);
+      },
+      { rootMargin: "-15% 0px -70% 0px", threshold: 0 }
+    );
+    sections.forEach((s) => io.observe(s));
+  }
 </script>
+
+<style>
+  .nav-underline {
+    position: absolute;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0.15rem;
+    height: 1px;
+    background: var(--color-signal);
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .nav-link.is-active {
+    color: var(--color-chalk);
+  }
+
+  .nav-link.is-active .nav-num {
+    color: var(--color-signal);
+  }
+
+  .nav-link.is-active .nav-underline {
+    transform: scaleX(1);
+  }
+
+  .nav-link:hover .nav-underline {
+    transform: scaleX(1);
+    background: var(--color-line-2);
+  }
+</style>
