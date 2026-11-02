@@ -1,6 +1,6 @@
 ---
 import { deployments } from "../data/deployments";
-import { repos, socials, awards, certifications } from "../data/content";
+import { repos, socials, awards, certifications, disciplines } from "../data/content";
 
 interface PaletteItem {
   label: string;
@@ -50,6 +50,21 @@ const items: PaletteItem[] = [
   { label: "GitHub profile", meta: "@natnael-wubet", href: "https://github.com/natnael-wubet", kind: "Link", keywords: "github profile all repositories" },
   { label: "Telegram", meta: "@nnaty_w20", href: "https://t.me/nnaty_w20", kind: "Link", keywords: "telegram contact chat" },
   { label: "Big XO Mini App", meta: "Play in Telegram", href: "https://t.me/bigxoGameBot", kind: "Play", keywords: "bigxo game telegram mini app play xo" },
+  // The interior — so "physics" or "hegel" lands somewhere real.
+  ...disciplines.map((d) => ({
+    label: d.name,
+    meta: `The interior · ${d.tags.slice(0, 3).join(" · ")}`,
+    href: "#mind",
+    kind: "Mind",
+    keywords: `${d.name} ${d.blurb} ${d.tags.join(" ")}`,
+  })),
+  // Section jumps.
+  { label: "Deployments", meta: "Section 01 · shipped & reachable", href: "#work", kind: "Jump", keywords: "deployments projects live work shipped urls" },
+  { label: "Origin", meta: "Section 02 · the story", href: "#origin", kind: "Jump", keywords: "origin story history timeline 2014 bahir dar heritage" },
+  { label: "CV Vault", meta: "Section 04 · every page in 3D", href: "#vault", kind: "Jump", keywords: "cv vault resume three dimensional carousel" },
+  { label: "Awards", meta: "Section 05 · record", href: "#awards", kind: "Jump", keywords: "awards record competitions certifications ccna" },
+  { label: "Photos", meta: "Off-screen · personal", href: "#photos", kind: "Jump", keywords: "photos personal pictures selfies off-screen" },
+  { label: "Contact", meta: "Section 06 · let's build", href: "#connect", kind: "Jump", keywords: "contact email phone telegram hire reach" },
 ];
 ---
 
@@ -89,6 +104,27 @@ const items: PaletteItem[] = [
   let active = 0;
   let visible: Item[] = [];
 
+  // Tight fuzzy match: consecutive matched characters may not be more than a
+  // few apart. This runs against the label only — the keyword blob contains
+  // whole project descriptions, where a loose subsequence matches anything
+  // (searching "physics" used to return unrelated deployments).
+  function fuzzy(hay: string, needle: string, maxGap = 4): boolean {
+    if (needle.length < 3) return false;
+    for (let start = 0; start < hay.length; start++) {
+      if (hay[start] !== needle[0]) continue;
+      let i = 1;
+      let prev = start;
+      for (let j = start + 1; j < hay.length && i < needle.length; j++) {
+        if (hay[j] !== needle[i]) continue;
+        if (j - prev - 1 > maxGap) break;
+        prev = j;
+        i++;
+      }
+      if (i === needle.length) return true;
+    }
+    return false;
+  }
+
   function score(item: Item, q: string): number {
     const hay = item.keywords.toLowerCase();
     const label = item.label.toLowerCase();
@@ -96,12 +132,10 @@ const items: PaletteItem[] = [
     if (label.startsWith(q)) return 80;
     if (label.includes(q)) return 60;
     if (hay.includes(q)) return 30;
-    // subsequence match
-    let i = 0;
-    for (const ch of hay) {
-      if (ch === q[i]) i++;
-      if (i === q.length) return 10;
-    }
+    // Multi-word query: every word has to appear somewhere in the blob.
+    const words = q.split(/\s+/).filter(Boolean);
+    if (words.length > 1 && words.every((w) => hay.includes(w))) return 25;
+    if (fuzzy(label, q)) return 12;
     return 0;
   }
 
