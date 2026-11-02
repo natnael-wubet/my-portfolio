@@ -1,4 +1,6 @@
 ---
+import "../styles/global.css";
+
 interface Props {
   title: string;
   description?: string;
@@ -27,6 +29,36 @@ const {
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
+    <!--
+      Opt-in reveal: only mark the document as scriptable once JS is confirmed
+      running, so a failed script leaves every [data-reveal] block visible
+      instead of stranded at opacity 0.
+    -->
+    <script is:inline>
+      document.documentElement.classList.add("js");
+    </script>
+    <style is:global>
+      .js [data-reveal] {
+        opacity: 0;
+        transform: translateY(22px);
+        transition:
+          opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0ms),
+          transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0ms);
+        will-change: opacity, transform;
+      }
+
+      .js [data-reveal].is-in {
+        opacity: 1;
+        transform: none;
+      }
+
+      /* Safety net: if the observer never runs, force everything visible. */
+      .js.reveal-timeout [data-reveal] {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+      }
+    </style>
   </head>
   <body>
     <div class="rule-grid" aria-hidden="true"></div>
@@ -40,6 +72,47 @@ const {
       }
       requestAnimationFrame(raf);
       (window as unknown as { lenis: Lenis }).lenis = lenis;
+
+      // ── Scroll reveals ────────────────────────────────────────
+      const start = () => {
+        const nodes = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
+        if (!nodes.length) return;
+
+        if (!("IntersectionObserver" in window)) {
+          nodes.forEach((n) => n.classList.add("is-in"));
+          return;
+        }
+
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              if (!e.isIntersecting) return;
+              e.target.classList.add("is-in");
+              io.unobserve(e.target);
+            });
+          },
+          { rootMargin: "0px 0px -8% 0px", threshold: 0.05 }
+        );
+
+        nodes.forEach((n) => io.observe(n));
+
+        // Anything already on screen reveals immediately; anything the
+        // observer somehow misses gets released by the CSS timeout guard.
+        requestAnimationFrame(() => {
+          nodes.forEach((n) => {
+            const r = n.getBoundingClientRect();
+            if (r.top < window.innerHeight && r.bottom > 0) n.classList.add("is-in");
+          });
+        });
+
+        window.setTimeout(() => document.documentElement.classList.add("reveal-timeout"), 6000);
+      };
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", start, { once: true });
+      } else {
+        start();
+      }
     </script>
   </body>
 </html>

@@ -24,7 +24,7 @@ import { cvPages } from "../data/content";
   </div>
 
   <div class="relative h-[min(78vh,720px)] w-full">
-    <canvas id="vault-canvas" class="vault-canvas"></canvas>
+    <canvas id="vault-canvas" class="vault-canvas" data-pages={JSON.stringify(cvPages)}></canvas>
     <div class="pointer-events-none absolute inset-0 flex items-end justify-center pb-8">
       <div class="flex items-center gap-4 font-mono text-[0.625rem] tracking-[0.3em] text-[--color-fog] uppercase">
         <span class="hidden sm:inline">Drag</span>
@@ -37,17 +37,18 @@ import { cvPages } from "../data/content";
   </div>
 </section>
 
-<script define:vars={{ pages: cvPages }}>
+<script>
   import * as THREE from "three";
 
-  type PageList = string[];
-  const pageList = pages as PageList;
+  const canvas = document.getElementById("vault-canvas") as HTMLCanvasElement | null;
+  const section = document.getElementById("vault") as HTMLElement | null;
+  const counter = document.getElementById("vault-counter") as HTMLElement | null;
 
-  const canvas = document.getElementById("vault-canvas") as HTMLCanvasElement;
-  const section = document.getElementById("vault") as HTMLElement;
-  const counter = document.getElementById("vault-counter") as HTMLElement;
+  // Page list rides on the canvas as JSON — avoids define:vars, which would
+  // downgrade this to a classic script and break the `import` above.
+  const pageList: string[] = canvas?.dataset.pages ? JSON.parse(canvas.dataset.pages) : [];
 
-  if (canvas && pageList.length) {
+  if (canvas && section && counter && pageList.length) {
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 0);
@@ -55,7 +56,8 @@ import { cvPages } from "../data/content";
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
-    camera.position.set(0, 0, 7.4);
+    camera.position.set(0, 0.7, 13.5);
+    camera.lookAt(0, 0, 0);
 
     // ── Lights ───────────────────────────────────────────
     scene.add(new THREE.AmbientLight(0xffffff, 1.35));
@@ -71,13 +73,17 @@ import { cvPages } from "../data/content";
     scene.add(group);
 
     const loader = new THREE.TextureLoader();
-    const pageW = 2.1;
-    const pageH = 2.95;
-    const radius = 5.1;
+    const radius = 6.2;
     const step = (Math.PI * 2) / pageList.length;
 
+    // CV frames are a mix of portrait and landscape, so each panel is sized to
+    // its own texture instead of forcing one aspect ratio over all of them.
+    const MAX_H = 2.6;
+    const MAX_W = 3.4;
+    const sizeFor = (aspect: number): [number, number] =>
+      aspect < 1 ? [MAX_H * aspect, MAX_H] : [MAX_W, MAX_W / aspect];
+
     const panels: THREE.Mesh[] = [];
-    const panelGeo = new THREE.PlaneGeometry(pageW, pageH, 1, 1);
 
     pageList.forEach((src, i) => {
       const mat = new THREE.MeshStandardMaterial({
@@ -86,7 +92,7 @@ import { cvPages } from "../data/content";
         metalness: 0.02,
         side: THREE.DoubleSide,
       });
-      const mesh = new THREE.Mesh(panelGeo, mat);
+      const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), mat);
       const angle = i * step;
       mesh.position.set(Math.sin(angle) * radius, 0, Math.cos(angle) * radius);
       mesh.rotation.y = angle;
@@ -102,6 +108,9 @@ import { cvPages } from "../data/content";
           mat.map = tex;
           mat.color.set(0xffffff);
           mat.needsUpdate = true;
+          const [w, h] = sizeFor((tex.image?.width ?? 1) / (tex.image?.height ?? 1));
+          mesh.geometry.dispose();
+          mesh.geometry = new THREE.PlaneGeometry(w, h);
         },
         undefined,
         () => {
@@ -136,7 +145,7 @@ import { cvPages } from "../data/content";
       new THREE.MeshBasicMaterial({ color: 0x0d0f11, transparent: true, opacity: 0.55 })
     );
     floor.rotation.x = -Math.PI / 2;
-    floor.position.y = -pageH / 2 - 0.35;
+    floor.position.y = -MAX_H / 2 - 0.45;
     scene.add(floor);
 
     const floorRing = new THREE.Mesh(
@@ -144,7 +153,7 @@ import { cvPages } from "../data/content";
       new THREE.MeshBasicMaterial({ color: 0xd4ff3f, transparent: true, opacity: 0.22 })
     );
     floorRing.rotation.x = -Math.PI / 2;
-    floorRing.position.y = -pageH / 2 - 0.34;
+    floorRing.position.y = -MAX_H / 2 - 0.44;
     scene.add(floorRing);
 
     // ── Interaction state ────────────────────────────────
@@ -192,8 +201,11 @@ import { cvPages } from "../data/content";
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
-      // Pull camera back on narrow screens so pages stay in frame
-      camera.position.z = w < 720 ? 9.4 : w < 1100 ? 8.2 : 7.4;
+      // Keep the whole ring framed: pull back further on narrow viewports so
+      // the near panel doesn't swallow the frame.
+      camera.position.z = w < 720 ? 17 : w < 1100 ? 15 : 13.5;
+      camera.position.y = w < 720 ? 0.4 : 0.7;
+      camera.lookAt(0, 0, 0);
     };
     resize();
     const ro = new ResizeObserver(resize);

@@ -4,7 +4,9 @@ import Nav from "../components/Nav.astro";
 import Hero from "../components/Hero.astro";
 import Deployments from "../components/Deployments.astro";
 import Repos from "../components/Repos.astro";
+import Origin from "../components/Origin.astro";
 import Vault from "../components/Vault.astro";
+import Mind from "../components/Mind.astro";
 import Awards from "../components/Awards.astro";
 import Photos from "../components/Photos.astro";
 import Connect from "../components/Connect.astro";
@@ -12,12 +14,17 @@ import Footer from "../components/Footer.astro";
 import CommandPalette from "../components/CommandPalette.astro";
 ---
 
-<Base title="Natnael Wubet — Software Engineer" description="Games, protocols, platforms and security tooling. 12 live deployments, 48 public repositories, competition-winning work from Bahir Dar, Ethiopia.">
+<Base
+  title="Natnael Wubet — Software Engineer"
+  description="Games with real stakes, protocols that prove things, platforms that ship. 10 live deployments, 48 public repositories, competition-winning work — and eleven years of it — from Bahir Dar, Ethiopia."
+>
   <Nav />
   <main class="relative z-10">
     <Hero />
     <Deployments />
     <Repos />
+    <Origin />
+    <Mind />
     <Vault />
     <Awards />
     <Photos />

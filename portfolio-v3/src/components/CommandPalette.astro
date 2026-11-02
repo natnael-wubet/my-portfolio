@@ -68,7 +68,10 @@ const items: PaletteItem[] = [
   </div>
 </div>
 
-<script define:vars={{ paletteData: items }}>
+<!-- Payload rides as JSON so the script below can stay a real module. -->
+<script type="application/json" id="palette-data" set:html={JSON.stringify(items)} />
+
+<script>
   type Item = {
     label: string;
     meta: string;
@@ -77,7 +80,8 @@ const items: PaletteItem[] = [
     keywords: string;
   };
 
-  const data = paletteData as Item[];
+  const payload = document.getElementById("palette-data")?.textContent ?? "[]";
+  const data = JSON.parse(payload) as Item[];
   const backdrop = document.getElementById("palette") as HTMLDivElement;
   const input = document.getElementById("palette-input") as HTMLInputElement;
   const list = document.getElementById("palette-list") as HTMLDivElement;

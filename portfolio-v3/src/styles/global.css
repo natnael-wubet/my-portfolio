@@ -385,6 +385,19 @@
     background: var(--color-ink-3);
   }
 
+  .photo-tile::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 1px solid transparent;
+    transition: border-color 0.4s ease;
+    pointer-events: none;
+  }
+
+  .photo-tile:hover::after {
+    border-color: var(--color-signal);
+  }
+
   .photo-tile img {
     width: 100%;
     height: 100%;
@@ -396,6 +409,37 @@
   .photo-tile:hover img {
     filter: grayscale(0) contrast(1);
     transform: scale(1.04);
+  }
+
+  /* ─── Entrance choreography ──────────────────────────────── *
+     Driven by CSS, not JS: if scripting fails the content is
+     simply visible rather than stranded at opacity 0.          */
+  .rise {
+    animation: rise 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes rise {
+    from {
+      transform: translateY(112%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .fade-up {
+    animation: fade-up 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   /* ─── Scroll cue ────────────────────────────────────────── */

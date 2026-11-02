@@ -1,0 +1,84 @@
+---
+import { originIntro, originBody, heritage, timeline } from "../data/content";
+---
+
+<section id="origin" class="relative border-t border-[--color-line]">
+  <div class="shell py-24 lg:py-32">
+    <div class="flex flex-col gap-5">
+      <span class="eyebrow">Section 02 · Origin</span>
+      <h2 class="display display-lg max-w-4xl">{originIntro}</h2>
+    </div>
+
+    <div class="mt-14 grid gap-12 lg:grid-cols-[1.15fr_1fr] lg:gap-20">
+      <!-- Narrative -->
+      <div class="flex flex-col gap-7">
+        {
+          originBody.map((p, i) => (
+            <p class="text-base leading-relaxed text-[--color-fog-2] lg:text-lg" data-reveal style={`--d:${i * 60}ms`}>
+              {p.lead && (
+                <span class="mr-3 inline-block border border-[--color-line-2] px-2 py-0.5 align-middle font-mono text-[0.5625rem] tracking-[0.18em] text-[--color-signal] uppercase">
+                  {p.lead}
+                </span>
+              )}
+              <span class="text-[--color-chalk]">{p.text}</span>
+            </p>
+          ))
+        }
+      </div>
+
+      <!-- Heritage card -->
+      <aside class="panel flex h-fit flex-col gap-4 p-7 lg:sticky lg:top-24" data-reveal>
+        <div class="flex items-center gap-3">
+          <span class="grid h-9 w-9 place-items-center border border-[--color-line-2] font-mono text-[0.625rem] text-[--color-signal]">BD</span>
+          <span class="font-mono text-[0.625rem] tracking-[0.2em] text-[--color-fog] uppercase">{heritage.title}</span>
+        </div>
+        <p class="text-sm leading-relaxed text-[--color-fog-2]">{heritage.text}</p>
+        <div class="mt-2 flex flex-wrap gap-2 border-t border-[--color-line] pt-4">
+          {
+            ["Bahir Dar", "Enkutatesh", "Coffee ceremony", "Amharic"].map((t) => (
+              <span class="border border-[--color-line] px-2.5 py-1 font-mono text-[0.5625rem] tracking-[0.14em] text-[--color-fog] uppercase">
+                {t}
+              </span>
+            ))
+          }
+        </div>
+      </aside>
+    </div>
+
+    <!-- Timeline -->
+    <div class="mt-20 border-t border-[--color-line] pt-10">
+      <div class="mb-8 flex items-center justify-between">
+        <span class="section-label">Milestones</span>
+        <span class="section-index">{timeline.length} entries · 2014 → now</span>
+      </div>
+
+      <ol class="relative m-0 list-none p-0">
+        <span class="absolute top-2 bottom-2 left-[0.4rem] w-px bg-[--color-line] lg:left-[0.55rem]" aria-hidden="true"></span>
+        {
+          timeline.map((m, i) => (
+            <li class="group relative grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 py-6 pl-0 lg:grid-cols-[9rem_auto_1fr] lg:gap-x-8" data-reveal style={`--d:${i * 70}ms`}>
+              <span class="font-mono text-sm tracking-[0.14em] text-[--color-fog] tabular-nums lg:text-base">{m.year}</span>
+
+              <span
+                class="relative z-10 mt-1.5 h-2 w-2 flex-none rounded-full bg-[--color-line-2] ring-4 ring-[--color-ink] transition-colors duration-300 group-hover:bg-[--color-signal] lg:mt-2"
+                aria-hidden="true"
+              />
+
+              <div class="col-start-2 flex flex-col gap-1.5 lg:col-start-3">
+                <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <h3 class="font-display text-lg font-semibold tracking-tight text-[--color-chalk] transition-colors duration-300 group-hover:text-[--color-signal]">
+                    {m.title}
+                  </h3>
+                  <span class="border border-[--color-line] px-2 py-0.5 font-mono text-[0.5625rem] tracking-[0.14em] text-[--color-fog] uppercase transition-colors duration-300 group-hover:border-[--color-line-2]">
+                    {m.tag}
+                  </span>
+                </div>
+                <p class="max-w-2xl text-sm leading-relaxed text-[--color-fog-2]">{m.detail}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>

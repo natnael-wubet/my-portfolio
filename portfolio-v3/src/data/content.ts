@@ -203,3 +203,103 @@ export const cvPages = [
   "/pdf/cvimg-006.jpg",
   "/pdf/cvimg-007.jpg",
 ];
+
+/* ─── Origin story ───────────────────────────────────────────────
+   Drawn from Natnael's earlier portfolios, in his own framing.     */
+
+export const originIntro =
+  "Eleven years of code, one straight line from a novel about symbols to writing the symbols myself.";
+
+export const originBody: { lead?: string; text: string }[] = [
+  {
+    lead: "2014",
+    text: "I wrote my first batch code. A calculator, then a manager that copied and moved files in bulk — small things, but they taught me that a machine will do exactly what you tell it, and nothing more.",
+  },
+  {
+    lead: "The hook",
+    text: "What pulled me in was cryptography. I read The Da Vinci Code and could not let go of the idea that a string of characters could hold a secret. So I started writing my own encryption algorithms, moved into .NET, and then fell for Processing — enough that I rebuilt the whole thing for the terminal. That rebuild became ConAnim.",
+  },
+  {
+    lead: "2019–2020",
+    text: "Linux, C, Python. Then JavaScript stole my heart and never gave it back — Node for servers, Tauri with Rust for native, and three.js and p5.js for the experimental territory where code stops being utilitarian and starts being fun.",
+  },
+  {
+    lead: "2024 →",
+    text: "The AI wave fascinates me regardless of the hype: we can reach a pseudo-mind, make it dream, talk and reason. I have been deep in AI art since before it had a polite name — I believe it will sit beside photography the way photography sits beside painting.",
+  },
+];
+
+export const heritage = {
+  title: "Where I'm from",
+  text: "I grew up in Bahir Dar, in a family that valued hard work, community and respect for elders. Ethiopian cuisine, music and the coffee ceremony are not decoration on my life — they are the structure of it. My grandfather was a farmer and craftsman who told stories of ancestors who fought for independence, and every Enkutatesh the whole family still gathers for dance, music and food.",
+};
+
+export interface Milestone {
+  year: string;
+  title: string;
+  detail: string;
+  tag: string;
+}
+
+export const timeline: Milestone[] = [
+  { year: "2014", title: "First batch code", detail: "A calculator, then a bulk copy-and-move manager. The first time software did something for me that I had asked it to do.", tag: "Origin" },
+  { year: "2016", title: "Fell for cryptography", detail: "The Da Vinci Code started it. Wrote my own encryption algorithms, moved into .NET, and became obsessed with Processing — later rebuilding it for the terminal as ConAnim.", tag: "Security" },
+  { year: "2019", title: "Linux, C, Python", detail: "Left the comfortable path. Systems level, robotics with Lego Mindstorm in C++, and Processing/Java for anything visual.", tag: "Systems" },
+  { year: "2020", title: "JavaScript stole my heart", detail: "Node for servers, Tauri with Rust for native apps, three.js and p5.js for the experimental kick. Still the language I reach for.", tag: "Web" },
+  { year: "2024", title: "The AI wave", detail: "Fascinated that we can access a pseudo-mind — make it dream, talk, reason. Deep in AI art long before it had a polite name.", tag: "AI" },
+  { year: "Now", title: "Physics, philosophy, and combining them", detail: "Self-studying philosophy, teaching physics on YouTube, and building the systems that tie all of it together. I see no reason to stop.", tag: "Mind" },
+];
+
+/* ─── The interior ─────────────────────────────────────────────── */
+
+export interface Discipline {
+  key: string;
+  name: string;
+  blurb: string;
+  tags: string[];
+}
+
+export const disciplines: Discipline[] = [
+  {
+    key: "physics",
+    name: "Physics",
+    blurb:
+      "Relativity, emergence, simulation, quantum mechanics. Not as metaphor — I actually build the models. It started as self-study and turned into a channel I teach on.",
+    tags: ["Relativity", "Emergence", "Simulation", "Quantum"],
+  },
+  {
+    key: "philosophy",
+    name: "Philosophy",
+    blurb:
+      "Hegel, Kant, German idealism. Self-taught, and it rewired how I think about systems: nothing exists in isolation, everything is relation all the way down.",
+    tags: ["Hegel", "Kant", "German idealism", "Dialectics"],
+  },
+  {
+    key: "psychology",
+    name: "Psychology",
+    blurb:
+      "How minds actually work — attention, bias, motivation. The reason interfaces are hard and the reason games are fun are the same reason.",
+    tags: ["Cognition", "Bias", "Motivation"],
+  },
+  {
+    key: "ecology",
+    name: "Ecology",
+    blurb:
+      "Feedback loops, interdependence, carrying capacity. Every distributed system I have built is an ecology, whether I meant it to be or not.",
+    tags: ["Systems", "Feedback", "Interdependence"],
+  },
+  {
+    key: "humanism",
+    name: "Humanism",
+    blurb:
+      "People first, and the answer does not come from above. It is the reason I build anything at all — including the games that put real money on the line.",
+    tags: ["Secular", "Ethical", "Progress"],
+  },
+];
+
+export const youtube = {
+  handle: "@abyssscience8601",
+  url: "https://www.youtube.com/@abyssscience8601",
+  title: "Abyss Science",
+  blurb: "Physics, taught out loud. Relativity, simulation and emergence, explained the way I wish someone had explained them to me.",
+};

@@ -12,11 +12,11 @@ const liveCount = deployments.filter((d) => !d.archived).length;
     <div class="flex flex-col gap-10">
       <!-- top meta row -->
       <div class="flex flex-wrap items-center justify-between gap-4 border-b border-[--color-line] pb-4">
-        <span class="status" data-state="live"><span class="status-dot"></span>Available for work</span>
-        <span class="font-mono text-[0.6875rem] tracking-[0.2em] text-[--color-fog] uppercase">
+        <span class="status fade-up" data-state="live" style="animation-delay: 0.05s"><span class="status-dot"></span>Available for work</span>
+        <span class="font-mono text-[0.6875rem] tracking-[0.2em] text-[--color-fog] uppercase fade-up" style="animation-delay: 0.1s">
           Bahir Dar, Ethiopia · <span class="text-[--color-chalk]" id="local-time">--:--</span> EAT
         </span>
-        <span class="hidden font-mono text-[0.6875rem] tracking-[0.2em] text-[--color-fog] uppercase sm:inline">
+        <span class="hidden font-mono text-[0.6875rem] tracking-[0.2em] text-[--color-fog] uppercase fade-up sm:inline" style="animation-delay: 0.15s">
           {liveCount} live deployments
         </span>
       </div>
@@ -24,27 +24,33 @@ const liveCount = deployments.filter((d) => !d.archived).length;
       <!-- headline -->
       <div class="relative">
         <h1 class="display display-xl text-[--color-chalk]" id="hero-title">
-          <span class="hero-line block overflow-hidden"><span class="hero-word inline-block">NATNAEL</span></span>
           <span class="hero-line block overflow-hidden"
-            ><span class="hero-word inline-block">WUBET<span class="text-[--color-signal]">.</span></span></span
+            ><span class="hero-word rise inline-block" style="animation-delay: 0.1s">NATNAEL</span></span
+          >
+          <span class="hero-line block overflow-hidden"
+            ><span class="hero-word rise inline-block" style="animation-delay: 0.2s"
+              >WUBET<span class="text-[--color-signal]">.</span></span
+            ></span
           >
         </h1>
 
         <div class="mt-6 grid gap-8 border-t border-[--color-line] pt-6 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
-          <p class="max-w-2xl text-lg leading-relaxed text-[--color-fog-2] lg:text-xl">
-            I build <span class="text-[--color-chalk]">games with real stakes</span>,
-            <span class="text-[--color-chalk]">protocols that prove things</span>, and
+          <p class="fade-up max-w-2xl text-lg leading-relaxed text-[--color-fog-2] lg:text-xl" style="animation-delay: 0.35s">
+            I build <span class="text-[--color-chalk]">games with real stakes</span>,{" "}
+            <span class="text-[--color-chalk]">protocols that prove things</span>, and{" "}
             <span class="text-[--color-chalk]">platforms that ship</span> — from a Telegram bingo room taking real
-            money, to a Bitcoin-anchored citation ledger, to the security tooling I started with.
+            money, to a Bitcoin-anchored citation ledger, to the security tooling I started with. Off the clock I
+            chase <span class="text-[--color-chalk]">relativity and emergence</span>, and{" "}
+            <span class="text-[--color-chalk]">Kant and Hegel</span>.
           </p>
 
           <div class="flex flex-col gap-4">
-            <div class="flex flex-wrap gap-3">
+            <div class="fade-up flex flex-wrap gap-3" style="animation-delay: 0.45s">
               <a class="btn btn-primary" href="#work">View work →</a>
               <a class="btn" href="https://github.com/natnael-wubet" target="_blank" rel="noopener">GitHub</a>
               <a class="btn" href="https://t.me/nnaty_w20" target="_blank" rel="noopener">Telegram</a>
             </div>
-            <div class="flex items-center gap-4 font-mono text-[0.6875rem] tracking-[0.14em] text-[--color-fog] uppercase">
+            <div class="fade-up flex items-center gap-4 font-mono text-[0.6875rem] tracking-[0.14em] text-[--color-fog] uppercase" style="animation-delay: 0.55s">
               <span>⌘K or / to search everything</span>
             </div>
           </div>
@@ -58,7 +64,7 @@ const liveCount = deployments.filter((d) => !d.archived).length;
             { k: "Live deployments", v: String(liveCount), s: "verified at build" },
             { k: "Public repositories", v: "48", s: "on GitHub" },
             { k: "Competitions won", v: "4", s: "1st & 3rd place" },
-            { k: "Years shipping", v: "5+", s: "since 2021" },
+            { k: "Years shipping", v: "11", s: "since 2014" },
           ].map((stat) => (
             <div class="flex flex-col gap-1 bg-[--color-ink] p-5">
               <span class="font-display text-3xl font-semibold tracking-tight text-[--color-chalk] lg:text-4xl">
@@ -104,32 +110,9 @@ const liveCount = deployments.filter((d) => !d.archived).length;
   tickTime();
   setInterval(tickTime, 10_000);
 
-  // ── Hero entrance ────────────────────────────────────────
-  const run = async () => {
-    try {
-      const { gsap } = await import("gsap");
-      const words = document.querySelectorAll<HTMLElement>(".hero-word");
-      gsap.set(words, { yPercent: 110 });
-      gsap.to(words, {
-        yPercent: 0,
-        duration: 1.05,
-        ease: "power4.out",
-        stagger: 0.09,
-        delay: 0.12,
-      });
-      gsap.from("#top .btn, #top .status, #top p", {
-        opacity: 0,
-        y: 16,
-        duration: 0.8,
-        ease: "power3.out",
-        stagger: 0.05,
-        delay: 0.5,
-      });
-    } catch {
-      /* animations are a bonus, never a requirement */
-    }
-  };
-  run();
+  // ── Entrance is CSS-driven (see global.css .rise/.fade-up) so content is
+  //    never stranded invisible if a script fails. Nothing to do here but
+  //    keep the clock and the WebGL backdrop running.
 
   // ── WebGL backdrop: a slow point-field lattice ───────────
   const initBackdrop = async () => {

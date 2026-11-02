@@ -1,0 +1,105 @@
+---
+import { disciplines, youtube } from "../data/content";
+---
+
+<section id="mind" class="relative border-t border-[--color-line] overflow-hidden">
+  <!-- faint field so the section reads differently from the rest -->
+  <div class="pointer-events-none absolute inset-0 -z-10 opacity-[0.35]" aria-hidden="true"
+    style="background-image: radial-gradient(circle at 1px 1px, #2a3036 1px, transparent 0); background-size: 28px 28px; mask-image: radial-gradient(ellipse 90% 70% at 50% 40%, #000 10%, transparent 75%);"></div>
+
+  <div class="shell py-24 lg:py-32">
+    <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <div class="flex flex-col gap-5">
+        <span class="eyebrow">Section 03 · The interior</span>
+        <h2 class="display display-lg">What I think about<br />when I'm not building</h2>
+      </div>
+      <p class="max-w-md text-[--color-fog-2]">
+        The work is the visible half. These are the things underneath it — and they are not hobbies, they are the
+        source code.
+      </p>
+    </div>
+
+    <!-- Disciplines.
+         Five cards, the last one spanning two columns: 6 cells, which divides
+         evenly by both 2 (md) and 3 (xl) so no cell is ever stranded. -->
+    <div class="mt-14 grid gap-px bg-[--color-line] md:grid-cols-2 xl:grid-cols-3">
+      {
+        disciplines.map((d, i) => (
+          <article
+            class={`group relative flex flex-col gap-4 bg-[--color-ink] p-7 transition-colors duration-300 hover:bg-[--color-ink-2] lg:p-8 ${
+              i === disciplines.length - 1 ? "md:col-span-2" : ""
+            }`}
+            data-reveal
+            style={`--d:${i * 70}ms`}
+          >
+            <div class="flex items-start justify-between gap-4">
+              <span class="font-mono text-[0.625rem] tracking-[0.2em] text-[--color-line-2] uppercase">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span
+                class="h-px w-10 bg-[--color-line-2] transition-all duration-500 group-hover:w-16 group-hover:bg-[--color-signal]"
+                aria-hidden="true"
+              />
+            </div>
+
+            <h3 class="font-display text-2xl font-semibold tracking-tight text-[--color-chalk] transition-colors duration-300 group-hover:text-[--color-signal]">
+              {d.name}
+            </h3>
+
+            <p class="max-w-2xl text-sm leading-relaxed text-[--color-fog-2]">{d.blurb}</p>
+
+            <div class="mt-auto flex flex-wrap gap-1.5 pt-3">
+              {d.tags.map((t) => (
+                <span class="border border-[--color-line] px-2 py-1 font-mono text-[0.5625rem] tracking-[0.1em] text-[--color-fog] uppercase">
+                  {t}
+                </span>
+              ))}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <!-- YouTube channel gets its own full-width band -->
+    <a
+      href={youtube.url}
+      target="_blank"
+      rel="noopener"
+      class="group relative mt-px flex flex-col gap-5 overflow-hidden border border-[--color-line] bg-[--color-ink-2] p-7 no-underline transition-colors duration-300 hover:border-[--color-line-2] lg:flex-row lg:items-center lg:gap-8 lg:p-9"
+      data-reveal
+      style="--d:120ms"
+    >
+      <div
+        class="pointer-events-none absolute -right-20 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full opacity-30 blur-3xl transition-opacity duration-500 group-hover:opacity-60"
+        style="background: radial-gradient(circle, #ff5470 0%, transparent 70%);"
+        aria-hidden="true"
+      />
+
+      <div class="relative flex flex-none items-center gap-4">
+        <span class="grid h-14 w-14 place-items-center overflow-hidden rounded-full border border-[--color-line-2] bg-[--color-ink-3]">
+          <img
+            src="/img/youtube-avatar.jpg"
+            alt="Abyss Science"
+            width="900"
+            height="900"
+            loading="lazy"
+            decoding="async"
+            class="h-full w-full object-cover"
+          />
+        </span>
+        <span class="flex flex-col">
+          <span class="font-mono text-[0.625rem] tracking-[0.2em] text-[--color-fog] uppercase">YouTube · {youtube.handle}</span>
+          <span class="font-display text-xl font-semibold tracking-tight text-[--color-chalk] transition-colors group-hover:text-[--color-signal]">
+            {youtube.title}
+          </span>
+        </span>
+      </div>
+
+      <p class="relative max-w-2xl flex-1 text-sm leading-relaxed text-[--color-fog-2]">{youtube.blurb}</p>
+
+      <span class="relative flex flex-none items-center gap-2 self-start border border-[--color-line-2] px-5 py-2.5 font-mono text-[0.6875rem] tracking-[0.16em] text-[--color-chalk] uppercase transition-colors group-hover:border-[--color-signal] group-hover:text-[--color-signal] lg:self-auto">
+        Watch <span class="transition-transform duration-300 group-hover:translate-x-1">↗</span>
+      </span>
+    </a>
+  </div>
+</section>
