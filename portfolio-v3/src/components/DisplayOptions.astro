@@ -1,0 +1,181 @@
+---
+/**
+ * Display options: one button in the nav opens a panel with the theme
+ * segmented control and the accent swatches. All state flows through
+ * src/scripts/options.ts — this file only renders and reports intent.
+ */
+import { THEME_PREFS, ACCENTS } from "../scripts/options";
+
+const themeIcons: Record<string, string> = {
+  dark: '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>',
+  light:
+    '<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>',
+  system:
+    '<rect x="2" y="3" width="20" height="14" rx="1"></rect><path d="M8 21h8M12 17v4"></path>',
+};
+
+const swatch: Record<string, string> = {
+  lime: "#d4ff3f",
+  cyan: "#34d3e0",
+  amber: "#ffb545",
+  rose: "#ff5470",
+  violet: "#a78bfa",
+};
+---
+
+<div class="relative" data-options-root>
+  <button
+    id="display-trigger"
+    type="button"
+    class="grid h-9 w-9 place-items-center border border-[var(--color-line)] text-[var(--color-fog)] transition-colors hover:border-[var(--color-line-2)] hover:text-[var(--color-chalk)]"
+    aria-label="Display options"
+    aria-haspopup="dialog"
+    aria-expanded="false"
+    aria-controls="display-panel"
+  >
+    <span data-icon="dark" class="hidden"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" set:html={themeIcons.dark} /></span>
+    <span data-icon="light" class="hidden"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" set:html={themeIcons.light} /></span>
+    <span data-icon="system" class="hidden"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" set:html={themeIcons.system} /></span>
+  </button>
+
+  <div
+    id="display-panel"
+    role="dialog"
+    aria-label="Display options"
+    class="absolute top-[calc(100%+0.6rem)] right-0 z-50 hidden w-72 border border-[var(--color-line-2)] bg-[var(--color-ink-2)] p-5 shadow-[0_30px_80px_-24px_rgba(0,0,0,0.8)]"
+  >
+    <div class="flex flex-col gap-5">
+      <div class="flex flex-col gap-2.5">
+        <span class="section-label">Theme</span>
+        <div class="grid grid-cols-3 gap-1.5" role="group" aria-label="Theme">
+          {
+            THEME_PREFS.map((p) => (
+              <button
+                type="button"
+                data-set-theme={p}
+                class="opt-chip flex items-center justify-center gap-1.5 border border-[var(--color-line)] py-2 font-mono text-[0.625rem] tracking-[0.14em] uppercase transition-colors"
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" set:html={themeIcons[p]} />
+                {p}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2.5">
+        <span class="section-label">Accent</span>
+        <div class="flex items-center gap-2.5" role="group" aria-label="Accent colour">
+          {
+            ACCENTS.map((a) => (
+              <button
+                type="button"
+                data-set-accent={a}
+                aria-label={`${a} accent`}
+                title={a}
+                class="opt-swatch h-7 w-7 flex-none rounded-full border border-[var(--color-line-2)] transition-transform"
+                style={`background:${swatch[a]}`}
+              />
+            ))
+          }
+        </div>
+      </div>
+
+      <p class="border-t border-[var(--color-line)] pt-3 font-mono text-[0.625rem] tracking-[0.1em] text-[var(--color-fog)] uppercase">
+        Saved on this device · <span class="text-[var(--color-fog-2)]">T</span> cycles theme
+      </p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .opt-chip:hover {
+    border-color: var(--color-line-2);
+    color: var(--color-chalk);
+  }
+
+  .opt-chip[data-active="true"] {
+    border-color: var(--color-signal);
+    color: var(--color-signal);
+    background: color-mix(in srgb, var(--color-signal) 10%, transparent);
+  }
+
+  .opt-swatch:hover {
+    transform: scale(1.12);
+  }
+
+  .opt-swatch[data-active="true"] {
+    box-shadow:
+      0 0 0 2px var(--color-ink-2),
+      0 0 0 3.5px var(--color-chalk);
+  }
+</style>
+
+<script>
+  import { initOptions, themePref, accent, setTheme, setAccent, cycleTheme } from "../scripts/options";
+
+  initOptions();
+
+  const root = document.querySelector<HTMLElement>("[data-options-root]");
+  const trigger = document.getElementById("display-trigger") as HTMLButtonElement;
+  const panel = document.getElementById("display-panel") as HTMLElement;
+
+  const sync = () => {
+    const pref = themePref();
+    const acc = accent();
+
+    // Trigger icon reflects the preference (monitor = follows system).
+    root?.querySelectorAll<HTMLElement>("[data-icon]").forEach((el) => {
+      el.classList.toggle("hidden", el.dataset.icon !== pref);
+    });
+
+    panel?.querySelectorAll<HTMLButtonElement>("[data-set-theme]").forEach((b) => {
+      b.dataset.active = String(b.dataset.setTheme === pref);
+    });
+    panel?.querySelectorAll<HTMLButtonElement>("[data-set-accent]").forEach((b) => {
+      b.dataset.active = String(b.dataset.setAccent === acc);
+    });
+  };
+
+  const open = () => {
+    panel.classList.remove("hidden");
+    trigger.setAttribute("aria-expanded", "true");
+  };
+  const close = () => {
+    panel.classList.add("hidden");
+    trigger.setAttribute("aria-expanded", "false");
+  };
+  const isOpen = () => !panel.classList.contains("hidden");
+
+  trigger?.addEventListener("click", () => (isOpen() ? close() : open()));
+
+  document.addEventListener("click", (e) => {
+    if (isOpen() && !root?.contains(e.target as Node)) close();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && isOpen()) {
+      close();
+      trigger.focus();
+    }
+  });
+
+  panel?.querySelectorAll<HTMLButtonElement>("[data-set-theme]").forEach((b) =>
+    b.addEventListener("click", () => setTheme(b.dataset.setTheme as "dark" | "light" | "system"))
+  );
+  panel?.querySelectorAll<HTMLButtonElement>("[data-set-accent]").forEach((b) =>
+    b.addEventListener("click", () => setAccent(b.dataset.setAccent as "lime" | "cyan" | "amber" | "rose" | "violet"))
+  );
+
+  // Keep the panel in step with palette/keyboard driven changes.
+  document.addEventListener("theme:change", sync);
+  document.addEventListener("accent:change", sync);
+  sync();
+
+  // ── T cycles the theme (listed in the shortcuts overlay) ────
+  document.addEventListener("keydown", (e) => {
+    if (e.key.toLowerCase() !== "t" || e.metaKey || e.ctrlKey || e.altKey) return;
+    const tag = (document.activeElement as HTMLElement | null)?.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA" || isOpen()) return;
+    cycleTheme();
+  });
+</script>
