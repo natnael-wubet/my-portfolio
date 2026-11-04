@@ -1,0 +1,128 @@
+---
+/**
+ * Keyboard layer: every global binding on the site, plus the `?` overlay
+ * that documents them. The palette owns its own keys (⌘K, /, arrows, Esc)
+ * and the display panel owns its popover — this file only handles the
+ * single-key commands and the help dialog.
+ */
+const groups = [
+  {
+    title: "Search & navigate",
+    rows: [
+      { keys: ["⌘", "K"], label: "Open the command palette" },
+      { keys: ["/"], label: "Search from anywhere" },
+      { keys: ["H"], label: "Back to the top" },
+    ],
+  },
+  {
+    title: "Display",
+    rows: [
+      { keys: ["T"], label: "Cycle theme · dark → light → system" },
+      { keys: ["A"], label: "Cycle accent colour" },
+      { keys: ["?"], label: "Show this sheet" },
+    ],
+  },
+  {
+    title: "Inside the palette",
+    rows: [
+      { keys: ["↑", "↓"], label: "Move the selection" },
+      { keys: ["⏎"], label: "Run the selection" },
+      { keys: ["Esc"], label: "Close anything" },
+    ],
+  },
+];
+---
+
+<div class="palette-backdrop" id="shortcuts" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
+  <div class="palette w-[min(560px,calc(100vw-2rem))]">
+    <div class="flex items-center justify-between border-b border-[var(--color-line)] px-5 py-4">
+      <span class="section-label">Keyboard</span>
+      <button
+        type="button"
+        id="shortcuts-close"
+        class="border border-[var(--color-line-2)] px-2 py-1 font-mono text-[0.625rem] tracking-[0.16em] text-[var(--color-fog-2)] uppercase transition-colors hover:border-[var(--color-signal)] hover:text-[var(--color-signal)]"
+      >
+        Esc · close
+      </button>
+    </div>
+
+    <div class="grid gap-6 px-5 py-6 sm:grid-cols-2">
+      {
+        groups.map((g) => (
+          <div class="flex flex-col gap-3">
+            <span class="font-mono text-[0.625rem] tracking-[0.2em] text-[var(--color-fog)] uppercase">{g.title}</span>
+            <ul class="flex flex-col gap-2.5">
+              {g.rows.map((r) => (
+                <li class="flex items-center gap-3">
+                  <span class="flex flex-none items-center gap-1">
+                    {r.keys.map((k) => (
+                      <kbd class="min-w-[1.6rem] border border-[var(--color-line-2)] bg-[var(--color-ink-3)] px-1.5 py-0.5 text-center font-mono text-[0.625rem] text-[var(--color-chalk)]">
+                        {k}
+                      </kbd>
+                    ))}
+                  </span>
+                  <span class="text-sm text-[var(--color-fog-2)]">{r.label}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</div>
+
+<script>
+  const backdrop = document.getElementById("shortcuts") as HTMLDivElement;
+  const closeBtn = document.getElementById("shortcuts-close") as HTMLButtonElement;
+
+  const isOpen = () => backdrop.classList.contains("open");
+  const open = () => {
+    backdrop.classList.add("open");
+    document.body.style.overflow = "hidden";
+    closeBtn.focus();
+  };
+  const close = () => {
+    backdrop.classList.remove("open");
+    document.body.style.overflow = "";
+  };
+
+  closeBtn.addEventListener("click", close);
+  backdrop.addEventListener("click", (e) => {
+    if (e.target === backdrop) close();
+  });
+  document.addEventListener("opt:help", () => (isOpen() ? close() : open()));
+
+  const typing = () => {
+    const tag = (document.activeElement as HTMLElement | null)?.tagName;
+    return tag === "INPUT" || tag === "TEXTAREA" || (document.activeElement as HTMLElement | null)?.isContentEditable;
+  };
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && isOpen()) {
+      close();
+      return;
+    }
+    if (e.metaKey || e.ctrlKey || e.altKey || typing()) return;
+
+    // "?" — the sheet. Requires shift, so it can't collide with typing.
+    if (e.key === "?") {
+      e.preventDefault();
+      isOpen() ? close() : open();
+      return;
+    }
+    if (isOpen()) return;
+
+    if (e.key.toLowerCase() === "t") {
+      import("../scripts/options").then((m) => m.cycleTheme());
+    } else if (e.key.toLowerCase() === "a") {
+      import("../scripts/options").then((m) => m.cycleAccent());
+    } else if (e.key.toLowerCase() === "h") {
+      // Rides the site-wide anchor handler, so it uses the same Lenis
+      // glide (and history entry) as clicking the logo.
+      const top = document.querySelector<HTMLAnchorElement>('a[href="#top"]:not(.skip-link)');
+      if (top) top.click();
+      else window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  });
+</script>

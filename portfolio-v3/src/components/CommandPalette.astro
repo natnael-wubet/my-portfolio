@@ -68,6 +68,7 @@ const items: PaletteItem[] = [
   { label: "Accent · Amber", meta: "Signal colour", href: "action:accent:amber", kind: "Option", keywords: "accent colour amber orange signal" },
   { label: "Accent · Rose", meta: "Signal colour", href: "action:accent:rose", kind: "Option", keywords: "accent colour rose pink red signal" },
   { label: "Accent · Violet", meta: "Signal colour", href: "action:accent:violet", kind: "Option", keywords: "accent colour violet purple signal" },
+  { label: "Keyboard shortcuts", meta: "Every key on this site", href: "action:help", kind: "Option", keywords: "keyboard shortcuts help keys commands" },
   // Section jumps.
   { label: "Deployments", meta: "Section 01 · shipped & reachable", href: "#work", kind: "Jump", keywords: "deployments projects live work shipped urls" },
   { label: "Origin", meta: "Section 02 · the story", href: "#origin", kind: "Jump", keywords: "origin story history timeline 2014 bahir dar heritage" },
@@ -204,6 +205,8 @@ const items: PaletteItem[] = [
       document.dispatchEvent(new CustomEvent("opt:accent", { detail: value }));
     } else if (kind === "lang") {
       document.dispatchEvent(new CustomEvent("opt:lang", { detail: value }));
+    } else if (kind === "help") {
+      document.dispatchEvent(new CustomEvent("opt:help"));
     }
   }
 
