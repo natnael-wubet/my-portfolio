@@ -18,11 +18,11 @@ const photos = [
 <section id="photos" class="relative border-t border-[var(--color-line)]">
   <div class="shell py-24 lg:py-32">
     <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-      <div class="flex flex-col gap-5">
+      <div class="flex flex-col gap-5" data-reveal>
         <span class="eyebrow">Off-screen · personal</span>
         <h2 class="display display-lg">The person,<br />not the profile</h2>
       </div>
-      <p class="max-w-sm text-sm text-[var(--color-fog-2)]">
+      <p class="max-w-sm text-sm text-[var(--color-fog-2)]" data-reveal style="--d:120ms">
         Personal photos, no retouching. They start in grayscale and come back to colour on hover — the same rule as
         everything else here: you only get the signal when you go looking for it.
       </p>
@@ -35,7 +35,7 @@ const photos = [
     <div class="mt-12 grid grid-cols-2 auto-rows-[12rem] gap-px bg-[var(--color-line)] lg:grid-cols-4 lg:auto-rows-[17rem]">
       {
         photos.map((p, i) => (
-          <figure class={`photo-tile ${p.span} m-0 h-full w-full`}>
+          <figure class={`photo-tile group ${p.span} m-0 h-full w-full`} data-reveal style={`--d:${(i % 4) * 80}ms`}>
             <img
               src={p.src}
               alt={`Natnael Wubet — personal photo ${i + 1}`}

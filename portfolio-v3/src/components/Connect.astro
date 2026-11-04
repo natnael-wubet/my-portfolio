@@ -16,19 +16,21 @@ const stats = {
   <div class="shell py-24 lg:py-32">
     <div class="grid gap-14 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
       <div class="flex flex-col gap-8">
-        <div class="flex flex-col gap-5">
+        <div class="flex flex-col gap-5" data-reveal>
           <span class="eyebrow">Section 06 · Contact</span>
           <h2 class="display display-lg">Let's build<br />something<br /><span class="text-[var(--color-signal)]">that ships.</span></h2>
         </div>
 
         <div class="flex flex-col gap-3">
           {
-            primary.map((s) => (
+            primary.map((s, i) => (
               <a
                 href={s.href}
                 target={s.href.startsWith("mailto:") || s.href.startsWith("tel:") ? undefined : "_blank"}
                 rel="noopener"
                 class="group flex items-center gap-5 border border-[var(--color-line)] p-5 no-underline transition-all hover:border-[var(--color-signal)] hover:bg-[var(--color-ink-2)]"
+                data-reveal
+                style={`--d:${80 + i * 70}ms`}
               >
                 <span class="grid h-10 w-10 flex-none place-items-center border border-[var(--color-line-2)] font-mono text-[0.625rem] uppercase transition-colors group-hover:border-[var(--color-signal)] group-hover:text-[var(--color-signal)]">
                   {s.label.slice(0, 2)}

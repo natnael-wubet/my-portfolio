@@ -7,6 +7,8 @@ const liveCount = deployments.filter((d) => !d.archived).length;
 
 <section id="top" class="relative overflow-hidden pt-28 lg:pt-36">
   <canvas id="hero-canvas" class="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true"></canvas>
+  <!-- Scrim: keeps the copy column clean while the instrument stays visible -->
+  <div class="hero-scrim pointer-events-none absolute inset-0" aria-hidden="true"></div>
 
   <div class="shell relative z-10">
     <div class="flex flex-col gap-10">
@@ -114,10 +116,15 @@ const liveCount = deployments.filter((d) => !d.archived).length;
   //    never stranded invisible if a script fails. Nothing to do here but
   //    keep the clock and the WebGL backdrop running.
 
-  // ── WebGL backdrop: a slow point-field lattice ───────────
+  // ── WebGL backdrop: a point-cloud body inside a gyroscope ──
+  //    Reads as an instrument, not decoration: a dot-sphere with a lime
+  //    equator, counter-rotating rings, a graduated tick collar, and a
+  //    deep starfield that parallaxes with the pointer.
   const initBackdrop = async () => {
     const canvas = document.getElementById("hero-canvas") as HTMLCanvasElement | null;
     if (!canvas) return;
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     try {
       const THREE = await import("three");
@@ -127,68 +134,186 @@ const liveCount = deployments.filter((d) => !d.archived).length;
       renderer.setClearColor(0x000000, 0);
 
       const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
-      camera.position.set(0, 0, 12);
+      const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 120);
+      camera.position.set(0, 0, 14);
 
-      // Grid of points with a gentle wave
-      const COLS = 72;
-      const ROWS = 34;
-      const count = COLS * ROWS;
-      const positions = new Float32Array(count * 3);
-      const base = new Float32Array(count * 2);
+      const C_FOG = new THREE.Color(0x6b7480);
+      const C_CHALK = new THREE.Color(0xeef1f4);
+      const C_SIGNAL = new THREE.Color(0xd4ff3f);
+      const C_CYAN = new THREE.Color(0x34d3e0);
 
-      let i = 0;
-      for (let x = 0; x < COLS; x++) {
-        for (let y = 0; y < ROWS; y++) {
-          const px = (x / (COLS - 1) - 0.5) * 44;
-          const py = (y / (ROWS - 1) - 0.5) * 22;
-          positions[i * 3] = px;
-          positions[i * 3 + 1] = py;
-          positions[i * 3 + 2] = 0;
-          base[i * 2] = px;
-          base[i * 2 + 1] = py;
-          i++;
+      // Everything the pointer parallaxes rides on this one rig.
+      const rig = new THREE.Group();
+      scene.add(rig);
+
+      // ── Starfield ────────────────────────────────────────────
+      const STARS = 2400;
+      const sPos = new Float32Array(STARS * 3);
+      const sCol = new Float32Array(STARS * 3);
+      for (let i = 0; i < STARS; i++) {
+        sPos[i * 3] = (Math.random() - 0.5) * 46;
+        sPos[i * 3 + 1] = (Math.random() - 0.5) * 28;
+        sPos[i * 3 + 2] = 4 - Math.random() * 44;
+        const r = Math.random();
+        const c = r > 0.986 ? C_SIGNAL : r > 0.962 ? C_CYAN : r > 0.58 ? C_CHALK : C_FOG;
+        const b = 0.3 + Math.random() * 0.7;
+        sCol[i * 3] = c.r * b;
+        sCol[i * 3 + 1] = c.g * b;
+        sCol[i * 3 + 2] = c.b * b;
+      }
+      const starGeo = new THREE.BufferGeometry();
+      starGeo.setAttribute("position", new THREE.BufferAttribute(sPos, 3));
+      starGeo.setAttribute("color", new THREE.BufferAttribute(sCol, 3));
+      const stars = new THREE.Points(
+        starGeo,
+        new THREE.PointsMaterial({
+          size: 0.06,
+          vertexColors: true,
+          transparent: true,
+          opacity: 0.95,
+          sizeAttenuation: true,
+          depthWrite: false,
+        })
+      );
+      rig.add(stars);
+
+      // ── The body: a Fibonacci point-sphere with a lime equator ─
+      const R = 4.4;
+      const BODY = new THREE.Vector3(5.4, 0.7, 0);
+
+      const N = 2800;
+      const bPos = new Float32Array(N * 3);
+      const bCol = new Float32Array(N * 3);
+      const golden = Math.PI * (3 - Math.sqrt(5));
+      for (let i = 0; i < N; i++) {
+        const y = 1 - (i / (N - 1)) * 2;
+        const rad = Math.sqrt(Math.max(0, 1 - y * y));
+        const th = golden * i;
+        // gentle surface wobble so it reads as a body, not a perfect ball
+        const wob = 1 + Math.sin(th * 3 + y * 8) * 0.035;
+        bPos[i * 3] = Math.cos(th) * rad * R * wob;
+        bPos[i * 3 + 1] = y * R * wob;
+        bPos[i * 3 + 2] = Math.sin(th) * rad * R * wob;
+
+        const lat = Math.abs(y);
+        const equator = lat < 0.05;
+        const c = equator ? C_SIGNAL : Math.random() > 0.985 ? C_CYAN : C_CHALK;
+        // brightest at the equator, falling off toward the poles
+        const t = equator ? 1 : 0.22 + 0.78 * Math.pow(1 - lat, 1.5);
+        bCol[i * 3] = c.r * t;
+        bCol[i * 3 + 1] = c.g * t;
+        bCol[i * 3 + 2] = c.b * t;
+      }
+      const bodyGeo = new THREE.BufferGeometry();
+      bodyGeo.setAttribute("position", new THREE.BufferAttribute(bPos, 3));
+      bodyGeo.setAttribute("color", new THREE.BufferAttribute(bCol, 3));
+
+      const body = new THREE.Group();
+      body.position.copy(BODY);
+      body.add(
+        new THREE.Points(
+          bodyGeo,
+          new THREE.PointsMaterial({
+            size: 0.065,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.95,
+            sizeAttenuation: true,
+            depthWrite: false,
+          })
+        )
+      );
+      rig.add(body);
+
+      // Ghost core: a low-poly wireframe nested inside the dots.
+      const core = new THREE.LineSegments(
+        new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(R * 0.6, 1)),
+        new THREE.LineBasicMaterial({ color: 0x2a3036, transparent: true, opacity: 0.7 })
+      );
+      body.add(core);
+
+      // ── Gyroscope: rings + a graduated tick collar ───────────
+      const gyro = new THREE.Group();
+      gyro.position.copy(BODY);
+      rig.add(gyro);
+
+      const ringPath = (radius: number, seg = 192) => {
+        const pts: THREE.Vector3[] = [];
+        for (let i = 0; i <= seg; i++) {
+          const a = (i / seg) * Math.PI * 2;
+          pts.push(new THREE.Vector3(Math.cos(a) * radius, 0, Math.sin(a) * radius));
         }
+        return new THREE.BufferGeometry().setFromPoints(pts);
+      };
+
+      const ringA = new THREE.Line(
+        ringPath(R * 1.16),
+        new THREE.LineBasicMaterial({ color: 0xd4ff3f, transparent: true, opacity: 0.55 })
+      );
+      ringA.rotation.set(1.15, 0, 0.35);
+
+      const ringB = new THREE.Line(
+        ringPath(R * 1.42),
+        new THREE.LineBasicMaterial({ color: 0x34d3e0, transparent: true, opacity: 0.3 })
+      );
+      ringB.rotation.set(1.35, 0.5, -0.5);
+
+      const ringC = new THREE.Line(
+        ringPath(R * 1.72),
+        new THREE.LineBasicMaterial({ color: 0x2a3036, transparent: true, opacity: 0.95 })
+      );
+      ringC.rotation.set(0.5, 0.2, 1.1);
+      gyro.add(ringA, ringB, ringC);
+
+      // Graduated collar — 48 ticks, every fourth one longer.
+      const TICKS = 48;
+      const tickPts: THREE.Vector3[] = [];
+      for (let i = 0; i < TICKS; i++) {
+        const a = (i / TICKS) * Math.PI * 2;
+        const long = i % 4 === 0;
+        const r0 = R * 1.86;
+        const r1 = R * (long ? 2.04 : 1.95);
+        tickPts.push(new THREE.Vector3(Math.cos(a) * r0, 0, Math.sin(a) * r0));
+        tickPts.push(new THREE.Vector3(Math.cos(a) * r1, 0, Math.sin(a) * r1));
       }
+      const collar = new THREE.LineSegments(
+        new THREE.BufferGeometry().setFromPoints(tickPts),
+        new THREE.LineBasicMaterial({ color: 0x2a3036, transparent: true, opacity: 1 })
+      );
+      collar.rotation.set(1.05, 0, 0.2);
+      gyro.add(collar);
 
-      const geo = new THREE.BufferGeometry();
-      geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-
-      const mat = new THREE.PointsMaterial({
-        color: 0x6b7480,
-        size: 0.035,
-        transparent: true,
-        opacity: 0.55,
-        sizeAttenuation: true,
-      });
-
-      const points = new THREE.Points(geo, mat);
-      points.rotation.x = -0.42;
-      scene.add(points);
-
-      // A single acid-lime signal line crossing the field
-      const linePts: THREE.Vector3[] = [];
-      for (let s = 0; s <= 200; s++) {
-        const t = s / 200;
-        linePts.push(new THREE.Vector3((t - 0.5) * 44, Math.sin(t * Math.PI * 3) * 2.4, 0.4));
+      // ── Signal trace crossing the whole hero ─────────────────
+      const tracePts: THREE.Vector3[] = [];
+      for (let i = 0; i <= 300; i++) {
+        const t = i / 300;
+        tracePts.push(new THREE.Vector3((t - 0.5) * 48, Math.sin(t * Math.PI * 2.2) * 3.6, -3));
       }
-      const lineGeo = new THREE.BufferGeometry().setFromPoints(linePts);
-      const line = new THREE.Line(lineGeo, new THREE.LineBasicMaterial({ color: 0xd4ff3f, transparent: true, opacity: 0.5 }));
-      line.rotation.x = -0.42;
-      scene.add(line);
+      const trace = new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(tracePts),
+        new THREE.LineBasicMaterial({ color: 0xd4ff3f, transparent: true, opacity: 0.32 })
+      );
+      rig.add(trace);
 
+      // ── Sizing ───────────────────────────────────────────────
       const resize = () => {
         const rect = canvas.getBoundingClientRect();
         const w = Math.max(rect.width, 1);
         const h = Math.max(rect.height, 1);
         renderer.setSize(w, h, false);
         camera.aspect = w / h;
+        // Keep the body framed on the right at every aspect ratio.
+        const fit = Math.min(1, w / 1400);
+        rig.scale.setScalar(0.72 + fit * 0.28);
+        body.position.x = gyro.position.x = (w < 760 ? 0.8 : 7.6) / rig.scale.x;
+        body.position.y = gyro.position.y = (w < 760 ? 3.6 : 1.1) / rig.scale.x;
         camera.updateProjectionMatrix();
       };
       resize();
       const ro = new ResizeObserver(resize);
       ro.observe(canvas);
 
+      // ── Pointer ──────────────────────────────────────────────
       let mx = 0;
       let my = 0;
       let tx = 0;
@@ -203,37 +328,49 @@ const liveCount = deployments.filter((d) => !d.archived).length;
       );
 
       let visible = true;
-      const section = document.getElementById("top")!;
-      new IntersectionObserver(([en]) => (visible = en.isIntersecting), { threshold: 0.01 }).observe(section);
+      const section = document.getElementById("top");
+      if (section) {
+        new IntersectionObserver(([en]) => (visible = en.isIntersecting), { threshold: 0.01 }).observe(section);
+      }
 
       const clock = new THREE.Clock();
-      const posAttr = geo.getAttribute("position") as THREE.BufferAttribute;
 
-      const animate = () => {
-        requestAnimationFrame(animate);
+      const frame = () => {
         const t = clock.getElapsedTime();
 
-        mx += (tx - mx) * 0.04;
-        my += (ty - my) * 0.04;
+        body.rotation.y = t * 0.12;
+        body.rotation.x = Math.sin(t * 0.25) * 0.16;
+        core.rotation.y = -t * 0.07;
 
-        const arr = posAttr.array as Float32Array;
-        for (let p = 0; p < count; p++) {
-          const bx = base[p * 2];
-          const by = base[p * 2 + 1];
-          const z = Math.sin(bx * 0.28 + t * 0.6) * 0.9 + Math.cos(by * 0.42 + t * 0.42) * 0.7;
-          arr[p * 3 + 2] = z;
-        }
-        posAttr.needsUpdate = true;
+        ringA.rotation.z = t * 0.2;
+        ringB.rotation.x = 1.35 + Math.sin(t * 0.3) * 0.25;
+        ringC.rotation.y = -t * 0.1;
+        collar.rotation.y = t * 0.06;
 
-        points.rotation.z = mx * 0.06;
-        points.position.x = mx * 1.2;
-        points.position.y = -my * 0.7;
-        line.rotation.z = mx * 0.06;
-        line.position.copy(points.position);
+        trace.position.y = Math.sin(t * 0.4) * 0.5;
 
-        if (visible) renderer.render(scene, camera);
+        mx += (tx - mx) * 0.05;
+        my += (ty - my) * 0.05;
+        rig.rotation.y = mx * 0.16;
+        rig.rotation.x = my * 0.1;
+        rig.position.x = mx * -0.6;
+        rig.position.y = my * 0.45;
+
+        stars.rotation.y = t * 0.004;
+
+        renderer.render(scene, camera);
       };
-      animate();
+
+      if (reduced) {
+        // One static, fully-composed frame — no loop, no motion.
+        frame();
+      } else {
+        const animate = () => {
+          requestAnimationFrame(animate);
+          if (visible) frame();
+        };
+        animate();
+      }
     } catch {
       // WebGL unavailable — the section still reads perfectly without it
       canvas.style.display = "none";
@@ -242,3 +379,33 @@ const liveCount = deployments.filter((d) => !d.archived).length;
 
   initBackdrop();
 </script>
+
+<style>
+  /* The instrument lives on the right; this keeps the copy column quiet.
+     Vertical fade also stops the starfield from muddying the stats strip. */
+  .hero-scrim {
+    background:
+      linear-gradient(
+        100deg,
+        var(--color-ink) 0%,
+        var(--color-ink) 26%,
+        color-mix(in srgb, var(--color-ink) 78%, transparent) 44%,
+        transparent 66%
+      ),
+      linear-gradient(to bottom, var(--color-ink) 0%, transparent 14%, transparent 78%, var(--color-ink) 100%);
+  }
+
+  @media (max-width: 767px) {
+    /* On phones the body sits behind the headline — fade it right down. */
+    .hero-scrim {
+      background: linear-gradient(to bottom, color-mix(in srgb, var(--color-ink) 55%, transparent), color-mix(in srgb, var(--color-ink) 88%, transparent));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-cue-bar::after {
+      animation: none;
+      transform: translateX(60%);
+    }
+  }
+</style>
