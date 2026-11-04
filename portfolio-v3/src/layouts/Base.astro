@@ -21,7 +21,7 @@ const {
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#08090a" />
+    <meta name="theme-color" content="#08090a" id="theme-color-meta" />
     <meta name="author" content="Natnael Wubet" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -47,6 +47,28 @@ const {
     -->
     <script is:inline>
       document.documentElement.classList.add("js");
+    </script>
+    <!--
+      Theme + accent are applied before first paint so switching never flashes
+      the wrong colour scheme. Mirrors src/scripts/options.ts — keep in sync.
+    -->
+    <script is:inline>
+      (() => {
+        try {
+          const root = document.documentElement;
+          const mq = window.matchMedia("(prefers-color-scheme: light)");
+          const pref = (k, d) => localStorage.getItem(k) || d;
+          const themePref = pref("cv:theme", "system");
+          const theme = themePref === "system" ? (mq.matches ? "light" : "dark") : themePref;
+          root.dataset.theme = theme;
+          root.dataset.accent = pref("cv:accent", "lime");
+          root.style.colorScheme = theme;
+          const meta = document.getElementById("theme-color-meta");
+          if (meta) meta.setAttribute("content", theme === "light" ? "#f7f8f6" : "#08090a");
+        } catch {
+          /* private mode / blocked storage — the dark default stands */
+        }
+      })();
     </script>
     <style is:global>
       .js [data-reveal] {
@@ -82,7 +104,7 @@ const {
       .scroll-progress span {
         display: block;
         height: 100%;
-        background: linear-gradient(90deg, #d4ff3f, #34d3e0);
+        background: linear-gradient(90deg, var(--color-signal), var(--color-cyan));
         transform: scaleX(0);
         transform-origin: 0 50%;
         will-change: transform;
@@ -90,7 +112,7 @@ const {
 
       /* ── Keyboard focus ───────────────────────────────────────── */
       :focus-visible {
-        outline: 2px solid #d4ff3f;
+        outline: 2px solid var(--color-signal);
         outline-offset: 3px;
         border-radius: 1px;
       }
@@ -101,8 +123,8 @@ const {
         left: 1rem;
         z-index: 100;
         padding: 0.7rem 1rem;
-        background: #d4ff3f;
-        color: #08090a;
+        background: var(--color-signal);
+        color: var(--color-on-signal);
         font-family: var(--font-mono);
         font-size: 0.75rem;
         letter-spacing: 0.16em;
