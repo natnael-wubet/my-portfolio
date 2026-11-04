@@ -137,33 +137,53 @@ const liveCount = deployments.filter((d) => !d.archived).length;
       const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 120);
       camera.position.set(0, 0, 14);
 
-      const C_FOG = new THREE.Color(0x6b7480);
-      const C_CHALK = new THREE.Color(0xeef1f4);
-      const C_SIGNAL = new THREE.Color(0xd4ff3f);
-      const C_CYAN = new THREE.Color(0x34d3e0);
+      // Colors come from the CSS tokens, so the instrument follows the
+      // theme and accent live — repaint() re-reads them on opt change.
+      const cssColor = (name: string, fallback: string) => {
+        const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+        return new THREE.Color(v || fallback);
+      };
+      const C_FOG = cssColor("--color-fog", "#6b7480");
+      const C_CHALK = cssColor("--color-chalk", "#eef1f4");
+      const C_SIGNAL = cssColor("--color-signal", "#d4ff3f");
+      const C_CYAN = cssColor("--color-cyan", "#34d3e0");
+      const C_LINE = cssColor("--color-line-2", "#2a3036");
 
       // Everything the pointer parallaxes rides on this one rig.
       const rig = new THREE.Group();
       scene.add(rig);
 
       // ── Starfield ────────────────────────────────────────────
+      // Points store a *role* (which palette entry) plus a brightness,
+      // not a baked colour — repaint() can then recolor the whole field
+      // when the theme or accent changes without rebuilding geometry.
       const STARS = 2400;
       const sPos = new Float32Array(STARS * 3);
       const sCol = new Float32Array(STARS * 3);
+      const sRole = new Uint8Array(STARS);
+      const sBright = new Float32Array(STARS);
       for (let i = 0; i < STARS; i++) {
         sPos[i * 3] = (Math.random() - 0.5) * 46;
         sPos[i * 3 + 1] = (Math.random() - 0.5) * 28;
         sPos[i * 3 + 2] = 4 - Math.random() * 44;
         const r = Math.random();
-        const c = r > 0.986 ? C_SIGNAL : r > 0.962 ? C_CYAN : r > 0.58 ? C_CHALK : C_FOG;
-        const b = 0.3 + Math.random() * 0.7;
-        sCol[i * 3] = c.r * b;
-        sCol[i * 3 + 1] = c.g * b;
-        sCol[i * 3 + 2] = c.b * b;
+        sRole[i] = r > 0.986 ? 2 : r > 0.962 ? 3 : r > 0.58 ? 1 : 0;
+        sBright[i] = 0.3 + Math.random() * 0.7;
       }
       const starGeo = new THREE.BufferGeometry();
       starGeo.setAttribute("position", new THREE.BufferAttribute(sPos, 3));
       starGeo.setAttribute("color", new THREE.BufferAttribute(sCol, 3));
+      const paintStars = () => {
+        const cols = [C_FOG, C_CHALK, C_SIGNAL, C_CYAN];
+        for (let i = 0; i < STARS; i++) {
+          const c = cols[sRole[i]];
+          const b = sBright[i];
+          sCol[i * 3] = c.r * b;
+          sCol[i * 3 + 1] = c.g * b;
+          sCol[i * 3 + 2] = c.b * b;
+        }
+        starGeo.attributes.color.needsUpdate = true;
+      };
       const stars = new THREE.Points(
         starGeo,
         new THREE.PointsMaterial({
@@ -184,6 +204,8 @@ const liveCount = deployments.filter((d) => !d.archived).length;
       const N = 2800;
       const bPos = new Float32Array(N * 3);
       const bCol = new Float32Array(N * 3);
+      const bRole = new Uint8Array(N);
+      const bGain = new Float32Array(N);
       const golden = Math.PI * (3 - Math.sqrt(5));
       for (let i = 0; i < N; i++) {
         const y = 1 - (i / (N - 1)) * 2;
@@ -197,16 +219,24 @@ const liveCount = deployments.filter((d) => !d.archived).length;
 
         const lat = Math.abs(y);
         const equator = lat < 0.05;
-        const c = equator ? C_SIGNAL : Math.random() > 0.985 ? C_CYAN : C_CHALK;
+        bRole[i] = equator ? 1 : Math.random() > 0.985 ? 2 : 0;
         // brightest at the equator, falling off toward the poles
-        const t = equator ? 1 : 0.22 + 0.78 * Math.pow(1 - lat, 1.5);
-        bCol[i * 3] = c.r * t;
-        bCol[i * 3 + 1] = c.g * t;
-        bCol[i * 3 + 2] = c.b * t;
+        bGain[i] = equator ? 1 : 0.22 + 0.78 * Math.pow(1 - lat, 1.5);
       }
       const bodyGeo = new THREE.BufferGeometry();
       bodyGeo.setAttribute("position", new THREE.BufferAttribute(bPos, 3));
       bodyGeo.setAttribute("color", new THREE.BufferAttribute(bCol, 3));
+      const paintBody = () => {
+        const cols = [C_CHALK, C_SIGNAL, C_CYAN];
+        for (let i = 0; i < N; i++) {
+          const c = cols[bRole[i]];
+          const g = bGain[i];
+          bCol[i * 3] = c.r * g;
+          bCol[i * 3 + 1] = c.g * g;
+          bCol[i * 3 + 2] = c.b * g;
+        }
+        bodyGeo.attributes.color.needsUpdate = true;
+      };
 
       const body = new THREE.Group();
       body.position.copy(BODY);
@@ -228,7 +258,7 @@ const liveCount = deployments.filter((d) => !d.archived).length;
       // Ghost core: a low-poly wireframe nested inside the dots.
       const core = new THREE.LineSegments(
         new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(R * 0.6, 1)),
-        new THREE.LineBasicMaterial({ color: 0x2a3036, transparent: true, opacity: 0.7 })
+        new THREE.LineBasicMaterial({ color: C_LINE, transparent: true, opacity: 0.7 })
       );
       body.add(core);
 
@@ -248,19 +278,19 @@ const liveCount = deployments.filter((d) => !d.archived).length;
 
       const ringA = new THREE.Line(
         ringPath(R * 1.16),
-        new THREE.LineBasicMaterial({ color: 0xd4ff3f, transparent: true, opacity: 0.55 })
+        new THREE.LineBasicMaterial({ color: C_SIGNAL, transparent: true, opacity: 0.55 })
       );
       ringA.rotation.set(1.15, 0, 0.35);
 
       const ringB = new THREE.Line(
         ringPath(R * 1.42),
-        new THREE.LineBasicMaterial({ color: 0x34d3e0, transparent: true, opacity: 0.3 })
+        new THREE.LineBasicMaterial({ color: C_CYAN, transparent: true, opacity: 0.3 })
       );
       ringB.rotation.set(1.35, 0.5, -0.5);
 
       const ringC = new THREE.Line(
         ringPath(R * 1.72),
-        new THREE.LineBasicMaterial({ color: 0x2a3036, transparent: true, opacity: 0.95 })
+        new THREE.LineBasicMaterial({ color: C_LINE, transparent: true, opacity: 0.95 })
       );
       ringC.rotation.set(0.5, 0.2, 1.1);
       gyro.add(ringA, ringB, ringC);
@@ -278,7 +308,7 @@ const liveCount = deployments.filter((d) => !d.archived).length;
       }
       const collar = new THREE.LineSegments(
         new THREE.BufferGeometry().setFromPoints(tickPts),
-        new THREE.LineBasicMaterial({ color: 0x2a3036, transparent: true, opacity: 1 })
+        new THREE.LineBasicMaterial({ color: C_LINE, transparent: true, opacity: 1 })
       );
       collar.rotation.set(1.05, 0, 0.2);
       gyro.add(collar);
@@ -291,9 +321,34 @@ const liveCount = deployments.filter((d) => !d.archived).length;
       }
       const trace = new THREE.Line(
         new THREE.BufferGeometry().setFromPoints(tracePts),
-        new THREE.LineBasicMaterial({ color: 0xd4ff3f, transparent: true, opacity: 0.32 })
+        new THREE.LineBasicMaterial({ color: C_SIGNAL, transparent: true, opacity: 0.32 })
       );
       rig.add(trace);
+
+      // ── Live repaint: theme or accent changed ──────────────
+      // The palette entries above are snapshots at build time, so both the
+      // vertex-coloured fields and every line material get re-tinted here.
+      const repaint = () => {
+        C_FOG.copy(cssColor("--color-fog", "#6b7480"));
+        C_CHALK.copy(cssColor("--color-chalk", "#eef1f4"));
+        C_SIGNAL.copy(cssColor("--color-signal", "#d4ff3f"));
+        C_CYAN.copy(cssColor("--color-cyan", "#34d3e0"));
+        C_LINE.copy(cssColor("--color-line-2", "#2a3036"));
+
+        paintStars();
+        paintBody();
+
+        (core.material as THREE.LineBasicMaterial).color.copy(C_LINE);
+        (ringA.material as THREE.LineBasicMaterial).color.copy(C_SIGNAL);
+        (ringB.material as THREE.LineBasicMaterial).color.copy(C_CYAN);
+        (ringC.material as THREE.LineBasicMaterial).color.copy(C_LINE);
+        (collar.material as THREE.LineBasicMaterial).color.copy(C_LINE);
+        (trace.material as THREE.LineBasicMaterial).color.copy(C_SIGNAL);
+      };
+      paintStars();
+      paintBody();
+      document.addEventListener("theme:change", repaint);
+      document.addEventListener("accent:change", repaint);
 
       // ── Sizing ───────────────────────────────────────────────
       const resize = () => {

@@ -28,7 +28,7 @@ import { cvPages } from "../data/content";
     <div
       class="pointer-events-none absolute inset-0"
       aria-hidden="true"
-      style="background: radial-gradient(ellipse 62% 52% at 50% 58%, rgba(212,255,63,0.055) 0%, rgba(52,211,224,0.03) 42%, transparent 72%);"
+      style="background: radial-gradient(ellipse 62% 52% at 50% 58%, color-mix(in srgb, var(--color-signal) 5.5%, transparent) 0%, color-mix(in srgb, var(--color-cyan) 3%, transparent) 42%, transparent 72%);"
     ></div>
     <canvas id="vault-canvas" class="vault-canvas relative" data-pages={JSON.stringify(cvPages)}></canvas>
     <div class="pointer-events-none absolute inset-0 flex items-end justify-center pb-8">
@@ -69,10 +69,16 @@ import { cvPages } from "../data/content";
     // Pages are lit mostly by their own emissive map (below) so text stays
     // legible from any angle; the coloured lights only add shape and tint.
     scene.add(new THREE.AmbientLight(0xffffff, 1.6));
-    const key = new THREE.DirectionalLight(0xd4ff3f, 1.4);
+
+    // Tints read from the CSS tokens so the stage follows theme + accent.
+    const cssColor = (name: string, fallback: string) => {
+      const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+      return new THREE.Color(v || fallback);
+    };
+    const key = new THREE.DirectionalLight(cssColor("--color-signal", "#d4ff3f"), 1.4);
     key.position.set(4, 5, 6);
     scene.add(key);
-    const rim = new THREE.DirectionalLight(0x34d3e0, 1.1);
+    const rim = new THREE.DirectionalLight(cssColor("--color-cyan", "#34d3e0"), 1.1);
     rim.position.set(-5, -2, -4);
     scene.add(rim);
 
@@ -175,7 +181,7 @@ import { cvPages } from "../data/content";
     texturePrimer.observe(section);
 
     // ── Thin orbital rails ───────────────────────────────
-    const railMat = new THREE.MeshBasicMaterial({ color: 0x2a3036, transparent: true, opacity: 0.7 });
+    const railMat = new THREE.MeshBasicMaterial({ color: cssColor("--color-line-2", "#2a3036"), transparent: true, opacity: 0.7 });
     [radius + 0.55, radius - 0.55].forEach((r) => {
       const rail = new THREE.Mesh(new THREE.TorusGeometry(r, 0.006, 6, 220), railMat);
       rail.rotation.x = Math.PI / 2;
@@ -185,19 +191,31 @@ import { cvPages } from "../data/content";
     // ── Floor disc ───────────────────────────────────────
     const floor = new THREE.Mesh(
       new THREE.CircleGeometry(radius + 1.6, 96),
-      new THREE.MeshBasicMaterial({ color: 0x0d0f11, transparent: true, opacity: 0.55 })
+      new THREE.MeshBasicMaterial({ color: cssColor("--color-ink-2", "#0d0f11"), transparent: true, opacity: 0.55 })
     );
     floor.rotation.x = -Math.PI / 2;
     floor.position.y = -MAX_H / 2 - 0.45;
     scene.add(floor);
 
+    const floorRingMat = new THREE.MeshBasicMaterial({ color: cssColor("--color-signal", "#d4ff3f"), transparent: true, opacity: 0.22 });
     const floorRing = new THREE.Mesh(
       new THREE.RingGeometry(radius + 1.55, radius + 1.62, 128),
-      new THREE.MeshBasicMaterial({ color: 0xd4ff3f, transparent: true, opacity: 0.22 })
+      floorRingMat
     );
     floorRing.rotation.x = -Math.PI / 2;
     floorRing.position.y = -MAX_H / 2 - 0.44;
     scene.add(floorRing);
+
+    // Follow theme/accent switches — the stage re-tints in place.
+    const retint = () => {
+      key.color.copy(cssColor("--color-signal", "#d4ff3f"));
+      rim.color.copy(cssColor("--color-cyan", "#34d3e0"));
+      railMat.color.copy(cssColor("--color-line-2", "#2a3036"));
+      (floor.material as THREE.MeshBasicMaterial).color.copy(cssColor("--color-ink-2", "#0d0f11"));
+      floorRingMat.color.copy(cssColor("--color-signal", "#d4ff3f"));
+    };
+    document.addEventListener("theme:change", retint);
+    document.addEventListener("accent:change", retint);
 
     // ── Interaction state ────────────────────────────────
     let targetRotation = 0;
