@@ -126,7 +126,13 @@ const items: PaletteItem[] = [
       spellcheck="false"
       aria-controls="palette-list"
     />
-    <div class="palette-list" id="palette-list" role="listbox" data-empty={t("palette.empty")}></div>
+    <div
+      class="palette-list"
+      id="palette-list"
+      role="listbox"
+      data-empty={t("palette.empty")}
+      data-kind-match={KIND.match}
+    ></div>
   </div>
 </div>
 
@@ -153,6 +159,9 @@ const items: PaletteItem[] = [
   const backdrop = document.getElementById("palette") as HTMLDivElement;
   const input = document.getElementById("palette-input") as HTMLInputElement;
   const list = document.getElementById("palette-list") as HTMLDivElement;
+  // Frontmatter values cannot be referenced from a client module; the label
+  // for prose hits rides on the list as data instead.
+  const MATCH_KIND = list.dataset.kindMatch ?? "Match";
 
   let active = 0;
   let visible: Item[] = [];
@@ -272,7 +281,7 @@ const items: PaletteItem[] = [
         label: excerpt(chunk.text, tokens),
         meta: chunk.href.replace("#", "§ "),
         href: chunk.href,
-        kind: KIND.match,
+        kind: MATCH_KIND,
         keywords: "",
         snippet: excerpt(chunk.text, tokens),
         target: chunk.target,

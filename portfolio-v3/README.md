@@ -26,13 +26,32 @@ npm run preview  # serve dist/ locally
 - **Command palette.** `⌘K` / `Ctrl-K` or `/` opens a fuzzy palette over
   deployments, repositories, awards, certifications, disciplines and display
   actions. Ambiguous `action:` links are dispatched as DOM events, not
-  navigation.
-- **Keyboard layer.** `T` cycles theme, `A` cycles accent, `H` jumps to the
-  top, `?` opens the shortcut sheet. Inside the palette: arrows to move,
-  `Enter` to run, `Esc` to close.
+  navigation. Past three characters the palette also searches the page's own
+  prose: it indexes the rendered sections, shows two-line excerpts with the
+  matched words marked, and on selection scrolls to the paragraph and tints
+  every occurrence with the CSS Custom Highlight API.
+- **Shareable views.** "Copy view link" encodes the current theme, accent and
+  section in `?theme=&accent=#…`. The link applies its palette before first
+  paint and remembers it, so a shared URL reproduces exactly what was seen.
+- **Diagnostics (`D`).** A drawer that measures this page in the visitor's
+  browser: TTFB, DOM ready, load, transfer weight, request count, viewport,
+  DPR, connection, JS heap, scroll depth, an Addis Ababa clock and a live FPS
+  sparkline. The build line is real provenance — the git commit and timestamp
+  baked into the HTML by `src/lib/build.ts` at build time.
+- **X-ray (`I`).** Renders the scaffolding: the 12-column shell, an 8px
+  baseline, a dashed outline and id label for every region, and a strip of
+  every colour token read live from the cascade. It repaints when the theme
+  or accent changes and is remembered per tab, never for new visitors.
+- **Keyboard layer.** `T` cycles theme, `A` cycles accent, `D` opens
+  diagnostics, `I` toggles X-ray, `H` jumps to the top, `?` opens the
+  shortcut sheet. Inside the palette: arrows to move, `Enter` to run, `Esc`
+  to close.
+- **One event bus.** Cross-component actions are DOM events on `document`:
+  `opt:theme`, `opt:accent`, `opt:lang`, `opt:help`, `opt:diag`, `opt:xray`,
+  plus `ui:toast` for the single aria-live status line.
 - **Small enhancements.** Hero stats count up when first seen, the contact
-  terminal copies any answer on click (with a live-region toast), and the
-  repository list filters and sorts in place.
+  terminal copies any answer on click (or with `copy`), and the repository
+  list filters and sorts in place.
 - **Amharic typography.** `Noto Sans Ethiopic` is loaded only on `/am/` and
   takes over the display stack there. Because Geʽez script does not use
   letter-spacing the same way Latin does, tracking is flattened and small
@@ -44,7 +63,8 @@ npm run preview  # serve dist/ locally
 src/
 ├── components/       # Nav, Hero, Deployments, Repos, Origin, Mind, Vault,
 │                     # Awards, Photos, Connect, Footer, CommandPalette,
-│                     # Shortcuts, DisplayOptions, Site (page composition)
+│                     # Shortcuts, DisplayOptions, Instrument (diagnostics +
+│                     # X-ray + toast), Site (page composition)
 ├── data/             # English source of truth for deployments and prose
 ├── i18n/
 │   ├── en.ts         # chrome keys — the typed dictionary shape
@@ -52,6 +72,7 @@ src/
 │   ├── data.ts       # Amharic prose for src/data, keyed by English string
 │   └── index.ts      # makeT(), rich(), td(), locales
 ├── layouts/Base.astro
+├── lib/build.ts      # git commit + timestamp captured at build time
 ├── pages/            # index.astro (en) and am/index.astro (am)
 ├── scripts/options.ts
 └── styles/global.css # theme + accent tokens, base styles

@@ -272,12 +272,15 @@ const xrayTokens = [
   document.addEventListener("opt:diag", () => (open ? hide() : show()));
 
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && open) {
-      hide();
-      return;
-    }
-    // Escape should not also close the palette behind the drawer.
-    if (open) e.stopPropagation();
+    if (e.key === "Escape" && open) hide();
+  });
+
+  // Clicking anywhere outside the drawer dismisses it, like a popover.
+  document.addEventListener("pointerdown", (e) => {
+    if (!open) return;
+    const node = e.target as Node;
+    if (panel?.contains(node) || trigger?.contains(node)) return;
+    hide();
   });
 
   document.addEventListener("theme:change", () => {
