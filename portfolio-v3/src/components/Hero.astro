@@ -120,6 +120,48 @@ const stats = [
   tickTime();
   setInterval(tickTime, 10_000);
 
+  // ── Count-up stats ───────────────────────────────────────
+  //    Numbers tick from zero the first time the strip is seen, so the
+  //    figures read as measurements rather than decoration. The server
+  //    already rendered the final value, so this is pure enhancement.
+  const counters = Array.from(document.querySelectorAll<HTMLElement>("[data-count]"));
+  if (counters.length) {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const runCount = (el: HTMLElement) => {
+      const target = Number(el.dataset.count);
+      if (!Number.isFinite(target)) return;
+      if (reduceMotion) {
+        el.textContent = String(target);
+        return;
+      }
+      const started = performance.now();
+      const duration = 1100;
+      const frame = (now: number) => {
+        const p = Math.min(1, (now - started) / duration);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = String(Math.round(target * eased));
+        if (p < 1) requestAnimationFrame(frame);
+      };
+      requestAnimationFrame(frame);
+    };
+
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue;
+            io.unobserve(entry.target);
+            runCount(entry.target as HTMLElement);
+          }
+        },
+        { threshold: 0.5 }
+      );
+      counters.forEach((el) => io.observe(el));
+    } else {
+      counters.forEach(runCount);
+    }
+  }
+
   // ── Entrance is CSS-driven (see global.css .rise/.fade-up) so content is
   //    never stranded invisible if a script fails. Nothing to do here but
   //    keep the clock and the WebGL backdrop running.

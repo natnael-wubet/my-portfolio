@@ -45,9 +45,9 @@ const live = probed.filter((r) => r.health.status === "live").length;
               href={d.url}
               target="_blank"
               rel="noopener"
-              class="group relative flex flex-col gap-5 bg-[var(--color-ink)] p-6 no-underline transition-colors hover:bg-[var(--color-ink-2)] lg:p-7"
+              class="deploy-card group relative flex flex-col gap-5 bg-[var(--color-ink)] p-6 no-underline transition-colors hover:bg-[var(--color-ink-2)] lg:p-7"
               data-reveal
-              style={`--d:${(i % 3) * 90}ms`}
+              style={`--d:${(i % 3) * 90}ms;--deploy-accent:${d.accent}`}
             >
               <div class="flex items-start justify-between gap-4">
                 <span class="font-mono text-[0.625rem] tracking-[0.2em] text-[var(--color-line-2)] uppercase">
@@ -71,7 +71,7 @@ const live = probed.filter((r) => r.health.status === "live").length;
                     </span>
                   )}
                 </div>
-                <span class="font-mono text-[0.6875rem] tracking-[0.1em] uppercase" style={{ color: d.accent }}>
+                <span class="deploy-tagline font-mono text-[0.6875rem] tracking-[0.1em] uppercase">
                   {td(t, d.tagline)}
                 </span>
               </div>
@@ -97,7 +97,7 @@ const live = probed.filter((r) => r.health.status === "live").length;
 
               <span
                 class="pointer-events-none absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100"
-                style={{ background: d.accent }}
+                style={{ background: "var(--deploy-accent)" }}
               />
             </a>
           );
@@ -106,3 +106,14 @@ const live = probed.filter((r) => r.health.status === "live").length;
     </div>
   </div>
 </section>
+
+<style>
+  /*
+   * Each card's accent comes from the data. Mixing it toward --color-chalk
+   * keeps the tagline readable in both themes without a second palette:
+   * chalk is near-white on dark and near-black on light.
+   */
+  .deploy-tagline {
+    color: color-mix(in srgb, var(--deploy-accent) 72%, var(--color-chalk));
+  }
+</style>

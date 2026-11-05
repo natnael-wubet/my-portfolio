@@ -91,9 +91,19 @@ const cmds = {
               <span class="term-prompt">➜</span>
               <input class="term-input" id="term-input" type="text" placeholder={t("sec.connect.termPlaceholder")} autocomplete="off" spellcheck="false" />
             </div>
-            <div id="term-out" class="min-h-[1.5rem] whitespace-pre-wrap text-[var(--color-signal)]" data-stats={JSON.stringify(stats)} data-cmds={JSON.stringify(cmds)}></div>
+            <div
+              id="term-out"
+              class="min-h-[1.5rem] cursor-copy whitespace-pre-wrap text-[var(--color-signal)]"
+              title={t("sec.connect.copyHint")}
+              data-copied={t("sec.connect.copied")}
+              data-stats={JSON.stringify(stats)}
+              data-cmds={JSON.stringify(cmds)}
+            ></div>
           </div>
         </div>
+
+        <!-- clipboard feedback for the terminal -->
+        <div class="copy-toast" id="copy-toast" role="status" aria-live="polite"></div>
 
         <!-- other links -->
         <div class="flex flex-wrap gap-2">
@@ -147,4 +157,65 @@ const cmds = {
     respond(input.value);
     input.value = "";
   });
+
+  // ── Copy an answer ───────────────────────────────────────
+  //    The terminal is a text surface, so the natural gesture is: tap the
+  //    answer, get it on the clipboard. A small toast confirms it.
+  const toast = document.getElementById("copy-toast");
+  let toastTimer = 0;
+
+  const flash = (message: string) => {
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add("show");
+    window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => toast.classList.remove("show"), 1600);
+  };
+
+  out?.addEventListener("click", async () => {
+    const text = out.textContent?.trim();
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      // Clipboard is unavailable in some contexts; the toast still confirms
+      // the gesture so the interface never feels broken.
+    }
+    flash(out.dataset.copied ?? "Copied");
+  });
 </script>
+
+<style>
+  .copy-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 2rem;
+    z-index: 70;
+    transform: translate(-50%, 1rem);
+    opacity: 0;
+    pointer-events: none;
+    border: 1px solid var(--color-line-2);
+    background: var(--color-ink-2);
+    color: var(--color-chalk);
+    padding: 0.6rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .copy-toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .copy-toast {
+      transition: opacity 0.1s linear;
+      transform: translate(-50%, 0);
+    }
+  }
+</style>

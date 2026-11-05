@@ -41,17 +41,28 @@ const langColor: Record<string, string> = {
     </div>
 
     <!-- filter tabs -->
-    <div class="mt-10 flex flex-wrap gap-2" id="repo-filters">
-      <button class="filter-chip is-active" data-group="all" type="button">
-        {t("sec.repos.all")} <span class="text-[var(--color-line-2)]">{repos.length}</span>
-      </button>
-      {
-        groups.map((g) => (
-          <button class="filter-chip" data-group={g} type="button">
-            {t(`sec.repos.group.${g}`)} <span class="text-[var(--color-line-2)]">{counts[g]}</span>
-          </button>
-        ))
-      }
+    <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
+      <div class="flex flex-wrap gap-2" id="repo-filters">
+        <button class="filter-chip is-active" data-group="all" type="button">
+          {t("sec.repos.all")} <span class="text-[var(--color-line-2)]">{repos.length}</span>
+        </button>
+        {
+          groups.map((g) => (
+            <button class="filter-chip" data-group={g} type="button">
+              {t(`sec.repos.group.${g}`)} <span class="text-[var(--color-line-2)]">{counts[g]}</span>
+            </button>
+          ))
+        }
+      </div>
+
+      <label class="ml-auto flex items-center gap-2.5">
+        <span class="font-mono text-[0.625rem] tracking-[0.18em] text-[var(--color-fog)] uppercase">{t("sec.repos.sort")}</span>
+        <select class="repo-sort" id="repo-sort">
+          <option value="default">{t("sec.repos.sortDefault")}</option>
+          <option value="name">{t("sec.repos.sortName")}</option>
+          <option value="stars">{t("sec.repos.sortStars")}</option>
+        </select>
+      </label>
     </div>
 
     <div class="mt-8 border-t border-[var(--color-line)]" id="repo-list">
@@ -63,6 +74,8 @@ const langColor: Record<string, string> = {
             rel="noopener"
             class="repo-row"
             data-group={r.group}
+            data-name={r.name.toLowerCase()}
+            data-stars={r.stars ?? 0}
             data-search={`${r.name} ${r.description} ${td(t, r.description)} ${r.language} ${r.group} ${t(`sec.repos.group.${r.group}`)}`.toLowerCase()}
           >
             <span class="flex items-center gap-2.5 font-mono text-[0.8125rem] text-[var(--color-chalk)]">
@@ -122,12 +135,44 @@ const langColor: Record<string, string> = {
     color: var(--color-signal);
     background: color-mix(in srgb, var(--color-signal) 8%, transparent);
   }
+
+  .repo-sort {
+    appearance: none;
+    padding: 0.5rem 2rem 0.5rem 0.75rem;
+    border: 1px solid var(--color-line);
+    background-color: transparent;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='6' viewBox='0 0 8 6'%3E%3Cpath d='M1 1l3 3 3-3' fill='none' stroke='%23888' stroke-width='1.2'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    color: var(--color-fog-2);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .repo-sort:hover,
+  .repo-sort:focus-visible {
+    border-color: var(--color-line-2);
+    color: var(--color-chalk);
+  }
+
+  .repo-sort option {
+    background: var(--color-ink-2);
+    color: var(--color-chalk);
+  }
 </style>
 
 <script>
   const chips = Array.from(document.querySelectorAll<HTMLButtonElement>(".filter-chip"));
   const rows = Array.from(document.querySelectorAll<HTMLElement>("#repo-list .repo-row"));
   const empty = document.getElementById("repo-empty") as HTMLParagraphElement;
+  const list = document.getElementById("repo-list") as HTMLDivElement;
+  const sort = document.getElementById("repo-sort") as HTMLSelectElement | null;
 
   const apply = (group: string) => {
     let shown = 0;
@@ -141,4 +186,18 @@ const langColor: Record<string, string> = {
   };
 
   chips.forEach((c) => c.addEventListener("click", () => apply(c.dataset.group ?? "all")));
+
+  // Sorting reorders the DOM in place; the source order is kept in `rows`
+  // so switching back to "default" is exact, not approximately alphabetical.
+  sort?.addEventListener("change", () => {
+    const mode = sort.value;
+    const ordered =
+      mode === "default"
+        ? rows
+        : [...rows].sort((a, b) => {
+            if (mode === "stars") return Number(b.dataset.stars) - Number(a.dataset.stars);
+            return (a.dataset.name ?? "").localeCompare(b.dataset.name ?? "");
+          });
+    ordered.forEach((row) => list.insertBefore(row, empty));
+  });
 </script>
