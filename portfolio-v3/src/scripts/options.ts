@@ -102,6 +102,19 @@ export const initOptions = () => {
   if (booted) return;
   booted = true;
 
+  // Shareable views: ?theme=light&accent=cyan applies the incoming state and
+  // remembers it, so a link copied from the palette reproduces the exact
+  // palette someone was looking at.
+  try {
+    const params = new URLSearchParams(location.search);
+    const themeParam = params.get("theme");
+    const accentParam = params.get("accent");
+    if (isTheme(themeParam)) write(THEME_KEY, themeParam);
+    if (isAccent(accentParam)) write(ACCENT_KEY, accentParam);
+  } catch {
+    /* malformed URL — keep whatever is stored */
+  }
+
   apply();
 
   window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", () => {

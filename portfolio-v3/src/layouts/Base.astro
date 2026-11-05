@@ -71,10 +71,16 @@ const fontHrefAm =
           const root = document.documentElement;
           const mq = window.matchMedia("(prefers-color-scheme: light)");
           const pref = (k, d) => localStorage.getItem(k) || d;
-          const themePref = pref("cv:theme", "system");
+          // Shareable links carry ?theme=&accent=; honour them before paint.
+          const params = new URLSearchParams(location.search);
+          const urlTheme = params.get("theme");
+          const urlAccent = params.get("accent");
+          const themePref = ["dark", "light", "system"].includes(urlTheme) ? urlTheme : pref("cv:theme", "system");
           const theme = themePref === "system" ? (mq.matches ? "light" : "dark") : themePref;
           root.dataset.theme = theme;
-          root.dataset.accent = pref("cv:accent", "lime");
+          root.dataset.accent = ["lime", "cyan", "amber", "rose", "violet"].includes(urlAccent)
+            ? urlAccent
+            : pref("cv:accent", "lime");
           root.style.colorScheme = theme;
           const meta = document.getElementById("theme-color-meta");
           if (meta) meta.setAttribute("content", theme === "light" ? "#f7f8f6" : "#08090a");

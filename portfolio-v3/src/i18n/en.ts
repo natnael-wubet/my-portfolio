@@ -244,6 +244,8 @@ export const en = {
   "palette.opt.accentMeta": "Signal colour",
   "palette.opt.shortcuts": "Keyboard shortcuts",
   "palette.opt.shortcutsMeta": "Every key on this site",
+  "palette.opt.share": "Copy view link",
+  "palette.opt.shareMeta": "Theme, accent and section",
   "palette.opt.langAm": "Switch to Amharic",
   "palette.opt.langAmMeta": "ድር ጣቢያውን በአማርኛ አሳይ",
   "palette.opt.langEn": "Switch to English",
@@ -252,6 +254,9 @@ export const en = {
   // ── Language switcher ─────────────────────────────────────
   "lang.am": "አማ",
   "lang.en": "EN",
+
+  // ── UI feedback ───────────────────────────────────────────
+  "ui.linkCopied": "Link copied",
 } as const;
 
 export type Dict = typeof en;

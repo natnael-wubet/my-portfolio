@@ -1,0 +1,71 @@
+---
+/**
+ * Site instrument: the small always-available measurement layer.
+ *
+ *   ui:toast   detail: string      → transient status line
+ *
+ * Later additions (diagnostics drawer, X-ray mode) live here too, so the
+ * page only pays for one instrument script.
+ */
+import type { T } from "../i18n";
+
+interface Props {
+  t: T;
+}
+const { t } = Astro.props;
+---
+
+<!-- Shared transient feedback for copy/share actions. -->
+<div class="site-toast" id="site-toast" role="status" aria-live="polite"></div>
+
+<script>
+  const toast = document.getElementById("site-toast");
+
+  let toastTimer = 0;
+  const flash = (message: string) => {
+    if (!toast || !message) return;
+    toast.textContent = message;
+    toast.classList.add("show");
+    window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => toast.classList.remove("show"), 1800);
+  };
+
+  document.addEventListener("ui:toast", (e) => {
+    flash((e as CustomEvent<string>).detail);
+  });
+</script>
+
+<style>
+  .site-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 2rem;
+    z-index: 300;
+    transform: translate(-50%, 1rem);
+    opacity: 0;
+    pointer-events: none;
+    border: 1px solid var(--color-line-2);
+    background: var(--color-ink-2);
+    color: var(--color-chalk);
+    padding: 0.6rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .site-toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-toast {
+      transition: opacity 0.1s linear;
+      transform: translate(-50%, 0);
+    }
+  }
+</style>

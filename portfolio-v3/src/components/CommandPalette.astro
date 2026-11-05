@@ -93,6 +93,7 @@ const items: PaletteItem[] = [
     keywords: `accent colour ${a} signal`,
   })),
   { label: t("palette.opt.shortcuts"), meta: t("palette.opt.shortcutsMeta"), href: "action:help", kind: KIND.option, keywords: "keyboard shortcuts help keys commands" },
+  { label: t("palette.opt.share"), meta: t("palette.opt.shareMeta"), href: "action:share", kind: KIND.option, keywords: "share link url copy view theme accent section" },
   // Language is a navigation, not a state toggle: both locales are static.
   {
     label: lang === "en" ? t("palette.opt.langAm") : t("palette.opt.langEn"),
@@ -111,7 +112,7 @@ const items: PaletteItem[] = [
 ];
 ---
 
-<div class="palette-backdrop" id="palette" role="dialog" aria-modal="true" aria-label={t("palette.aria")}>
+<div class="palette-backdrop" id="palette" role="dialog" aria-modal="true" aria-label={t("palette.aria")} data-toast-copied={t("ui.linkCopied")}>
   <div class="palette">
     <input
       class="palette-input"
@@ -250,6 +251,20 @@ const items: PaletteItem[] = [
       document.dispatchEvent(new CustomEvent("opt:lang", { detail: value }));
     } else if (kind === "help") {
       document.dispatchEvent(new CustomEvent("opt:help"));
+    } else if (kind === "share") {
+      // Reproduce the current view: palette preference + the section in view.
+      const url = new URL(location.href);
+      url.searchParams.set("theme", localStorage.getItem("cv:theme") ?? "system");
+      url.searchParams.set("accent", localStorage.getItem("cv:accent") ?? "lime");
+      url.hash = location.hash;
+      navigator.clipboard
+        ?.writeText(url.toString())
+        .then(() =>
+          document.dispatchEvent(
+            new CustomEvent("ui:toast", { detail: backdrop.dataset.toastCopied ?? "Link copied" })
+          )
+        )
+        .catch(() => {});
     }
   }
 

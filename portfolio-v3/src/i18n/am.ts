@@ -243,6 +243,8 @@ export const am: Dict & Record<string, string> = {
   "palette.opt.accentMeta": "የምልክት ቀለም",
   "palette.opt.shortcuts": "የቁልፍ አቁሮች",
   "palette.opt.shortcutsMeta": "በዚህ ገጽ ላይ ያሉት ሁሉም ቁልፎች",
+  "palette.opt.share": "የእይታ አገናኝ ቅዳ",
+  "palette.opt.shareMeta": "ገጽታ፣ ቀለምና ክፍል",
   "palette.opt.langAm": "ወደ አማርኛ ቀይር",
   "palette.opt.langAmMeta": "ድር ጣቢያውን በአማርኛ አሳይ",
   "palette.opt.langEn": "ወደ እንግሊዝኛ ቀይር",
@@ -251,4 +253,7 @@ export const am: Dict & Record<string, string> = {
   // ── Language switcher ─────────────────────────────────────
   "lang.am": "አማ",
   "lang.en": "EN",
+
+  // ── UI feedback ───────────────────────────────────────────
+  "ui.linkCopied": "አገናኝ ተቀድቷል",
 };
