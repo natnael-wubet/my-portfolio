@@ -172,7 +172,7 @@ export const en = {
   "sec.connect.termPlaceholder": "type 'hire' or 'help'…",
   "sec.connect.copyHint": "Click an answer to copy it",
   "sec.connect.cmd.hire": "email natyw4122@gmail.com — usually replies within a day.",
-  "sec.connect.cmd.help": "commands: hire · work · stack · github · tg · clear",
+  "sec.connect.cmd.help": "commands: hire · work · stack · github · tg · copy · clear",
   "sec.connect.cmd.work": "{live} live deployments · {repos} repos · {awards} competition placements",
   "sec.connect.cmd.stack": "react · typescript · ionic · capacitor · next · vue · python · three.js · firebase · supabase",
   "sec.connect.cmd.github": "→ github.com/natnael-wubet",

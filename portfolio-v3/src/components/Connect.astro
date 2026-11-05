@@ -145,6 +145,14 @@ const cmds = {
       out!.textContent = "";
       return;
     }
+    if (cmd === "copy" || cmd === "cp") {
+      const text = out!.textContent?.trim();
+      if (text) {
+        navigator.clipboard?.writeText(text).catch(() => {});
+        flash(out!.dataset.copied ?? "Copied ✓");
+      }
+      return;
+    }
     if (cmd in cmds) {
       out!.textContent = cmds[cmd];
       return;

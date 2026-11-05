@@ -171,7 +171,7 @@ export const am: Dict & Record<string, string> = {
   "sec.connect.termPlaceholder": "'hire' ወይም 'help' ይጻፉ…",
   "sec.connect.copyHint": "ለመቅዳት መልሱን ይጫኑ",
   "sec.connect.cmd.hire": "natyw4122@gmail.com ይላኩ — ብዙ ጊዜ በቀን ውስጥ ይመልሳል።",
-  "sec.connect.cmd.help": "ትዕዛዞች: hire · work · stack · github · tg · clear",
+  "sec.connect.cmd.help": "ትዕዛዞች: hire · work · stack · github · tg · copy · clear",
   "sec.connect.cmd.work": "{live} ቀጥታ ማስተላለፊያ · {repos} ማከማቻ · {awards} የውድድር ቦታ",
   "sec.connect.cmd.stack": "react · typescript · ionic · capacitor · next · vue · python · three.js · firebase · supabase",
   "sec.connect.cmd.github": "→ github.com/natnael-wubet",
