@@ -21,12 +21,14 @@ import Instrument from "./Instrument.astro";
 import { makeT, type Lang } from "../i18n";
 import { repos } from "../data/content";
 import { deployments } from "../data/deployments";
+import { buildInfo } from "../lib/build";
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
 const t = makeT(lang);
+const build = buildInfo();
 
 const live = deployments.filter((d) => !d.archived).length;
 const description = t("meta.descriptionCounted", { live, repos: repos.length });
@@ -48,5 +50,5 @@ const description = t("meta.descriptionCounted", { live, repos: repos.length });
   <Footer t={t} />
   <CommandPalette t={t} lang={lang} />
   <Shortcuts t={t} />
-  <Instrument t={t} />
+  <Instrument t={t} build={build} />
 </Base>

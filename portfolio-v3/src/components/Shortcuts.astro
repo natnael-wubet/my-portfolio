@@ -26,6 +26,8 @@ const groups = [
     rows: [
       { keys: ["T"], label: t("shortcuts.theme") },
       { keys: ["A"], label: t("shortcuts.accent") },
+      { keys: ["D"], label: t("shortcuts.diag") },
+      { keys: ["I"], label: t("shortcuts.xray") },
       { keys: ["?"], label: t("shortcuts.help") },
     ],
   },
@@ -124,6 +126,10 @@ const groups = [
       import("../scripts/options").then((m) => m.cycleTheme());
     } else if (e.key.toLowerCase() === "a") {
       import("../scripts/options").then((m) => m.cycleAccent());
+    } else if (e.key.toLowerCase() === "d") {
+      document.dispatchEvent(new CustomEvent("opt:diag"));
+    } else if (e.key.toLowerCase() === "i") {
+      document.dispatchEvent(new CustomEvent("opt:xray"));
     } else if (e.key.toLowerCase() === "h") {
       // Rides the site-wide anchor handler, so it uses the same Lenis
       // glide (and history entry) as clicking the logo.
