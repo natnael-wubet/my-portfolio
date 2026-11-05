@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import { locales, makeT, type Lang } from "../i18n";
+import { structuredData } from "../lib/structured-data";
 
 interface Props {
   lang?: Lang;
@@ -13,6 +14,10 @@ const t = makeT(lang);
 const loc = locales[lang];
 const pageTitle = title ?? t("meta.title");
 const pageDescription = description ?? t("meta.description");
+
+// Machine-readable siblings: the profile, the LLM index and the Markdown CV.
+// JSON-LD is generated from the same profile, so it cannot drift from the page.
+const ld = JSON.stringify(structuredData()).replace(/</g, "\\u003c");
 
 // Ethiopic has no Latin glyphs — only the Amharic page pays for the font.
 const fontHref =
@@ -37,6 +42,13 @@ const fontHrefAm =
     <link rel="alternate" hreflang="en" href="/" />
     <link rel="alternate" hreflang="am" href="/am/" />
     <link rel="alternate" hreflang="x-default" href="/" />
+    <!-- The same person, in formats a tool can consume. -->
+    <link rel="alternate" type="application/json" href="/profile.json" title="Machine-readable profile" />
+    <link rel="alternate" type="application/schema+json" href="/profile.schema.json" title="Profile schema" />
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="Index for LLM crawlers" />
+    <link rel="alternate" type="text/markdown" href="/resume.md" title="Markdown CV" />
+    <link rel="author" href="/profile.json" />
+    <script type="application/ld+json" set:html={ld} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
     <meta property="og:type" content="website" />

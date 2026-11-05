@@ -1,0 +1,312 @@
+---
+/**
+ * The machine layer, made visible.
+ *
+ * Everything behind these links is generated at build time from the same data
+ * the page renders: /profile.json (canonical + schema), /llms.txt (agent
+ * index), /llms-full.txt (everything) and /resume.md. The panel exists so a
+ * visitor can see the page is a public record, not just a screen.
+ */
+import { deployments } from "../data/deployments";
+import { awards, repos } from "../data/content";
+import { buildInfo } from "../lib/build";
+import type { T } from "../i18n";
+
+interface Props {
+  t: T;
+}
+const { t } = Astro.props;
+const build = buildInfo();
+
+const facts = {
+  projects: deployments.length,
+  repos: repos.length,
+  awards: awards.length,
+};
+
+const files = [
+  {
+    label: t("machine.profile"),
+    href: "/profile.json",
+    meta: t("machine.profileMeta"),
+    ext: "JSON",
+  },
+  {
+    label: t("machine.llms"),
+    href: "/llms.txt",
+    meta: t("machine.llmsMeta"),
+    ext: "TXT",
+  },
+  {
+    label: t("machine.resume"),
+    href: "/resume.md",
+    meta: t("machine.resumeMeta"),
+    ext: "MD",
+  },
+];
+---
+
+<div class="machine" id="machine" data-reveal>
+  <div class="machine-head">
+    <span class="eyebrow">{t("machine.eyebrow")}</span>
+    <span class="machine-build">{t("machine.build")} {build.commit}</span>
+  </div>
+
+  <div class="machine-body">
+    <div class="machine-copy">
+      <h3 class="machine-title">{t("machine.title")}</h3>
+      <p class="machine-sub">{t("machine.sub")}</p>
+      <p class="machine-facts">{t("machine.facts", facts)}</p>
+    </div>
+
+    <div class="machine-files">
+      {
+        files.map((file) => (
+          <a class="machine-file" href={file.href} target="_blank" rel="noopener">
+            <span class="machine-ext">{file.ext}</span>
+            <span class="machine-name">{file.label}</span>
+            <span class="machine-meta">{file.meta}</span>
+            <span class="machine-arrow" aria-hidden="true">
+              ↗
+            </span>
+          </a>
+        ))
+      }
+      <button
+        class="machine-file machine-action"
+        type="button"
+        id="machine-copy"
+        data-copied={t("machine.copied")}
+        data-failed={t("machine.copyFailed")}
+      >
+        <span class="machine-ext" aria-hidden="true">⧉</span>
+        <span class="machine-name">{t("machine.copy")}</span>
+        <span class="machine-meta">{t("machine.copyMeta")}</span>
+        <span class="machine-arrow" aria-hidden="true">→</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="machine-foot">
+    <span>{t("machine.privacy")}</span>
+    <span>{t("machine.agentHint")}</span>
+  </div>
+</div>
+
+<script>
+  const button = document.getElementById("machine-copy") as HTMLButtonElement | null;
+
+  const toast = (message: string) =>
+    document.dispatchEvent(new CustomEvent("ui:toast", { detail: message }));
+
+  button?.addEventListener("click", async () => {
+    try {
+      const response = await fetch("/profile.json", { headers: { accept: "application/json" } });
+      if (!response.ok) throw new Error(String(response.status));
+      const text = await response.text();
+      await navigator.clipboard.writeText(text);
+      toast(button.dataset.copied ?? "Copied");
+    } catch {
+      // Clipboard can be blocked; the panel still links to the real file.
+      toast(button.dataset.failed ?? "Open profile.json");
+    }
+  });
+</script>
+
+<style>
+  .machine {
+    margin-top: 5rem;
+    border: 1px solid var(--color-line-2);
+    background: color-mix(in srgb, var(--color-ink-2) 62%, transparent);
+    scroll-margin-top: 5rem;
+  }
+
+  .machine-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 1.1rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .machine-build {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-fog);
+  }
+
+  .machine-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  }
+
+  .machine-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 1.6rem 1.4rem;
+    border-right: 1px solid var(--color-line);
+  }
+
+  .machine-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 2vw, 1.45rem);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    color: var(--color-chalk);
+  }
+
+  .machine-sub {
+    margin: 0;
+    max-width: 44ch;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-fog-2);
+  }
+
+  .machine-facts {
+    margin: 0.35rem 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-signal);
+  }
+
+  .machine-files {
+    display: grid;
+    align-content: start;
+  }
+
+  .machine-file {
+    display: grid;
+    grid-template-columns: 2.6rem minmax(0, 1fr) auto 1.2rem;
+    align-items: center;
+    gap: 0.8rem;
+    width: 100%;
+    padding: 0.85rem 1.1rem;
+    border: 0;
+    border-bottom: 1px solid var(--color-line);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .machine-file:last-child {
+    border-bottom: 0;
+  }
+
+  .machine-file:hover {
+    background: color-mix(in srgb, var(--color-signal) 6%, transparent);
+  }
+
+  .machine-ext {
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--color-line-2);
+    padding: 0.22rem 0.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.1em;
+    color: var(--color-signal);
+  }
+
+  .machine-name {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-chalk);
+  }
+
+  .machine-meta {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.06em;
+    color: var(--color-fog);
+    white-space: nowrap;
+  }
+
+  .machine-arrow {
+    justify-self: end;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-line-2);
+    transition:
+      color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .machine-file:hover .machine-arrow {
+    color: var(--color-signal);
+    transform: translateX(2px);
+  }
+
+  .machine-action {
+    background: color-mix(in srgb, var(--color-signal) 3%, transparent);
+  }
+
+  .machine-action .machine-ext {
+    border-color: color-mix(in srgb, var(--color-signal) 45%, transparent);
+    color: var(--color-signal);
+  }
+
+  .machine-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.7rem 1.1rem;
+    border-top: 1px solid var(--color-line);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-fog);
+  }
+
+  @media (max-width: 860px) {
+    .machine {
+      margin-top: 3.5rem;
+    }
+
+    .machine-body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .machine-copy {
+      border-right: 0;
+      border-bottom: 1px solid var(--color-line);
+    }
+
+    .machine-meta {
+      display: none;
+    }
+
+    .machine-file {
+      grid-template-columns: 2.6rem minmax(0, 1fr) 1.2rem;
+    }
+
+    .machine-foot {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.35rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .machine-arrow {
+      transition: none;
+    }
+  }
+</style>

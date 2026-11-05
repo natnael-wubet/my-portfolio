@@ -339,4 +339,30 @@ export const am: Dict & Record<string, string> = {
     "ኢንጂነሩ፣ ኦፕሬሽኑ፣ ከክፍያ አገልግሎት አቅራቢ ጋር በስልክ የተነጋገረው፣ እና ሌሊቱን ሁለት ሰዓት ላይ ድጋፍ የመለሰው ሰው ሆኛለሁ። በእውነተኛ ገንዘብ የሚጫወት ቢንጎ፣ በአገር አቀፍ ደረጃ የአውቶቡስ ቲኬት ሥርዓት፣ የመኪና ገበያ።",
   "brief.lens.foundingWhy":
     "ቀደምት ቡድኖች ከልዩ ሙያ ይልቅ ስፋትና ብልህነት ይፈልጋሉ። ሁለቱንም አመጣለሁ፣ ከዚህ ወር ውስጥ እውነተኛ ነገር የመላክ ዝንባሌ ጋር።",
+
+  // ── Machine-readable record ───────────────────────────────
+  "machine.eyebrow": "ለማሽን የሚነበብ",
+  "machine.title": "ተመሳሳይ መዝገብ፣ ለመሣሪያዎችዎ።",
+  "machine.sub":
+    "ቀኖናዊ የJSON መገለጫ፣ የLLM መረጃ ጠቋሚና የMarkdown ሲቪ — በግንባታ ጊዜ ከዚህ ገጽ ውሂብ የተፈጠሩ፣ በእጥፍ ያልተጻፉ።",
+  "machine.facts": "{projects} ፕሮጀክቶች · {repos} ማከማቻዎች · {awards} ሽልማቶች",
+  "machine.profile": "profile.json",
+  "machine.profileMeta": "ቀኖናዊ · ከስኪማ ጋር",
+  "machine.llms": "llms.txt",
+  "machine.llmsMeta": "ለLLM መረጃ ጠቋሚ",
+  "machine.resume": "resume.md",
+  "machine.resumeMeta": "የጽሑፍ ሲቪ",
+  "machine.copy": "መገለጫ ቅዳ",
+  "machine.copyMeta": "JSON ወደ ቅንጥብ ሰሌዳ",
+  "machine.copied": "የመገለጫ JSON ተቀድቷል",
+  "machine.copyFailed": "ቅንጥብ ሰሌዳ አይገኝም — profile.json ይክፈቱ",
+  "machine.privacy": "ስታቲክ HTML · ኩኪ የለም · መከታተያ የለም",
+  "machine.agentHint": "ኤጀንቶች፡ ከllms.txt ይጀምሩ",
+  "machine.build": "ግንባታ",
+  "palette.opt.profile": "የማሽን መገለጫ ቅዳ",
+  "palette.opt.profileMeta": "profile.json — ቀኖናዊ፣ ለኤጀንት የሚነበብ",
+  "palette.opt.llms": "llms.txt ክፈት",
+  "palette.opt.llmsMeta": "ለLLM መረጃ ጠቋሚ",
+  "palette.jump.machine": "ለማሽን የሚነበብ መዝገብ",
+  "palette.jump.machineMeta": "profile.json · llms.txt · resume.md",
 };

@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Machine-readable profile, generated at build time
+# https://naty-wubet.web.app/llms.txt
+# https://naty-wubet.web.app/profile.json
+
+Sitemap: https://naty-wubet.web.app/sitemap.xml

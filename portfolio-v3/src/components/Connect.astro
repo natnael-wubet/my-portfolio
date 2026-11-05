@@ -2,6 +2,7 @@
 import { socials, repos, awards } from "../data/content";
 import { deployments } from "../data/deployments";
 import { rich, td, type T } from "../i18n";
+import Machine from "./Machine.astro";
 
 interface Props {
   t: T;
@@ -122,6 +123,8 @@ const cmds = {
         </div>
       </div>
     </div>
+
+    <Machine t={t} />
   </div>
 </section>
 

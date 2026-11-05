@@ -340,6 +340,32 @@ export const en = {
     "I have been the engineer, the ops, the person on the phone with a payment provider, and the one answering support at 2am. Real-money bingo, a nationwide bus ticketing system, a car marketplace.",
   "brief.lens.foundingWhy":
     "Early teams need range and judgement more than a specialisation. I bring both, plus a bias for shipping something real this month.",
+
+  // ── Machine-readable record ───────────────────────────────
+  "machine.eyebrow": "Machine-readable",
+  "machine.title": "The same record, for your tools.",
+  "machine.sub":
+    "A canonical JSON profile, an LLM index and a Markdown CV — generated from this page's data at build time, never written twice.",
+  "machine.facts": "{projects} projects · {repos} repositories · {awards} awards",
+  "machine.profile": "profile.json",
+  "machine.profileMeta": "Canonical · with schema",
+  "machine.llms": "llms.txt",
+  "machine.llmsMeta": "Index for LLM crawlers",
+  "machine.resume": "resume.md",
+  "machine.resumeMeta": "Plain-text CV",
+  "machine.copy": "Copy profile",
+  "machine.copyMeta": "JSON to clipboard",
+  "machine.copied": "Profile JSON copied",
+  "machine.copyFailed": "Clipboard unavailable — open profile.json",
+  "machine.privacy": "Static HTML · no cookies · no trackers",
+  "machine.agentHint": "Agents: start at llms.txt",
+  "machine.build": "build",
+  "palette.opt.profile": "Copy machine profile",
+  "palette.opt.profileMeta": "profile.json — canonical, agent-readable",
+  "palette.opt.llms": "Open llms.txt",
+  "palette.opt.llmsMeta": "Index for LLM crawlers",
+  "palette.jump.machine": "Machine-readable record",
+  "palette.jump.machineMeta": "profile.json · llms.txt · resume.md",
 } as const;
 
 export type Dict = typeof en;

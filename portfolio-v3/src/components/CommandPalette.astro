@@ -98,6 +98,8 @@ const items: PaletteItem[] = [
   { label: t("palette.opt.diag"), meta: t("palette.opt.diagMeta"), href: "action:diag", kind: KIND.option, keywords: "diagnostics stats performance telemetry measure fps memory network build" },
   { label: t("palette.opt.xray"), meta: t("palette.opt.xrayMeta"), href: "action:xray", kind: KIND.option, keywords: "xray x-ray inspect outline grid tokens colours layout debug" },
   { label: t("palette.opt.brief"), meta: t("palette.opt.briefMeta"), href: "action:brief", kind: KIND.option, keywords: "brief tailored lens hire team product games security protocols founding download markdown cv resume" },
+  { label: t("palette.opt.profile"), meta: t("palette.opt.profileMeta"), href: "action:profile", kind: KIND.option, keywords: "machine profile json copy agent llm export api structured data" },
+  { label: t("palette.opt.llms"), meta: t("palette.opt.llmsMeta"), href: "/llms.txt", kind: KIND.doc, keywords: "llms txt agent ai index crawler machine readable" },
   // Language is a navigation, not a state toggle: both locales are static.
   {
     label: lang === "en" ? t("palette.opt.langAm") : t("palette.opt.langEn"),
@@ -113,10 +115,11 @@ const items: PaletteItem[] = [
   { label: t("palette.jump.awards"), meta: t("palette.jump.awardsMeta"), href: "#awards", kind: KIND.jump, keywords: "awards record competitions certifications ccna" },
   { label: t("palette.jump.photos"), meta: t("palette.jump.photosMeta"), href: "#photos", kind: KIND.jump, keywords: "photos personal pictures selfies off-screen" },
   { label: t("palette.jump.contact"), meta: t("palette.jump.contactMeta"), href: "#connect", kind: KIND.jump, keywords: "contact email phone telegram hire reach" },
+  { label: t("palette.jump.machine"), meta: t("palette.jump.machineMeta"), href: "#machine", kind: KIND.jump, keywords: "machine readable json profile llms resume markdown agent api structured data" },
 ];
 ---
 
-<div class="palette-backdrop" id="palette" role="dialog" aria-modal="true" aria-label={t("palette.aria")} data-toast-copied={t("ui.linkCopied")}>
+<div class="palette-backdrop" id="palette" role="dialog" aria-modal="true" aria-label={t("palette.aria")} data-toast-copied={t("ui.linkCopied")} data-toast-profile={t("machine.copied")}>
   <div class="palette">
     <input
       class="palette-input"
@@ -449,6 +452,23 @@ const items: PaletteItem[] = [
       document.dispatchEvent(new CustomEvent("opt:xray"));
     } else if (kind === "brief") {
       document.dispatchEvent(new CustomEvent("opt:brief"));
+    } else if (kind === "profile") {
+      // The palette is a launcher for the machine layer too: copy the whole
+      // canonical record without leaving the keyboard.
+      fetch("/profile.json", { headers: { accept: "application/json" } })
+        .then((response) => {
+          if (!response.ok) throw new Error(String(response.status));
+          return response.text();
+        })
+        .then((text) => navigator.clipboard.writeText(text))
+        .then(() => {
+          document.dispatchEvent(
+            new CustomEvent("ui:toast", {
+              detail: backdrop.dataset.toastProfile ?? "Profile copied",
+            })
+          );
+        })
+        .catch(() => {});
     } else if (kind === "share") {
       // Reproduce the current view: palette preference + the section in view.
       const url = new URL(location.href);

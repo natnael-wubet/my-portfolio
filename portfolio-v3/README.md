@@ -36,6 +36,14 @@ npm run preview  # serve dist/ locally
   repositories, awards, stack, and an argument for that team. Copy it as
   Markdown, download `.md`, share it as `?brief=<lens>`, or print it: the
   print stylesheet strips the site and leaves the brief on white.
+- **Machine-readable record.** The page is also a public file: `/profile.json`
+  is a canonical, versioned profile with its own JSON Schema; `/llms.txt` and
+  `/llms-full.txt` are an index and full text for LLM crawlers; `/resume.md`
+  is a plain Markdown CV; `/sitemap.xml` and `robots.txt` point at all of it.
+  Every file is generated from the same `src/data` modules as the page, and
+  the JSON-LD `Person`/`WebSite`/`ProfilePage` graph is generated from the
+  same profile. The Connect section exposes the files and can copy the whole
+  JSON to the clipboard.
 - **Shareable views.** "Copy view link" encodes the current theme, accent and
   section in `?theme=&accent=#…`. The link applies its palette before first
   paint and remembers it, so a shared URL reproduces exactly what was seen.
@@ -78,8 +86,15 @@ src/
 │   ├── data.ts       # Amharic prose for src/data, keyed by English string
 │   └── index.ts      # makeT(), rich(), td(), locales
 ├── layouts/Base.astro
-├── lib/build.ts      # git commit + timestamp captured at build time
-├── pages/            # index.astro (en) and am/index.astro (am)
+├── lib/
+│   ├── build.ts      # git commit + timestamp captured at build time
+│   ├── profile.ts    # canonical public record, built from src/data
+│   ├── profile-schema.ts  # JSON Schema for /profile.json
+│   ├── site.ts       # canonical URL, identity and contact facts
+│   └── structured-data.ts # schema.org graph from the profile
+├── pages/            # index.astro (en), am/index.astro (am) and the
+│                     # machine endpoints: profile.json, profile.schema.json,
+│                     # llms.txt, llms-full.txt, resume.md, sitemap.xml
 ├── scripts/options.ts
 └── styles/global.css # theme + accent tokens, base styles
 ```
@@ -99,6 +114,25 @@ Dictionary strings support the tiny markup rendered by `rich()`:
 | `\n`       | line break                        |
 
 Everything else is HTML-escaped, so dictionary content can never inject markup.
+
+## Machine endpoints
+
+| Path                   | Type        | What it is                                        |
+| :--------------------- | :---------- | :------------------------------------------------ |
+| `/profile.json`        | JSON        | Canonical record: basics, projects, repos, awards |
+| `/profile.schema.json` | JSON Schema | The shape `/profile.json` validates against       |
+| `/llms.txt`            | text        | Concise, linked index for LLM crawlers            |
+| `/llms-full.txt`       | text        | Complete profile as Markdown                      |
+| `/resume.md`           | Markdown    | Plain-text CV                                     |
+| `/sitemap.xml`         | XML         | Both locales with hreflang alternates             |
+| `/robots.txt`          | text        | Crawler policy, sitemap and llms.txt pointers     |
+
+All of them are rendered by `src/lib/profile.ts` from the same `src/data`
+modules the page uses, so adding a deployment or award updates every format
+and the JSON-LD graph in lockstep. `buildProfile()` stamps the record with the
+git commit and build timestamp; `profile.schema.json` is intentionally strict
+at the root, so accidental shape drift is visible. The Connect section renders
+the same files as a panel (`#machine`), and the palette can copy the profile.
 
 ## Deployment
 
