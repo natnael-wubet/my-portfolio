@@ -29,7 +29,7 @@ const github = social("GitHub")?.href ?? SITE.github;
 const linkedin = social("LinkedIn")?.href ?? SITE.linkedin;
 
 const SUMMARY =
-  "Software engineer and full-stack developer in Bahir Dar, Ethiopia. I build games with real stakes, protocols that prove things, and platforms that ship — from a Telegram bingo room taking real money, to a Bitcoin-anchored citation ledger, to the offensive-security tooling I started with. Eleven years of code, from batch scripts and cryptography to TypeScript, Rust and three.js, with a parallel practice in physics and philosophy.";
+  "Software engineer and full-stack developer in Bahir Dar, Ethiopia. I build games with real stakes, protocols that prove things, and platforms that ship — from a Telegram bingo room taking real money, to a Bitcoin-anchored citation ledger, to the offensive-security tooling I started with. More than a decade of code, from batch scripts and cryptography to TypeScript, Rust and three.js, with a parallel practice in physics and philosophy.";
 
 const SKILLS = [
   {
