@@ -1,17 +1,27 @@
 ---
 import "../styles/global.css";
+import { locales, makeT, type Lang } from "../i18n";
 
 interface Props {
-  title: string;
+  lang?: Lang;
+  title?: string;
   description?: string;
 }
-const {
-  title,
-  description = "Natnael Wubet — software engineer and full-stack developer building games, platforms, protocols and security tooling from Bahir Dar, Ethiopia.",
-} = Astro.props;
+const { lang = "en", title, description } = Astro.props;
+
+const t = makeT(lang);
+const loc = locales[lang];
+const pageTitle = title ?? t("meta.title");
+const pageDescription = description ?? t("meta.description");
+
+// Ethiopic has no Latin glyphs — only the Amharic page pays for the font.
+const fontHref =
+  "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap";
+const fontHrefAm =
+  "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&family=Noto+Sans+Ethiopic:wght@400;500;600;700&display=swap";
 ---
 <!doctype html>
-<html lang="en">
+<html lang={loc.htmlLang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,27 +29,30 @@ const {
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
-    <meta name="description" content={description} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
     <meta name="theme-color" content="#08090a" id="theme-color-meta" />
     <meta name="author" content="Natnael Wubet" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
+    <!-- Both locales are static; tell crawlers they exist as siblings. -->
+    <link rel="alternate" hreflang="en" href="/" />
+    <link rel="alternate" hreflang="am" href="/am/" />
+    <link rel="alternate" hreflang="x-default" href="/" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content={loc.ogLocale} />
+    <meta property="og:locale:alternate" content={lang === "en" ? "am_ET" : "en_US"} />
     <meta property="og:image" content="/og.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Natnael Wubet — Software Engineer" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
     <meta name="twitter:image" content="/og.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href={lang === "am" ? fontHrefAm : fontHref} rel="stylesheet" />
     <!--
       Opt-in reveal: only mark the document as scriptable once JS is confirmed
       running, so a failed script leaves every [data-reveal] block visible
@@ -153,13 +166,43 @@ const {
           transform: none !important;
         }
       }
+
+      /* ── Amharic typography ─────────────────────────────────────
+         Ethiopic syllabaries carry their own rhythm: no case, wider
+         default spacing, taller ascenders. The Latin-first display
+         stack would also leave every heading in a fallback face, so
+         the families are re-ordered for [lang="am"] and the tiny
+         tracked labels get bumped to a readable size. */
+      html[lang="am"] {
+        --font-sans: "Inter", "Noto Sans Ethiopic", ui-sans-serif, system-ui, sans-serif;
+        --font-mono: "IBM Plex Mono", "Noto Sans Ethiopic", ui-monospace, monospace;
+        --font-display: "Noto Sans Ethiopic", "Space Grotesk", "Inter", sans-serif;
+      }
+
+      html[lang="am"] [class*="tracking-"] {
+        letter-spacing: 0.02em !important;
+      }
+
+      html[lang="am"] .display {
+        letter-spacing: 0;
+        line-height: 1.1;
+      }
+
+      /* 9–11px labels are unreadable in Ethiopic — floor them at 11–12px. */
+      html[lang="am"] [class*="text-[0.5"] {
+        font-size: 0.7rem !important;
+      }
+
+      html[lang="am"] [class*="text-[0.6"] {
+        font-size: 0.75rem !important;
+      }
     </style>
   </head>
   <body>
     <div class="rule-grid" aria-hidden="true"></div>
     <!-- Scroll progress: one hairline of signal, top of viewport -->
     <div class="scroll-progress" aria-hidden="true"><span id="scroll-progress-bar"></span></div>
-    <a class="skip-link" href="#top">Skip to content</a>
+    <a class="skip-link" href="#top">{t("nav.skip")}</a>
     <slot />
     <script>
       import Lenis from "lenis";

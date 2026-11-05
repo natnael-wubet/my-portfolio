@@ -1,5 +1,11 @@
 ---
 import { deployments, checkHealth } from "../data/deployments";
+import { rich, type T } from "../i18n";
+
+interface Props {
+  t: T;
+}
+const { t } = Astro.props;
 
 const health = await checkHealth();
 
@@ -12,19 +18,20 @@ const live = probed.filter((r) => r.health.status === "live").length;
   <div class="shell py-24 lg:py-32">
     <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
       <div class="flex flex-col gap-5" data-reveal>
-        <span class="eyebrow">Section 01 · Deployments</span>
-        <h2 class="display display-lg">Shipped &amp;<br />reachable</h2>
+        <span class="eyebrow">{t("sec.deployments.eyebrow")}</span>
+        <h2 class="display display-lg" set:html={rich(t("sec.deployments.title"))} />
         <p class="max-w-xl text-[var(--color-fog-2)]">
-          Every URL below was requested while this page was being built. The status you see is a real HTTP response,
-          not a claim.
+          {t("sec.deployments.lead")}
         </p>
       </div>
       <div class="flex flex-col items-start gap-2 md:items-end" data-reveal style="--d:120ms">
-        <span class="font-mono text-[0.6875rem] tracking-[0.2em] text-[var(--color-fog)] uppercase">
-          <span class="text-[var(--color-signal)]">{live}</span> / {probed.length} responding{" "}
-          <span class="text-[var(--color-line-2)]">· {rows.length - probed.length} archived</span>
-        </span>
-        <span class="font-mono text-[0.5625rem] tracking-[0.16em] text-[var(--color-line-2)] uppercase">Build-time probe</span>
+        <span
+          class="font-mono text-[0.6875rem] tracking-[0.2em] text-[var(--color-fog)] uppercase"
+          set:html={rich(t("sec.deployments.responding", { live, total: probed.length })) +
+            " " +
+            rich(t("sec.deployments.archived", { n: rows.length - probed.length }))}
+        />
+        <span class="font-mono text-[0.5625rem] tracking-[0.16em] text-[var(--color-line-2)] uppercase">{t("sec.deployments.probe")}</span>
       </div>
     </div>
 
@@ -48,7 +55,7 @@ const live = probed.filter((r) => r.health.status === "live").length;
                 </span>
                 <span class="status" data-state={st}>
                   <span class="status-dot" />
-                  {st === "archived" ? "archived · source" : st}
+                  {st === "archived" ? t("sec.deployments.archivedStatus") : t(`status.${st}`)}
                   {d.health.ms ? ` · ${d.health.ms}ms` : ""}
                 </span>
               </div>
@@ -84,7 +91,7 @@ const live = probed.filter((r) => r.health.status === "live").length;
                   {d.archived ? "github.com/natnael-wubet" : new URL(d.url).host}
                 </span>
                 <span class="font-mono text-[0.6875rem] tracking-[0.16em] text-[var(--color-fog)] uppercase transition-transform group-hover:translate-x-1 group-hover:text-[var(--color-signal)]">
-                  ↗ {d.archived ? "Source" : d.platform}
+                  ↗ {d.archived ? t("sec.deployments.source") : d.platform}
                 </span>
               </div>
 

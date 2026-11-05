@@ -1,6 +1,13 @@
 ---
 import { deployments } from "../data/deployments";
 import { repos, socials, awards, certifications, disciplines } from "../data/content";
+import { locales, type Lang, type T } from "../i18n";
+
+interface Props {
+  t: T;
+  lang: Lang;
+}
+const { t, lang } = Astro.props;
 
 interface PaletteItem {
   label: string;
@@ -10,87 +17,112 @@ interface PaletteItem {
   keywords: string;
 }
 
+// Kinds are translated at build time — the payload is JSON, so the client
+// only ever renders strings that already match the page's language.
+const KIND = {
+  deploy: t("palette.kind.Deploy"),
+  repo: t("palette.kind.Repo"),
+  award: t("palette.kind.Award"),
+  cert: t("palette.kind.Cert"),
+  link: t("palette.kind.Link"),
+  doc: t("palette.kind.Doc"),
+  play: t("palette.kind.Play"),
+  mind: t("palette.kind.Mind"),
+  jump: t("palette.kind.Jump"),
+  option: t("palette.kind.Option"),
+};
+
 const items: PaletteItem[] = [
   ...deployments.map((d) => ({
     label: d.name,
     meta: `${d.platform} · ${d.tagline}`,
     href: d.url,
-    kind: "Deploy",
+    kind: KIND.deploy,
     keywords: `${d.name} ${d.tagline} ${d.description} ${d.stack.join(" ")} ${d.category}`,
   })),
   ...repos.map((r) => ({
     label: r.name,
     meta: `${r.group} · ${r.description}`,
     href: r.url,
-    kind: "Repo",
+    kind: KIND.repo,
     keywords: `${r.name} ${r.description} ${r.language} ${r.group}`,
   })),
   ...awards.map((a) => ({
     label: a.title,
     meta: `${a.rank} · ${a.org}`,
     href: "#awards",
-    kind: "Award",
+    kind: KIND.award,
     keywords: `${a.title} ${a.org} ${a.detail} ${a.prize ?? ""} ${a.rank}`,
   })),
   ...certifications.map((c) => ({
     label: c.name,
     meta: c.issuer,
     href: c.file,
-    kind: "Cert",
+    kind: KIND.cert,
     keywords: `${c.name} ${c.issuer} ${c.detail}`,
   })),
   ...socials.map((s) => ({
     label: s.label,
     meta: s.handle,
     href: s.href,
-    kind: "Link",
+    kind: KIND.link,
     keywords: `${s.label} ${s.handle}`,
   })),
-  { label: "Download CV", meta: "Complete curriculum vitae (PDF)", href: "/assets/cv.pdf", kind: "Doc", keywords: "cv resume curriculum vitae pdf download" },
-  { label: "GitHub profile", meta: "@natnael-wubet", href: "https://github.com/natnael-wubet", kind: "Link", keywords: "github profile all repositories" },
-  { label: "Telegram", meta: "@nnaty_w20", href: "https://t.me/nnaty_w20", kind: "Link", keywords: "telegram contact chat" },
-  { label: "Big XO Mini App", meta: "Play in Telegram", href: "https://t.me/bigxoGameBot", kind: "Play", keywords: "bigxo game telegram mini app play xo" },
+  { label: t("palette.cv"), meta: t("palette.cvMeta"), href: "/assets/cv.pdf", kind: KIND.doc, keywords: "cv resume curriculum vitae pdf download ሲቪ" },
+  { label: t("palette.github"), meta: "@natnael-wubet", href: "https://github.com/natnael-wubet", kind: KIND.link, keywords: "github profile all repositories" },
+  { label: t("palette.telegram"), meta: "@nnaty_w20", href: "https://t.me/nnaty_w20", kind: KIND.link, keywords: "telegram contact chat ቴሌግራም" },
+  { label: t("palette.bigxo"), meta: t("palette.bigxoMeta"), href: "https://t.me/bigxoGameBot", kind: KIND.play, keywords: "bigxo game telegram mini app play xo" },
   // The interior — so "physics" or "hegel" lands somewhere real.
   ...disciplines.map((d) => ({
     label: d.name,
-    meta: `The interior · ${d.tags.slice(0, 3).join(" · ")}`,
+    meta: `${t("palette.interior")} · ${d.tags.slice(0, 3).join(" · ")}`,
     href: "#mind",
-    kind: "Mind",
+    kind: KIND.mind,
     keywords: `${d.name} ${d.blurb} ${d.tags.join(" ")}`,
   })),
   // ── Display options — real actions, dispatched as events ──
-  { label: "Toggle theme", meta: "Dark ↔ light ↔ system", href: "action:theme:toggle", kind: "Option", keywords: "theme dark light mode appearance toggle contrast" },
-  { label: "Dark theme", meta: "Display · instrument mode", href: "action:theme:dark", kind: "Option", keywords: "theme dark night mode appearance" },
-  { label: "Light theme", meta: "Display · daylight mode", href: "action:theme:light", kind: "Option", keywords: "theme light day mode appearance" },
-  { label: "System theme", meta: "Display · follow the OS", href: "action:theme:system", kind: "Option", keywords: "theme system auto os appearance" },
-  { label: "Accent · Lime", meta: "Signal colour", href: "action:accent:lime", kind: "Option", keywords: "accent colour lime green chartreuse signal" },
-  { label: "Accent · Cyan", meta: "Signal colour", href: "action:accent:cyan", kind: "Option", keywords: "accent colour cyan blue signal" },
-  { label: "Accent · Amber", meta: "Signal colour", href: "action:accent:amber", kind: "Option", keywords: "accent colour amber orange signal" },
-  { label: "Accent · Rose", meta: "Signal colour", href: "action:accent:rose", kind: "Option", keywords: "accent colour rose pink red signal" },
-  { label: "Accent · Violet", meta: "Signal colour", href: "action:accent:violet", kind: "Option", keywords: "accent colour violet purple signal" },
-  { label: "Keyboard shortcuts", meta: "Every key on this site", href: "action:help", kind: "Option", keywords: "keyboard shortcuts help keys commands" },
+  { label: t("palette.opt.toggleTheme"), meta: t("palette.opt.toggleThemeMeta"), href: "action:theme:toggle", kind: KIND.option, keywords: "theme dark light mode appearance toggle contrast" },
+  { label: t("palette.opt.darkTheme"), meta: t("palette.opt.darkThemeMeta"), href: "action:theme:dark", kind: KIND.option, keywords: "theme dark night mode appearance" },
+  { label: t("palette.opt.lightTheme"), meta: t("palette.opt.lightThemeMeta"), href: "action:theme:light", kind: KIND.option, keywords: "theme light day mode appearance" },
+  { label: t("palette.opt.systemTheme"), meta: t("palette.opt.systemThemeMeta"), href: "action:theme:system", kind: KIND.option, keywords: "theme system auto os appearance" },
+  ...(["lime", "cyan", "amber", "rose", "violet"] as const).map((a) => ({
+    label: t("palette.opt.accent", { name: a }),
+    meta: t("palette.opt.accentMeta"),
+    href: `action:accent:${a}`,
+    kind: KIND.option,
+    keywords: `accent colour ${a} signal`,
+  })),
+  { label: t("palette.opt.shortcuts"), meta: t("palette.opt.shortcutsMeta"), href: "action:help", kind: KIND.option, keywords: "keyboard shortcuts help keys commands" },
+  // Language is a navigation, not a state toggle: both locales are static.
+  {
+    label: lang === "en" ? t("palette.opt.langAm") : t("palette.opt.langEn"),
+    meta: lang === "en" ? t("palette.opt.langAmMeta") : t("palette.opt.langEnMeta"),
+    href: `action:lang:${locales[lang].alternate}`,
+    kind: KIND.option,
+    keywords: "language amharic english አማርኛ switch locale ቋንቋ",
+  },
   // Section jumps.
-  { label: "Deployments", meta: "Section 01 · shipped & reachable", href: "#work", kind: "Jump", keywords: "deployments projects live work shipped urls" },
-  { label: "Origin", meta: "Section 02 · the story", href: "#origin", kind: "Jump", keywords: "origin story history timeline 2014 bahir dar heritage" },
-  { label: "CV Vault", meta: "Section 04 · every page in 3D", href: "#vault", kind: "Jump", keywords: "cv vault resume three dimensional carousel" },
-  { label: "Awards", meta: "Section 05 · record", href: "#awards", kind: "Jump", keywords: "awards record competitions certifications ccna" },
-  { label: "Photos", meta: "Off-screen · personal", href: "#photos", kind: "Jump", keywords: "photos personal pictures selfies off-screen" },
-  { label: "Contact", meta: "Section 06 · let's build", href: "#connect", kind: "Jump", keywords: "contact email phone telegram hire reach" },
+  { label: t("palette.jump.work"), meta: t("palette.jump.workMeta"), href: "#work", kind: KIND.jump, keywords: "deployments projects live work shipped urls" },
+  { label: t("palette.jump.origin"), meta: t("palette.jump.originMeta"), href: "#origin", kind: KIND.jump, keywords: "origin story history timeline 2014 bahir dar heritage" },
+  { label: t("palette.jump.vault"), meta: t("palette.jump.vaultMeta"), href: "#vault", kind: KIND.jump, keywords: "cv vault resume three dimensional carousel" },
+  { label: t("palette.jump.awards"), meta: t("palette.jump.awardsMeta"), href: "#awards", kind: KIND.jump, keywords: "awards record competitions certifications ccna" },
+  { label: t("palette.jump.photos"), meta: t("palette.jump.photosMeta"), href: "#photos", kind: KIND.jump, keywords: "photos personal pictures selfies off-screen" },
+  { label: t("palette.jump.contact"), meta: t("palette.jump.contactMeta"), href: "#connect", kind: KIND.jump, keywords: "contact email phone telegram hire reach" },
 ];
 ---
 
-<div class="palette-backdrop" id="palette" role="dialog" aria-modal="true" aria-label="Command palette">
+<div class="palette-backdrop" id="palette" role="dialog" aria-modal="true" aria-label={t("palette.aria")}>
   <div class="palette">
     <input
       class="palette-input"
       id="palette-input"
       type="text"
-      placeholder="Search projects, repositories, awards, links…"
+      placeholder={t("palette.placeholder")}
       autocomplete="off"
       spellcheck="false"
       aria-controls="palette-list"
     />
-    <div class="palette-list" id="palette-list" role="listbox"></div>
+    <div class="palette-list" id="palette-list" role="listbox" data-empty={t("palette.empty")}></div>
   </div>
 </div>
 
@@ -165,7 +197,11 @@ const items: PaletteItem[] = [
     list.innerHTML = "";
 
     if (visible.length === 0) {
-      list.innerHTML = '<div class="palette-empty">No matches. Try “game”, “security”, “award”, “telegram”.</div>';
+      list.innerHTML = "";
+      const note = document.createElement("div");
+      note.className = "palette-empty";
+      note.textContent = list.dataset.empty ?? "";
+      list.appendChild(note);
       return;
     }
 
@@ -175,11 +211,18 @@ const items: PaletteItem[] = [
       btn.type = "button";
       btn.dataset.active = String(i === 0);
       btn.setAttribute("role", "option");
-      btn.innerHTML = `
-        <span class="palette-item-kind">${item.kind}</span>
-        <span class="palette-item-name">${item.label}</span>
-        <span class="palette-item-meta">${item.meta}</span>
-      `;
+
+      const kind = document.createElement("span");
+      kind.className = "palette-item-kind";
+      kind.textContent = item.kind;
+      const name = document.createElement("span");
+      name.className = "palette-item-name";
+      name.textContent = item.label;
+      const meta = document.createElement("span");
+      meta.className = "palette-item-meta";
+      meta.textContent = item.meta;
+      btn.append(kind, name, meta);
+
       btn.addEventListener("click", () => go(item));
       list.appendChild(btn);
     });

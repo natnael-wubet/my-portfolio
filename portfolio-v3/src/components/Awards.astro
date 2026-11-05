@@ -1,20 +1,26 @@
 ---
 import { awards, certifications, communities } from "../data/content";
+import { rich, type T } from "../i18n";
+
+interface Props {
+  t: T;
+}
+const { t } = Astro.props;
 ---
 
 <section id="awards" class="relative border-t border-[var(--color-line)]">
   <div class="shell py-24 lg:py-32">
     <div class="flex flex-col gap-5">
-      <span class="eyebrow">Section 05 · Record</span>
-      <h2 class="display display-lg">Placed, ranked,<br />certified</h2>
+      <span class="eyebrow">{t("sec.awards.eyebrow")}</span>
+      <h2 class="display display-lg" set:html={rich(t("sec.awards.title"))} />
     </div>
 
     <div class="mt-14 grid gap-12 lg:grid-cols-[1.35fr_1fr] lg:gap-16">
       <!-- Awards -->
       <div class="flex flex-col">
         <div class="mb-4 flex items-center justify-between border-b border-[var(--color-line)] pb-3">
-          <span class="section-label">Competitions</span>
-          <span class="section-index">{awards.length} entries</span>
+          <span class="section-label">{t("sec.awards.competitions")}</span>
+          <span class="section-index">{t("sec.awards.entries", { n: awards.length })}</span>
         </div>
 
         <div class="flex flex-col">
@@ -58,8 +64,8 @@ import { awards, certifications, communities } from "../data/content";
       <div class="flex flex-col gap-10">
         <div class="flex flex-col">
           <div class="mb-4 flex items-center justify-between border-b border-[var(--color-line)] pb-3">
-            <span class="section-label">Certifications</span>
-            <span class="section-index">{certifications.length} docs</span>
+            <span class="section-label">{t("sec.awards.certifications")}</span>
+            <span class="section-index">{t("sec.awards.docs", { n: certifications.length })}</span>
           </div>
 
           <div class="flex flex-col gap-3">
@@ -90,7 +96,7 @@ import { awards, certifications, communities } from "../data/content";
 
         <div class="flex flex-col">
           <div class="mb-4 flex items-center justify-between border-b border-[var(--color-line)] pb-3">
-            <span class="section-label">Communities</span>
+            <span class="section-label">{t("sec.awards.communities")}</span>
             <span class="section-index">Bahir Dar</span>
           </div>
           <div class="flex flex-wrap gap-2">
@@ -115,7 +121,7 @@ import { awards, certifications, communities } from "../data/content";
           </div>
         </div>
 
-        <a class="btn btn-primary w-full" href="/assets/cv.pdf" download>Download full CV ↓</a>
+        <a class="btn btn-primary w-full" href="/assets/cv.pdf" download>{t("sec.awards.download")}</a>
       </div>
     </div>
   </div>

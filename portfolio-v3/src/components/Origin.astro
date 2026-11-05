@@ -1,11 +1,19 @@
 ---
 import { originIntro, originBody, heritage, timeline } from "../data/content";
+import { type T } from "../i18n";
+
+interface Props {
+  t: T;
+}
+const { t } = Astro.props;
+
+const chips = t("sec.origin.chips").split("|");
 ---
 
 <section id="origin" class="relative border-t border-[var(--color-line)]">
   <div class="shell py-24 lg:py-32">
     <div class="flex flex-col gap-5">
-      <span class="eyebrow">Section 02 · Origin</span>
+      <span class="eyebrow">{t("sec.origin.eyebrow")}</span>
       <h2 class="display display-lg max-w-4xl">{originIntro}</h2>
     </div>
 
@@ -30,14 +38,14 @@ import { originIntro, originBody, heritage, timeline } from "../data/content";
       <aside class="panel flex h-fit flex-col gap-4 p-7 lg:sticky lg:top-24" data-reveal>
         <div class="flex items-center gap-3">
           <span class="grid h-9 w-9 place-items-center border border-[var(--color-line-2)] font-mono text-[0.625rem] text-[var(--color-signal)]">BD</span>
-          <span class="font-mono text-[0.625rem] tracking-[0.2em] text-[var(--color-fog)] uppercase">{heritage.title}</span>
+          <span class="font-mono text-[0.625rem] tracking-[0.2em] text-[var(--color-fog)] uppercase">{t("sec.origin.heritageTitle")}</span>
         </div>
         <p class="text-sm leading-relaxed text-[var(--color-fog-2)]">{heritage.text}</p>
         <div class="mt-2 flex flex-wrap gap-2 border-t border-[var(--color-line)] pt-4">
           {
-            ["Bahir Dar", "Enkutatesh", "Coffee ceremony", "Amharic"].map((t) => (
+            chips.map((c) => (
               <span class="border border-[var(--color-line)] px-2.5 py-1 font-mono text-[0.5625rem] tracking-[0.14em] text-[var(--color-fog)] uppercase">
-                {t}
+                {c}
               </span>
             ))
           }
@@ -48,8 +56,8 @@ import { originIntro, originBody, heritage, timeline } from "../data/content";
     <!-- Timeline -->
     <div class="mt-20 border-t border-[var(--color-line)] pt-10">
       <div class="mb-8 flex items-center justify-between">
-        <span class="section-label">Milestones</span>
-        <span class="section-index">{timeline.length} entries · 2014 → now</span>
+        <span class="section-label">{t("sec.origin.milestones")}</span>
+        <span class="section-index">{t("sec.origin.entries", { n: timeline.length })}</span>
       </div>
 
       <ol class="relative m-0 list-none p-0">

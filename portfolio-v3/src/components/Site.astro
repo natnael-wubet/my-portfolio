@@ -1,0 +1,50 @@
+---
+/**
+ * The whole single-page site, parameterised by language. Both routes render
+ * this component: "/" passes "en", "/am/" passes "am".
+ */
+import Base from "../layouts/Base.astro";
+import Nav from "./Nav.astro";
+import Hero from "./Hero.astro";
+import Deployments from "./Deployments.astro";
+import Repos from "./Repos.astro";
+import Origin from "./Origin.astro";
+import Vault from "./Vault.astro";
+import Mind from "./Mind.astro";
+import Awards from "./Awards.astro";
+import Photos from "./Photos.astro";
+import Connect from "./Connect.astro";
+import Footer from "./Footer.astro";
+import CommandPalette from "./CommandPalette.astro";
+import Shortcuts from "./Shortcuts.astro";
+import { makeT, type Lang } from "../i18n";
+import { repos } from "../data/content";
+import { deployments } from "../data/deployments";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = makeT(lang);
+
+const live = deployments.filter((d) => !d.archived).length;
+const description = t("meta.descriptionCounted", { live, repos: repos.length });
+---
+
+<Base lang={lang} description={description}>
+  <Nav t={t} lang={lang} />
+  <main class="relative z-10">
+    <Hero t={t} />
+    <Deployments t={t} />
+    <Repos t={t} />
+    <Origin t={t} />
+    <Mind t={t} />
+    <Vault t={t} />
+    <Awards t={t} />
+    <Photos t={t} />
+    <Connect t={t} />
+  </main>
+  <Footer t={t} />
+  <CommandPalette t={t} lang={lang} />
+  <Shortcuts t={t} />
+</Base>

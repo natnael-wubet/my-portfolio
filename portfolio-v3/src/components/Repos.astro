@@ -1,5 +1,11 @@
 ---
 import { repos } from "../data/content";
+import type { T } from "../i18n";
+
+interface Props {
+  t: T;
+}
+const { t } = Astro.props;
 
 const groups = ["Security", "Game", "Tool", "Web", "Config"] as const;
 const counts = Object.fromEntries(groups.map((g) => [g, repos.filter((r) => r.group === g).length]));
@@ -20,30 +26,29 @@ const langColor: Record<string, string> = {
   <div class="shell py-24 lg:py-32">
     <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
       <div class="flex flex-col gap-5">
-        <span class="eyebrow">Source · all {repos.length} repositories</span>
-        <h2 class="display display-lg">Every repository</h2>
+        <span class="eyebrow">{t("sec.repos.eyebrow", { n: repos.length })}</span>
+        <h2 class="display display-lg">{t("sec.repos.title")}</h2>
         <p class="max-w-xl text-[var(--color-fog-2)]">
-          The full public footprint on GitHub — offensive tooling, games, desktop apps, configs and experiments.
-          Nothing curated, everything honest.
+          {t("sec.repos.lead")}
         </p>
       </div>
       <a
         class="btn btn-sm"
         href="https://github.com/natnael-wubet?tab=repositories"
         target="_blank"
-        rel="noopener">Open GitHub ↗</a
+        rel="noopener">{t("sec.repos.open")}</a
       >
     </div>
 
     <!-- filter tabs -->
     <div class="mt-10 flex flex-wrap gap-2" id="repo-filters">
       <button class="filter-chip is-active" data-group="all" type="button">
-        All <span class="text-[var(--color-line-2)]">{repos.length}</span>
+        {t("sec.repos.all")} <span class="text-[var(--color-line-2)]">{repos.length}</span>
       </button>
       {
         groups.map((g) => (
           <button class="filter-chip" data-group={g} type="button">
-            {g} <span class="text-[var(--color-line-2)]">{counts[g]}</span>
+            {t(`sec.repos.group.${g}`)} <span class="text-[var(--color-line-2)]">{counts[g]}</span>
           </button>
         ))
       }
@@ -68,7 +73,7 @@ const langColor: Record<string, string> = {
               {r.description}
               {r.fork ? (
                 <span class="ml-2 inline-block border border-[var(--color-line)] px-1.5 py-0.5 align-middle font-mono text-[0.5rem] tracking-[0.16em] text-[var(--color-fog)] uppercase">
-                  fork
+                  {t("sec.repos.fork")}
                 </span>
               ) : null}
             </span>
@@ -81,7 +86,7 @@ const langColor: Record<string, string> = {
         ))
       }
       <p class="py-6 text-center font-mono text-[0.6875rem] tracking-[0.18em] text-[var(--color-line-2)] uppercase" id="repo-empty" hidden>
-        No repositories match that filter
+        {t("sec.repos.empty")}
       </p>
     </div>
   </div>

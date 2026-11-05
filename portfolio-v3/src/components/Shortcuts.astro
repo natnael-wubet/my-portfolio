@@ -5,44 +5,51 @@
  * and the display panel owns its popover — this file only handles the
  * single-key commands and the help dialog.
  */
+import type { T } from "../i18n";
+
+interface Props {
+  t: T;
+}
+const { t } = Astro.props;
+
 const groups = [
   {
-    title: "Search & navigate",
+    title: t("shortcuts.group.search"),
     rows: [
-      { keys: ["⌘", "K"], label: "Open the command palette" },
-      { keys: ["/"], label: "Search from anywhere" },
-      { keys: ["H"], label: "Back to the top" },
+      { keys: ["⌘", "K"], label: t("shortcuts.palette") },
+      { keys: ["/"], label: t("shortcuts.slash") },
+      { keys: ["H"], label: t("shortcuts.top") },
     ],
   },
   {
-    title: "Display",
+    title: t("shortcuts.group.display"),
     rows: [
-      { keys: ["T"], label: "Cycle theme · dark → light → system" },
-      { keys: ["A"], label: "Cycle accent colour" },
-      { keys: ["?"], label: "Show this sheet" },
+      { keys: ["T"], label: t("shortcuts.theme") },
+      { keys: ["A"], label: t("shortcuts.accent") },
+      { keys: ["?"], label: t("shortcuts.help") },
     ],
   },
   {
-    title: "Inside the palette",
+    title: t("shortcuts.group.palette"),
     rows: [
-      { keys: ["↑", "↓"], label: "Move the selection" },
-      { keys: ["⏎"], label: "Run the selection" },
-      { keys: ["Esc"], label: "Close anything" },
+      { keys: ["↑", "↓"], label: t("shortcuts.updown") },
+      { keys: ["⏎"], label: t("shortcuts.enter") },
+      { keys: ["Esc"], label: t("shortcuts.esc") },
     ],
   },
 ];
 ---
 
-<div class="palette-backdrop" id="shortcuts" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
+<div class="palette-backdrop" id="shortcuts" role="dialog" aria-modal="true" aria-label={t("shortcuts.aria")}>
   <div class="palette w-[min(560px,calc(100vw-2rem))]">
     <div class="flex items-center justify-between border-b border-[var(--color-line)] px-5 py-4">
-      <span class="section-label">Keyboard</span>
+      <span class="section-label">{t("shortcuts.title")}</span>
       <button
         type="button"
         id="shortcuts-close"
         class="border border-[var(--color-line-2)] px-2 py-1 font-mono text-[0.625rem] tracking-[0.16em] text-[var(--color-fog-2)] uppercase transition-colors hover:border-[var(--color-signal)] hover:text-[var(--color-signal)]"
       >
-        Esc · close
+        {t("shortcuts.close")}
       </button>
     </div>
 

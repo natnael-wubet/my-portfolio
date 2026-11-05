@@ -1,18 +1,29 @@
 ---
 import DisplayOptions from "./DisplayOptions.astro";
+import { locales, type Lang, type T } from "../i18n";
+
+interface Props {
+  t: T;
+  lang: Lang;
+}
+const { t, lang } = Astro.props;
+
+const target = locales[locales[lang].alternate];
+const switchLabel = lang === "en" ? t("lang.am") : t("lang.en");
 
 const links = [
-  { href: "#work", label: "Work" },
-  { href: "#origin", label: "Origin" },
-  { href: "#mind", label: "Mind" },
-  { href: "#vault", label: "CV" },
-  { href: "#awards", label: "Awards" },
-  { href: "#connect", label: "Contact" },
+  { href: "#work", label: t("nav.work") },
+  { href: "#origin", label: t("nav.origin") },
+  { href: "#mind", label: t("nav.mind") },
+  { href: "#vault", label: t("nav.vault") },
+  { href: "#awards", label: t("nav.awards") },
+  { href: "#connect", label: t("nav.contact") },
 ];
 ---
 
 <header
   id="nav"
+  data-lang={lang}
   class="fixed inset-x-0 top-0 z-50 border-b border-transparent transition-[background-color,border-color,backdrop-filter] duration-300"
 >
   <div class="shell flex h-16 items-center justify-between gap-6">
@@ -26,7 +37,7 @@ const links = [
       />
       <span class="flex flex-col leading-none">
         <span class="font-display text-sm font-semibold tracking-tight">Natnael Wubet</span>
-        <span class="font-mono text-[0.625rem] tracking-[0.18em] text-[var(--color-fog)] uppercase">Software Engineer</span>
+        <span class="font-mono text-[0.625rem] tracking-[0.18em] text-[var(--color-fog)] uppercase">{t("nav.role")}</span>
       </span>
     </a>
 
@@ -56,19 +67,30 @@ const links = [
           <circle cx="11" cy="11" r="7"></circle>
           <path d="m20 20-3.5-3.5"></path>
         </svg>
-        Search
+        {t("nav.search")}
         <kbd class="border border-[var(--color-line-2)] px-1.5 py-0.5 text-[0.5625rem] text-[var(--color-fog-2)]">⌘K</kbd>
       </button>
 
-      <DisplayOptions />
+      <DisplayOptions t={t} />
 
-      <a class="btn btn-primary btn-sm" href="/assets/cv.pdf" download>CV ↓</a>
+      <a
+        href={target.href}
+        hreflang={target.htmlLang}
+        data-lang-switch
+        class="grid h-9 min-w-9 place-items-center border border-[var(--color-line)] px-2.5 font-mono text-[0.6875rem] tracking-[0.1em] text-[var(--color-fog)] no-underline transition-colors hover:border-[var(--color-line-2)] hover:text-[var(--color-chalk)]"
+        aria-label={t("nav.langSwitch")}
+        title={target.native}
+      >
+        {switchLabel}
+      </a>
+
+      <a class="btn btn-primary btn-sm" href="/assets/cv.pdf" download>{t("nav.cv")}</a>
 
       <button
         id="nav-toggle"
         type="button"
         class="grid h-9 w-9 place-items-center border border-[var(--color-line)] md:hidden"
-        aria-label="Menu"
+        aria-label={t("nav.menu")}
       >
         <span class="flex flex-col gap-[3px]">
           <span class="block h-px w-4 bg-[var(--color-chalk)]"></span>
@@ -100,6 +122,26 @@ const links = [
   const trigger = document.getElementById("palette-trigger") as HTMLButtonElement;
   const toggle = document.getElementById("nav-toggle") as HTMLButtonElement;
   const menu = document.getElementById("nav-menu") as HTMLElement;
+  const header = document.getElementById("nav") as HTMLElement;
+  const langSwitch = document.querySelector<HTMLAnchorElement>("a[data-lang-switch]");
+
+  // ── Language switching ────────────────────────────────────
+  // Both locales are static pages, so switching is a navigation — but the
+  // current section should survive it, hence the hash carry.
+  const goToLocale = (href: string) => {
+    location.href = href + location.hash;
+  };
+  langSwitch?.addEventListener("click", (e) => {
+    e.preventDefault();
+    const href = langSwitch.getAttribute("href");
+    if (href) goToLocale(href);
+  });
+  document.addEventListener("opt:lang", (e) => {
+    const want = (e as CustomEvent<string>).detail;
+    const current = header.dataset.lang;
+    if (want === current) return;
+    goToLocale(want === "am" ? "/am/" : "/");
+  });
 
   const onScroll = () => {
     // Class, not inline styles: the colours come from the theme tokens so

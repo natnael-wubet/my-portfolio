@@ -1,5 +1,23 @@
 ---
+import { rich, type T } from "../i18n";
+
+interface Props {
+  t: T;
+}
+const { t } = Astro.props;
+
 const year = new Date().getFullYear();
+
+const sections: [string, string][] = [
+  ["#work", t("footer.work")],
+  ["#repos", t("footer.repos")],
+  ["#origin", t("footer.origin")],
+  ["#vault", t("footer.vault")],
+  ["#mind", t("footer.mind")],
+  ["#awards", t("footer.awards")],
+  ["#photos", t("footer.photos")],
+  ["#connect", t("footer.contact")],
+];
 ---
 
 <footer class="relative border-t border-[var(--color-line)] bg-[var(--color-ink-2)]">
@@ -11,25 +29,15 @@ const year = new Date().getFullYear();
           <span class="font-display text-base font-semibold tracking-tight">Natnael Wubet</span>
         </span>
         <p class="max-w-sm text-sm leading-relaxed text-[var(--color-fog-2)]">
-          Software engineer working across games, protocols, platforms and security tooling. Based in Bahir Dar,
-          shipping worldwide.
+          {t("footer.blurb")}
         </p>
-        <span class="status" data-state="live"><span class="status-dot"></span>All systems operational</span>
+        <span class="status" data-state="live"><span class="status-dot"></span>{t("footer.operational")}</span>
       </div>
 
       <nav class="flex flex-col gap-2.5">
-        <span class="section-label mb-1">Sections</span>
+        <span class="section-label mb-1">{t("footer.sections")}</span>
         {
-          [
-            ["#work", "Deployments"],
-            ["#repos", "Repositories"],
-            ["#origin", "Origin"],
-            ["#vault", "CV Vault"],
-            ["#mind", "The interior"],
-            ["#awards", "Awards"],
-            ["#photos", "Photos"],
-            ["#connect", "Contact"],
-          ].map(([href, label]) => (
+          sections.map(([href, label]) => (
             <a href={href} class="font-mono text-[0.75rem] tracking-[0.1em] text-[var(--color-fog-2)] uppercase no-underline transition-colors hover:text-[var(--color-signal)]">
               {label}
             </a>
@@ -38,7 +46,7 @@ const year = new Date().getFullYear();
       </nav>
 
       <div class="flex flex-col gap-2.5">
-        <span class="section-label mb-1">Direct</span>
+        <span class="section-label mb-1">{t("footer.direct")}</span>
         <a href="mailto:natyw4122@gmail.com" class="font-mono text-[0.75rem] text-[var(--color-fog-2)] no-underline transition-colors hover:text-[var(--color-signal)]">natyw4122@gmail.com</a>
         <a href="tel:+251918191930" class="font-mono text-[0.75rem] text-[var(--color-fog-2)] no-underline transition-colors hover:text-[var(--color-signal)]">+251 91 819 1930</a>
         <a href="https://t.me/nnaty_w20" target="_blank" rel="noopener" class="font-mono text-[0.75rem] text-[var(--color-fog-2)] no-underline transition-colors hover:text-[var(--color-signal)]">@nnaty_w20</a>
@@ -48,11 +56,9 @@ const year = new Date().getFullYear();
 
     <div class="mt-12 flex flex-col gap-3 border-t border-[var(--color-line)] pt-6 sm:flex-row sm:items-center sm:justify-between">
       <span class="font-mono text-[0.625rem] tracking-[0.18em] text-[var(--color-line-2)] uppercase">
-        © {year} Natnael Wubet · Built with Astro, Three.js &amp; Tailwind
+        {t("footer.built", { year })}
       </span>
-      <span class="font-mono text-[0.625rem] tracking-[0.18em] text-[var(--color-line-2)] uppercase">
-        Probed live at build · <span class="text-[var(--color-signal)]">v3.0</span>
-      </span>
+      <span class="font-mono text-[0.625rem] tracking-[0.18em] text-[var(--color-line-2)] uppercase" set:html={rich(t("footer.probed"))} />
     </div>
   </div>
 </footer>

@@ -5,6 +5,12 @@
  * src/scripts/options.ts — this file only renders and reports intent.
  */
 import { THEME_PREFS, ACCENTS } from "../scripts/options";
+import type { T } from "../i18n";
+
+interface Props {
+  t: T;
+}
+const { t } = Astro.props;
 
 const themeIcons: Record<string, string> = {
   dark: '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>',
@@ -28,7 +34,7 @@ const swatch: Record<string, string> = {
     id="display-trigger"
     type="button"
     class="grid h-9 w-9 place-items-center border border-[var(--color-line)] text-[var(--color-fog)] transition-colors hover:border-[var(--color-line-2)] hover:text-[var(--color-chalk)]"
-    aria-label="Display options"
+    aria-label={t("options.aria")}
     aria-haspopup="dialog"
     aria-expanded="false"
     aria-controls="display-panel"
@@ -41,13 +47,13 @@ const swatch: Record<string, string> = {
   <div
     id="display-panel"
     role="dialog"
-    aria-label="Display options"
+    aria-label={t("options.aria")}
     class="absolute top-[calc(100%+0.6rem)] right-0 z-50 hidden w-72 border border-[var(--color-line-2)] bg-[var(--color-ink-2)] p-5 shadow-[0_30px_80px_-24px_rgba(0,0,0,0.8)]"
   >
     <div class="flex flex-col gap-5">
       <div class="flex flex-col gap-2.5">
-        <span class="section-label">Theme</span>
-        <div class="grid grid-cols-3 gap-1.5" role="group" aria-label="Theme">
+        <span class="section-label">{t("options.theme")}</span>
+        <div class="grid grid-cols-3 gap-1.5" role="group" aria-label={t("options.theme")}>
           {
             THEME_PREFS.map((p) => (
               <button
@@ -56,7 +62,7 @@ const swatch: Record<string, string> = {
                 class="opt-chip flex items-center justify-center gap-1.5 border border-[var(--color-line)] py-2 font-mono text-[0.625rem] tracking-[0.14em] uppercase transition-colors"
               >
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" set:html={themeIcons[p]} />
-                {p}
+                {t(`options.theme.${p}`)}
               </button>
             ))
           }
@@ -64,8 +70,8 @@ const swatch: Record<string, string> = {
       </div>
 
       <div class="flex flex-col gap-2.5">
-        <span class="section-label">Accent</span>
-        <div class="flex items-center gap-2.5" role="group" aria-label="Accent colour">
+        <span class="section-label">{t("options.accent")}</span>
+        <div class="flex items-center gap-2.5" role="group" aria-label={t("options.accent")}>
           {
             ACCENTS.map((a) => (
               <button
@@ -82,7 +88,7 @@ const swatch: Record<string, string> = {
       </div>
 
       <p class="border-t border-[var(--color-line)] pt-3 font-mono text-[0.625rem] tracking-[0.1em] text-[var(--color-fog)] uppercase">
-        Saved on this device · <span class="text-[var(--color-fog-2)]">T</span> cycles theme
+        {t("options.saved")}
       </p>
     </div>
   </div>

@@ -1,6 +1,12 @@
 ---
 import { socials, repos, awards } from "../data/content";
 import { deployments } from "../data/deployments";
+import { rich, type T } from "../i18n";
+
+interface Props {
+  t: T;
+}
+const { t } = Astro.props;
 
 const primary = socials.filter((s) => ["GitHub", "LinkedIn", "Telegram", "Email"].includes(s.label));
 const rest = socials.filter((s) => !["GitHub", "LinkedIn", "Telegram", "Email"].includes(s.label));
@@ -10,6 +16,19 @@ const stats = {
   repos: repos.length,
   awards: awards.length,
 };
+
+// The terminal answers client-side, so its strings ride along as JSON.
+const cmds = {
+  hire: t("sec.connect.cmd.hire"),
+  help: t("sec.connect.cmd.help"),
+  work: t("sec.connect.cmd.work", stats),
+  stack: t("sec.connect.cmd.stack"),
+  github: t("sec.connect.cmd.github"),
+  tg: t("sec.connect.cmd.tg"),
+  hi: t("sec.connect.cmd.hi"),
+  hello: t("sec.connect.cmd.hi"),
+  unknown: t("sec.connect.cmd.unknown", { cmd: "{cmd}" }),
+};
 ---
 
 <section id="connect" class="relative border-t border-[var(--color-line)]">
@@ -17,8 +36,8 @@ const stats = {
     <div class="grid gap-14 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
       <div class="flex flex-col gap-8">
         <div class="flex flex-col gap-5" data-reveal>
-          <span class="eyebrow">Section 06 · Contact</span>
-          <h2 class="display display-lg">Let's build<br />something<br /><span class="text-[var(--color-signal)]">that ships.</span></h2>
+          <span class="eyebrow">{t("sec.connect.eyebrow")}</span>
+          <h2 class="display display-lg" set:html={rich(t("sec.connect.title"))} />
         </div>
 
         <div class="flex flex-col gap-3">
@@ -57,22 +76,22 @@ const stats = {
             <span class="h-2 w-2 rounded-full bg-[var(--color-rose)]/70"></span>
             <span class="h-2 w-2 rounded-full bg-[var(--color-amber)]/70"></span>
             <span class="h-2 w-2 rounded-full bg-[var(--color-signal)]/70"></span>
-            <span class="ml-3 font-mono text-[0.625rem] tracking-[0.16em] text-[var(--color-fog)] uppercase">naty — contact</span>
+            <span class="ml-3 font-mono text-[0.625rem] tracking-[0.16em] text-[var(--color-fog)] uppercase">{t("sec.connect.termTitle")}</span>
           </div>
           <div class="flex flex-col gap-3 p-5 font-mono text-[0.8125rem] leading-relaxed">
-            <div class="term-line"><span class="term-prompt">➜</span><span class="text-[var(--color-fog-2)]">whoami</span></div>
-            <div class="text-[var(--color-chalk)]">natnael wubet — software engineer</div>
-            <div class="term-line"><span class="term-prompt">➜</span><span class="text-[var(--color-fog-2)]">location</span></div>
-            <div class="text-[var(--color-chalk)]">bahir dar, ethiopia <span class="text-[var(--color-fog)]">· UTC+3</span></div>
-            <div class="term-line"><span class="term-prompt">➜</span><span class="text-[var(--color-fog-2)]">status</span></div>
+            <div class="term-line"><span class="term-prompt">➜</span><span class="text-[var(--color-fog-2)]">{t("sec.connect.whoami")}</span></div>
+            <div class="text-[var(--color-chalk)]">{t("sec.connect.whoamiOut")}</div>
+            <div class="term-line"><span class="term-prompt">➜</span><span class="text-[var(--color-fog-2)]">{t("sec.connect.location")}</span></div>
+            <div class="text-[var(--color-chalk)]" set:html={rich(t("sec.connect.locationOut"))} />
+            <div class="term-line"><span class="term-prompt">➜</span><span class="text-[var(--color-fog-2)]">{t("sec.connect.status")}</span></div>
             <div class="flex items-center gap-2">
-              <span class="status" data-state="live"><span class="status-dot"></span>open to work</span>
+              <span class="status" data-state="live"><span class="status-dot"></span>{t("sec.connect.open")}</span>
             </div>
             <div class="term-line mt-1">
               <span class="term-prompt">➜</span>
-              <input class="term-input" id="term-input" type="text" placeholder="type 'hire' or 'help'…" autocomplete="off" spellcheck="false" />
+              <input class="term-input" id="term-input" type="text" placeholder={t("sec.connect.termPlaceholder")} autocomplete="off" spellcheck="false" />
             </div>
-            <div id="term-out" class="min-h-[1.5rem] whitespace-pre-wrap text-[var(--color-signal)]" data-stats={JSON.stringify(stats)}></div>
+            <div id="term-out" class="min-h-[1.5rem] whitespace-pre-wrap text-[var(--color-signal)]" data-stats={JSON.stringify(stats)} data-cmds={JSON.stringify(cmds)}></div>
           </div>
         </div>
 
@@ -103,29 +122,24 @@ const stats = {
   const input = document.getElementById("term-input") as HTMLInputElement | null;
   const out = document.getElementById("term-out") as HTMLDivElement | null;
 
-  // Counts ride on the output node as JSON so this stays a real module and the
-  // numbers can never drift from the data file.
+  // Counts and command strings ride on the output node as JSON so this stays
+  // a real module, and the answers match the page's language.
   type Stats = { live: number; repos: number; awards: number };
   const stats: Stats = out?.dataset.stats ? JSON.parse(out.dataset.stats) : { live: 0, repos: 0, awards: 0 };
+  const cmds: Record<string, string> = out?.dataset.cmds ? JSON.parse(out.dataset.cmds) : {};
 
   const respond = (raw: string) => {
     const cmd = raw.trim().toLowerCase();
     if (!cmd) return;
-    const map: Record<string, string> = {
-      hire: "email natyw4122@gmail.com — usually replies within a day.",
-      help: "commands: hire · work · stack · github · tg · clear",
-      work: `${stats.live} live deployments · ${stats.repos} repos · ${stats.awards} competition placements`,
-      stack: "react · typescript · ionic · capacitor · next · vue · python · three.js · firebase · supabase",
-      github: "→ github.com/natnael-wubet",
-      tg: "→ t.me/nnaty_w20",
-      hi: "hello. type 'help'.",
-      hello: "hello. type 'help'.",
-    };
     if (cmd === "clear") {
       out!.textContent = "";
       return;
     }
-    out!.textContent = map[cmd] ?? `command not found: ${cmd} — try 'help'`;
+    if (cmd in cmds) {
+      out!.textContent = cmds[cmd];
+      return;
+    }
+    out!.textContent = (cmds.unknown ?? "command not found: {cmd} — try 'help'").replace("{cmd}", cmd);
   };
 
   input?.addEventListener("keydown", (e) => {

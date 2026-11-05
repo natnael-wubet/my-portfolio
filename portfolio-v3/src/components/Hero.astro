@@ -1,8 +1,21 @@
 ---
 import { deployments } from "../data/deployments";
 import { domains, repos } from "../data/content";
+import { rich, type T } from "../i18n";
+
+interface Props {
+  t: T;
+}
+const { t } = Astro.props;
 
 const liveCount = deployments.filter((d) => !d.archived).length;
+
+const stats = [
+  { k: t("hero.stat.deploy.k"), v: String(liveCount), s: t("hero.stat.deploy.s"), n: liveCount },
+  { k: t("hero.stat.repos.k"), v: String(repos.length), s: t("hero.stat.repos.s"), n: repos.length },
+  { k: t("hero.stat.awards.k"), v: "4", s: t("hero.stat.awards.s"), n: 4 },
+  { k: t("hero.stat.years.k"), v: "11", s: t("hero.stat.years.s"), n: 11 },
+];
 ---
 
 <section id="top" class="relative overflow-hidden pt-28 lg:pt-36">
@@ -14,12 +27,12 @@ const liveCount = deployments.filter((d) => !d.archived).length;
     <div class="flex flex-col gap-10">
       <!-- top meta row -->
       <div class="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--color-line)] pb-4">
-        <span class="status fade-up" data-state="live" style="animation-delay: 0.05s"><span class="status-dot"></span>Available for work</span>
+        <span class="status fade-up" data-state="live" style="animation-delay: 0.05s"><span class="status-dot"></span>{t("hero.available")}</span>
         <span class="font-mono text-[0.6875rem] tracking-[0.2em] text-[var(--color-fog)] uppercase fade-up" style="animation-delay: 0.1s">
-          Bahir Dar, Ethiopia · <span class="text-[var(--color-chalk)]" id="local-time">--:--</span> EAT
+          {t("hero.where")} · <span class="text-[var(--color-chalk)]" id="local-time">--:--</span> {t("hero.utc")}
         </span>
         <span class="hidden font-mono text-[0.6875rem] tracking-[0.2em] text-[var(--color-fog)] uppercase fade-up sm:inline" style="animation-delay: 0.15s">
-          {liveCount} live deployments
+          {t("hero.liveCount", { n: liveCount })}
         </span>
       </div>
 
@@ -37,23 +50,20 @@ const liveCount = deployments.filter((d) => !d.archived).length;
         </h1>
 
         <div class="mt-6 grid gap-8 border-t border-[var(--color-line)] pt-6 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
-          <p class="fade-up max-w-2xl text-lg leading-relaxed text-[var(--color-fog-2)] lg:text-xl" style="animation-delay: 0.35s">
-            I build <span class="text-[var(--color-chalk)]">games with real stakes</span>,{" "}
-            <span class="text-[var(--color-chalk)]">protocols that prove things</span>, and{" "}
-            <span class="text-[var(--color-chalk)]">platforms that ship</span> — from a Telegram bingo room taking real
-            money, to a Bitcoin-anchored citation ledger, to the security tooling I started with. Off the clock I
-            chase <span class="text-[var(--color-chalk)]">relativity and emergence</span>, and{" "}
-            <span class="text-[var(--color-chalk)]">Kant and Hegel</span>.
-          </p>
+          <p
+            class="fade-up max-w-2xl text-lg leading-relaxed text-[var(--color-fog-2)] lg:text-xl"
+            style="animation-delay: 0.35s"
+            set:html={rich(t("hero.lead"))}
+          />
 
           <div class="flex flex-col gap-4">
             <div class="fade-up flex flex-wrap gap-3" style="animation-delay: 0.45s">
-              <a class="btn btn-primary" href="#work">View work →</a>
+              <a class="btn btn-primary" href="#work">{t("hero.ctaWork")}</a>
               <a class="btn" href="https://github.com/natnael-wubet" target="_blank" rel="noopener">GitHub</a>
               <a class="btn" href="https://t.me/nnaty_w20" target="_blank" rel="noopener">Telegram</a>
             </div>
             <div class="fade-up flex items-center gap-4 font-mono text-[0.6875rem] tracking-[0.14em] text-[var(--color-fog)] uppercase" style="animation-delay: 0.55s">
-              <span>⌘K or / to search everything</span>
+              <span>{t("hero.hint")}</span>
             </div>
           </div>
         </div>
@@ -62,14 +72,12 @@ const liveCount = deployments.filter((d) => !d.archived).length;
       <!-- stats strip -->
       <div class="grid grid-cols-2 gap-px border border-[var(--color-line)] bg-[var(--color-line)] md:grid-cols-4">
         {
-          [
-            { k: "Live deployments", v: String(liveCount), s: "verified at build" },
-            { k: "Public repositories", v: String(repos.length), s: "on GitHub" },
-            { k: "Competitions won", v: "4", s: "1st & 3rd place" },
-            { k: "Years shipping", v: "11", s: "since 2014" },
-          ].map((stat) => (
+          stats.map((stat) => (
             <div class="flex flex-col gap-1 bg-[var(--color-ink)] p-5">
-              <span class="font-display text-3xl font-semibold tracking-tight text-[var(--color-chalk)] lg:text-4xl">
+              <span
+                class="font-display text-3xl font-semibold tracking-tight text-[var(--color-chalk)] lg:text-4xl"
+                data-count={stat.n}
+              >
                 {stat.v}
               </span>
               <span class="font-mono text-[0.625rem] tracking-[0.16em] text-[var(--color-fog)] uppercase">{stat.k}</span>
@@ -94,7 +102,7 @@ const liveCount = deployments.filter((d) => !d.archived).length;
       </div>
 
       <div class="flex justify-center pb-4">
-        <span class="scroll-cue">Scroll<span class="scroll-cue-bar"></span></span>
+        <span class="scroll-cue">{t("hero.scroll")}<span class="scroll-cue-bar"></span></span>
       </div>
     </div>
   </div>
