@@ -455,6 +455,12 @@ html[data-theme="light"][data-accent="violet"] {
     text-align: center;
   }
 
+  /* In-page prose highlight after jumping from a palette match. */
+  ::highlight(palette-search) {
+    background-color: var(--color-signal);
+    color: var(--color-ink);
+  }
+
   /* ─── Vault (3D CV) ─────────────────────────────────────── */
   .vault-canvas {
     display: block;
