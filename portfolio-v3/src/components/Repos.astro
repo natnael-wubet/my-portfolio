@@ -1,6 +1,6 @@
 ---
 import { repos } from "../data/content";
-import type { T } from "../i18n";
+import { td, type T } from "../i18n";
 
 interface Props {
   t: T;
@@ -63,14 +63,14 @@ const langColor: Record<string, string> = {
             rel="noopener"
             class="repo-row"
             data-group={r.group}
-            data-search={`${r.name} ${r.description} ${r.language} ${r.group}`.toLowerCase()}
+            data-search={`${r.name} ${r.description} ${td(t, r.description)} ${r.language} ${r.group} ${t(`sec.repos.group.${r.group}`)}`.toLowerCase()}
           >
             <span class="flex items-center gap-2.5 font-mono text-[0.8125rem] text-[var(--color-chalk)]">
               <span class="h-2 w-2 flex-none" style={{ background: langColor[r.language] ?? "#2a3036" }} />
               <span class="truncate">{r.name}</span>
             </span>
             <span class="text-sm text-[var(--color-fog-2)]">
-              {r.description}
+              {td(t, r.description)}
               {r.fork ? (
                 <span class="ml-2 inline-block border border-[var(--color-line)] px-1.5 py-0.5 align-middle font-mono text-[0.5rem] tracking-[0.16em] text-[var(--color-fog)] uppercase">
                   {t("sec.repos.fork")}

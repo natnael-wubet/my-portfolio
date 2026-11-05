@@ -1,6 +1,6 @@
 ---
 import { disciplines, youtube } from "../data/content";
-import { rich, type T } from "../i18n";
+import { rich, td, type T } from "../i18n";
 
 interface Props {
   t: T;
@@ -48,15 +48,15 @@ const { t } = Astro.props;
             </div>
 
             <h3 class="font-display text-2xl font-semibold tracking-tight text-[var(--color-chalk)] transition-colors duration-300 group-hover:text-[var(--color-signal)]">
-              {d.name}
+              {td(t, d.name)}
             </h3>
 
-            <p class="max-w-2xl text-sm leading-relaxed text-[var(--color-fog-2)]">{d.blurb}</p>
+            <p class="max-w-2xl text-sm leading-relaxed text-[var(--color-fog-2)]">{td(t, d.blurb)}</p>
 
             <div class="mt-auto flex flex-wrap gap-1.5 pt-3">
-              {d.tags.map((t) => (
+              {d.tags.map((tag) => (
                 <span class="border border-[var(--color-line)] px-2 py-1 font-mono text-[0.5625rem] tracking-[0.1em] text-[var(--color-fog)] uppercase">
-                  {t}
+                  {td(t, tag)}
                 </span>
               ))}
             </div>
@@ -100,7 +100,7 @@ const { t } = Astro.props;
         </span>
       </div>
 
-      <p class="relative max-w-2xl flex-1 text-sm leading-relaxed text-[var(--color-fog-2)]">{youtube.blurb}</p>
+      <p class="relative max-w-2xl flex-1 text-sm leading-relaxed text-[var(--color-fog-2)]">{td(t, youtube.blurb)}</p>
 
       <span class="relative flex flex-none items-center gap-2 self-start border border-[var(--color-line-2)] px-5 py-2.5 font-mono text-[0.6875rem] tracking-[0.16em] text-[var(--color-chalk)] uppercase transition-colors group-hover:border-[var(--color-signal)] group-hover:text-[var(--color-signal)] lg:self-auto">
         {t("sec.mind.watch")} <span class="transition-transform duration-300 group-hover:translate-x-1">↗</span>

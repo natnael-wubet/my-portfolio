@@ -1,7 +1,7 @@
 ---
 import { deployments } from "../data/deployments";
 import { repos, socials, awards, certifications, disciplines } from "../data/content";
-import { locales, type Lang, type T } from "../i18n";
+import { locales, td, type Lang, type T } from "../i18n";
 
 interface Props {
   t: T;
@@ -35,24 +35,24 @@ const KIND = {
 const items: PaletteItem[] = [
   ...deployments.map((d) => ({
     label: d.name,
-    meta: `${d.platform} · ${d.tagline}`,
+    meta: `${d.platform} · ${td(t, d.tagline)}`,
     href: d.url,
     kind: KIND.deploy,
-    keywords: `${d.name} ${d.tagline} ${d.description} ${d.stack.join(" ")} ${d.category}`,
+    keywords: `${d.name} ${d.tagline} ${td(t, d.tagline)} ${d.description} ${td(t, d.description)} ${d.stack.join(" ")} ${d.category}`,
   })),
   ...repos.map((r) => ({
     label: r.name,
-    meta: `${r.group} · ${r.description}`,
+    meta: `${t(`sec.repos.group.${r.group}`)} · ${td(t, r.description)}`,
     href: r.url,
     kind: KIND.repo,
-    keywords: `${r.name} ${r.description} ${r.language} ${r.group}`,
+    keywords: `${r.name} ${r.description} ${td(t, r.description)} ${r.language} ${r.group}`,
   })),
   ...awards.map((a) => ({
     label: a.title,
-    meta: `${a.rank} · ${a.org}`,
+    meta: `${td(t, a.rank)} · ${a.org}`,
     href: "#awards",
     kind: KIND.award,
-    keywords: `${a.title} ${a.org} ${a.detail} ${a.prize ?? ""} ${a.rank}`,
+    keywords: `${a.title} ${a.org} ${a.detail} ${td(t, a.detail)} ${a.prize ?? ""} ${td(t, a.prize ?? "")} ${a.rank}`,
   })),
   ...certifications.map((c) => ({
     label: c.name,
@@ -62,11 +62,11 @@ const items: PaletteItem[] = [
     keywords: `${c.name} ${c.issuer} ${c.detail}`,
   })),
   ...socials.map((s) => ({
-    label: s.label,
+    label: td(t, s.label),
     meta: s.handle,
     href: s.href,
     kind: KIND.link,
-    keywords: `${s.label} ${s.handle}`,
+    keywords: `${s.label} ${td(t, s.label)} ${s.handle}`,
   })),
   { label: t("palette.cv"), meta: t("palette.cvMeta"), href: "/assets/cv.pdf", kind: KIND.doc, keywords: "cv resume curriculum vitae pdf download ሲቪ" },
   { label: t("palette.github"), meta: "@natnael-wubet", href: "https://github.com/natnael-wubet", kind: KIND.link, keywords: "github profile all repositories" },
@@ -74,11 +74,11 @@ const items: PaletteItem[] = [
   { label: t("palette.bigxo"), meta: t("palette.bigxoMeta"), href: "https://t.me/bigxoGameBot", kind: KIND.play, keywords: "bigxo game telegram mini app play xo" },
   // The interior — so "physics" or "hegel" lands somewhere real.
   ...disciplines.map((d) => ({
-    label: d.name,
-    meta: `${t("palette.interior")} · ${d.tags.slice(0, 3).join(" · ")}`,
+    label: td(t, d.name),
+    meta: `${t("palette.interior")} · ${d.tags.slice(0, 3).map((tag) => td(t, tag)).join(" · ")}`,
     href: "#mind",
     kind: KIND.mind,
-    keywords: `${d.name} ${d.blurb} ${d.tags.join(" ")}`,
+    keywords: `${d.name} ${td(t, d.name)} ${d.blurb} ${td(t, d.blurb)} ${d.tags.join(" ")} ${d.tags.map((tag) => td(t, tag)).join(" ")}`,
   })),
   // ── Display options — real actions, dispatched as events ──
   { label: t("palette.opt.toggleTheme"), meta: t("palette.opt.toggleThemeMeta"), href: "action:theme:toggle", kind: KIND.option, keywords: "theme dark light mode appearance toggle contrast" },

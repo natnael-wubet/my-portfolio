@@ -9,11 +9,17 @@
  */
 import { en, type Dict } from "./en";
 import { am } from "./am";
+import { amData } from "./data";
 
 export type Lang = "en" | "am";
 export type Vars = Record<string, string | number>;
-/** Translate a chrome key, interpolating {placeholders}. */
-export type T = (key: string, vars?: Vars) => string;
+/**
+ * Translate a chrome key, interpolating {placeholders}.
+ *
+ * The function also carries its `lang`, so data-prose helpers (`td`) can work
+ * from the same prop without every component needing a second prop.
+ */
+export type T = ((key: string, vars?: Vars) => string) & { lang: Lang };
 
 export const langs: Lang[] = ["en", "am"];
 
@@ -42,8 +48,17 @@ const interpolate = (raw: string, vars?: Vars): string => {
 
 export const makeT = (lang: Lang): T => {
   const dict = dicts[lang];
-  return (key, vars) => interpolate(dict[key as keyof Dict] ?? key, vars);
+  const t = ((key, vars) => interpolate(dict[key as keyof Dict] ?? key, vars)) as T;
+  t.lang = lang;
+  return t;
 };
+
+/**
+ * Translate data prose (repos, deployments, awards, timeline, disciplines).
+ * English is the source of truth; unknown strings fall back to themselves.
+ */
+export const td = (t: T, source: string): string =>
+  t.lang === "am" ? amData[source] ?? source : source;
 
 const escapeHtml = (s: string) =>
   s

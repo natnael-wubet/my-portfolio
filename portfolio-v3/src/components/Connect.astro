@@ -1,7 +1,7 @@
 ---
 import { socials, repos, awards } from "../data/content";
 import { deployments } from "../data/deployments";
-import { rich, type T } from "../i18n";
+import { rich, td, type T } from "../i18n";
 
 interface Props {
   t: T;
@@ -55,7 +55,7 @@ const cmds = {
                   {s.label.slice(0, 2)}
                 </span>
                 <span class="flex min-w-0 flex-col">
-                  <span class="font-mono text-[0.625rem] tracking-[0.2em] text-[var(--color-fog)] uppercase">{s.label}</span>
+                  <span class="font-mono text-[0.625rem] tracking-[0.2em] text-[var(--color-fog)] uppercase">{td(t, s.label)}</span>
                   <span class="truncate font-display text-base font-semibold text-[var(--color-chalk)] transition-colors group-hover:text-[var(--color-signal)]">
                     {s.handle}
                   </span>
@@ -106,7 +106,7 @@ const cmds = {
                 class="group flex items-center gap-2.5 border border-[var(--color-line)] px-3.5 py-2.5 no-underline transition-colors hover:border-[var(--color-signal)]"
               >
                 <span class="font-mono text-[0.625rem] tracking-[0.16em] text-[var(--color-fog)] uppercase transition-colors group-hover:text-[var(--color-chalk)]">
-                  {s.label}
+                  {td(t, s.label)}
                 </span>
                 <span class="font-mono text-[0.6875rem] text-[var(--color-fog-2)]">{s.handle}</span>
               </a>

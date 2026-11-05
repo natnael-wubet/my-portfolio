@@ -1,6 +1,6 @@
 ---
 import { originIntro, originBody, heritage, timeline } from "../data/content";
-import { type T } from "../i18n";
+import { td, type T } from "../i18n";
 
 interface Props {
   t: T;
@@ -14,7 +14,7 @@ const chips = t("sec.origin.chips").split("|");
   <div class="shell py-24 lg:py-32">
     <div class="flex flex-col gap-5">
       <span class="eyebrow">{t("sec.origin.eyebrow")}</span>
-      <h2 class="display display-lg max-w-4xl">{originIntro}</h2>
+      <h2 class="display display-lg max-w-4xl">{td(t, originIntro)}</h2>
     </div>
 
     <div class="mt-14 grid gap-12 lg:grid-cols-[1.15fr_1fr] lg:gap-20">
@@ -25,10 +25,10 @@ const chips = t("sec.origin.chips").split("|");
             <p class="text-base leading-relaxed text-[var(--color-fog-2)] lg:text-lg" data-reveal style={`--d:${i * 60}ms`}>
               {p.lead && (
                 <span class="mr-3 inline-block border border-[var(--color-line-2)] px-2 py-0.5 align-middle font-mono text-[0.5625rem] tracking-[0.18em] text-[var(--color-signal)] uppercase">
-                  {p.lead}
+                  {td(t, p.lead)}
                 </span>
               )}
-              <span class="text-[var(--color-chalk)]">{p.text}</span>
+              <span class="text-[var(--color-chalk)]">{td(t, p.text)}</span>
             </p>
           ))
         }
@@ -40,7 +40,7 @@ const chips = t("sec.origin.chips").split("|");
           <span class="grid h-9 w-9 place-items-center border border-[var(--color-line-2)] font-mono text-[0.625rem] text-[var(--color-signal)]">BD</span>
           <span class="font-mono text-[0.625rem] tracking-[0.2em] text-[var(--color-fog)] uppercase">{t("sec.origin.heritageTitle")}</span>
         </div>
-        <p class="text-sm leading-relaxed text-[var(--color-fog-2)]">{heritage.text}</p>
+        <p class="text-sm leading-relaxed text-[var(--color-fog-2)]">{td(t, heritage.text)}</p>
         <div class="mt-2 flex flex-wrap gap-2 border-t border-[var(--color-line)] pt-4">
           {
             chips.map((c) => (
@@ -75,13 +75,13 @@ const chips = t("sec.origin.chips").split("|");
               <div class="col-start-2 flex flex-col gap-1.5 lg:col-start-3">
                 <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                   <h3 class="font-display text-lg font-semibold tracking-tight text-[var(--color-chalk)] transition-colors duration-300 group-hover:text-[var(--color-signal)]">
-                    {m.title}
+                    {td(t, m.title)}
                   </h3>
                   <span class="border border-[var(--color-line)] px-2 py-0.5 font-mono text-[0.5625rem] tracking-[0.14em] text-[var(--color-fog)] uppercase transition-colors duration-300 group-hover:border-[var(--color-line-2)]">
-                    {m.tag}
+                    {td(t, m.tag)}
                   </span>
                 </div>
-                <p class="max-w-2xl text-sm leading-relaxed text-[var(--color-fog-2)]">{m.detail}</p>
+                <p class="max-w-2xl text-sm leading-relaxed text-[var(--color-fog-2)]">{td(t, m.detail)}</p>
               </div>
             </li>
           ))

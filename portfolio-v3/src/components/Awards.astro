@@ -1,6 +1,6 @@
 ---
 import { awards, certifications, communities } from "../data/content";
-import { rich, type T } from "../i18n";
+import { rich, td, type T } from "../i18n";
 
 interface Props {
   t: T;
@@ -38,7 +38,7 @@ const { t } = Astro.props;
                           : "var(--color-fog)",
                     }}
                   >
-                    {a.rank}
+                    {td(t, a.rank)}
                   </span>
                   <span class="font-mono text-[0.625rem] tracking-[0.18em] text-[var(--color-line-2)] uppercase">{a.year}</span>
                 </div>
@@ -47,12 +47,12 @@ const { t } = Astro.props;
                     <h3 class="font-display text-lg font-semibold tracking-tight text-[var(--color-chalk)]">{a.title}</h3>
                     {a.prize && (
                       <span class="border border-[var(--color-line-2)] px-2 py-0.5 font-mono text-[0.5625rem] tracking-[0.14em] text-[var(--color-signal)] uppercase">
-                        {a.prize}
+                        {a.prize ? td(t, a.prize) : ""}
                       </span>
                     )}
                   </div>
                   <span class="font-mono text-[0.6875rem] tracking-[0.1em] text-[var(--color-fog)] uppercase">{a.org}</span>
-                  <p class="text-sm leading-relaxed text-[var(--color-fog-2)]">{a.detail}</p>
+                  <p class="text-sm leading-relaxed text-[var(--color-fog-2)]">{td(t, a.detail)}</p>
                 </div>
               </article>
             ))
@@ -83,7 +83,7 @@ const { t } = Astro.props;
                   <span class="flex flex-col gap-1">
                     <span class="font-display text-[0.95rem] font-semibold leading-snug text-[var(--color-chalk)]">{c.name}</span>
                     <span class="font-mono text-[0.625rem] tracking-[0.16em] text-[var(--color-fog)] uppercase">{c.issuer}</span>
-                    <span class="text-sm leading-relaxed text-[var(--color-fog-2)]">{c.detail}</span>
+                    <span class="text-sm leading-relaxed text-[var(--color-fog-2)]">{td(t, c.detail)}</span>
                   </span>
                   <span class="ml-auto font-mono text-[var(--color-line-2)] transition-all group-hover:translate-x-1 group-hover:text-[var(--color-signal)]">
                     ↗
