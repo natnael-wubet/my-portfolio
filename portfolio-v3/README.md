@@ -30,6 +30,12 @@ npm run preview  # serve dist/ locally
   prose: it indexes the rendered sections, shows two-line excerpts with the
   matched words marked, and on selection scrolls to the paragraph and tints
   every occurrence with the CSS Custom Highlight API.
+- **Tailored brief.** The page reconfigures itself for the reader: choose a
+  lens (product, games, security, protocols, founding) and it composes a
+  one-page brief from the same data it renders — selected live deployments,
+  repositories, awards, stack, and an argument for that team. Copy it as
+  Markdown, download `.md`, share it as `?brief=<lens>`, or print it: the
+  print stylesheet strips the site and leaves the brief on white.
 - **Shareable views.** "Copy view link" encodes the current theme, accent and
   section in `?theme=&accent=#…`. The link applies its palette before first
   paint and remembers it, so a shared URL reproduces exactly what was seen.
@@ -43,12 +49,12 @@ npm run preview  # serve dist/ locally
   every colour token read live from the cascade. It repaints when the theme
   or accent changes and is remembered per tab, never for new visitors.
 - **Keyboard layer.** `T` cycles theme, `A` cycles accent, `D` opens
-  diagnostics, `I` toggles X-ray, `H` jumps to the top, `?` opens the
-  shortcut sheet. Inside the palette: arrows to move, `Enter` to run, `Esc`
-  to close.
+  diagnostics, `I` toggles X-ray, `B` opens the tailored brief, `H` jumps to
+  the top, `?` opens the shortcut sheet. Inside the palette: arrows to move,
+  `Enter` to run, `Esc` to close.
 - **One event bus.** Cross-component actions are DOM events on `document`:
   `opt:theme`, `opt:accent`, `opt:lang`, `opt:help`, `opt:diag`, `opt:xray`,
-  plus `ui:toast` for the single aria-live status line.
+  `opt:brief`, plus `ui:toast` for the single aria-live status line.
 - **Small enhancements.** Hero stats count up when first seen, the contact
   terminal copies any answer on click (or with `copy`), and the repository
   list filters and sorts in place.
@@ -64,7 +70,7 @@ src/
 ├── components/       # Nav, Hero, Deployments, Repos, Origin, Mind, Vault,
 │                     # Awards, Photos, Connect, Footer, CommandPalette,
 │                     # Shortcuts, DisplayOptions, Instrument (diagnostics +
-│                     # X-ray + toast), Site (page composition)
+│                     # X-ray + toast), Brief (tailored one-pager), Site
 ├── data/             # English source of truth for deployments and prose
 ├── i18n/
 │   ├── en.ts         # chrome keys — the typed dictionary shape

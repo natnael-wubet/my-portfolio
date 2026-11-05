@@ -1,0 +1,931 @@
+---
+/**
+ * Tailored brief.
+ *
+ * The portfolio configures itself to the reader: pick a lens (product, games,
+ * security, protocols, founding) and the page composes a one-page brief from
+ * the same data it already renders — selected deployments, repositories,
+ * awards, stack, and a short argument for that team. The brief can be copied
+ * as Markdown, downloaded, linked to, or printed to PDF.
+ *
+ *   opt:brief   detail: lens id (optional) → toggle / open on that lens
+ *   [data-brief-open]                      → any element can open it
+ *   ?brief=<id>                            → open on load (shareable)
+ */
+import { deployments } from "../data/deployments";
+import { repos, awards, socials } from "../data/content";
+import { td, type Lang, type T } from "../i18n";
+import type { BuildInfo } from "../lib/build";
+
+interface Props {
+  t: T;
+  lang: Lang;
+  build: BuildInfo;
+}
+const { t, lang, build } = Astro.props;
+
+interface LensDef {
+  id: string;
+  deploy: string[];
+  repos: string[];
+  awards: string[];
+  skills: string[];
+}
+
+// The editor, not the code: which work speaks to which team. Every entry is
+// resolved against the real data below, so a typo in a slug simply drops the
+// row instead of breaking the build.
+const LENS_DEFS: LensDef[] = [
+  {
+    id: "product",
+    deploy: ["bigxo", "gameo", "ticketye", "day-flow"],
+    repos: ["hallo_reminder", "amecoassets", "ticketye_app"],
+    awards: ["SolveIT"],
+    skills: ["TypeScript", "React", "Next", "Vue", "Ionic", "Capacitor", "Firebase", "Supabase", "Node"],
+  },
+  {
+    id: "games",
+    deploy: ["bigxo", "bigxo-mini", "gameo"],
+    repos: ["ConAnim", "royal_balz_3D", "dessert_jumper", "pong"],
+    awards: ["D5 GameCon", "GDC"],
+    skills: ["Processing", "p5.js", "Three.js", "TypeScript", "AI opponents", "Game loops"],
+  },
+  {
+    id: "security",
+    deploy: [],
+    repos: [
+      "PAYLOADer",
+      "windows--password-cracker",
+      "ssh-password-attack",
+      "hash_cracker",
+      "file-locker",
+      "payloads",
+    ],
+    awards: ["World Science Day"],
+    skills: ["PowerShell", "Python", "C", "Linux", "Network scanning", "Credential tooling"],
+  },
+  {
+    id: "protocols",
+    deploy: ["cite-chain"],
+    repos: [],
+    awards: ["SolveIT"],
+    skills: ["Bitcoin", "OpenTimestamps", "IPFS", "Base L2", "Cryptography", "TypeScript"],
+  },
+  {
+    id: "founding",
+    deploy: ["gameo", "bigxo", "ticketye", "rim-addis"],
+    repos: ["ticketye_app", "hallo_reminder", "amecoassets"],
+    awards: ["Software Development Competition"],
+    skills: ["TypeScript", "Node", "React", "PostgreSQL", "Firebase", "Chapa", "Linux"],
+  },
+];
+
+const deployBySlug = new Map(deployments.map((d) => [d.slug, d]));
+const repoByName = new Map(repos.map((r) => [r.name, r]));
+const awardByTitle = new Map(awards.map((a) => [a.title, a]));
+const social = (label: string) => socials.find((s) => s.label === label);
+
+const lenses = LENS_DEFS.map((def) => ({
+  id: def.id,
+  title: t(`brief.lens.${def.id}`),
+  blurb: t(`brief.lens.${def.id}Blurb`),
+  why: t(`brief.lens.${def.id}Why`),
+  skills: def.skills,
+  work: def.deploy.flatMap((slug) => {
+    const d = deployBySlug.get(slug);
+    return d
+      ? [
+          {
+            name: d.name,
+            tagline: td(t, d.tagline),
+            description: td(t, d.description),
+            url: d.url,
+            stack: d.stack,
+          },
+        ]
+      : [];
+  }),
+  awards: def.awards.flatMap((title) => {
+    const a = awardByTitle.get(title);
+    return a
+      ? [{ title: a.title, org: a.org, detail: td(t, a.detail), year: a.year }]
+      : [];
+  }),
+  also: def.repos.flatMap((name) => {
+    const r = repoByName.get(name);
+    return r ? [{ name: r.name, description: td(t, r.description), url: r.url, language: r.language }] : [];
+  }),
+}));
+
+const payload = {
+  lang,
+  build: build.commit,
+  date: build.time.slice(0, 10),
+  labels: {
+    work: t("brief.work"),
+    awards: t("brief.awards"),
+    also: t("brief.also"),
+    why: t("brief.why"),
+    stack: t("brief.stack"),
+    copied: t("brief.copied"),
+    linked: t("brief.linked"),
+    downloaded: t("brief.downloaded"),
+  },
+  contact: {
+    name: "Natnael Wubet",
+    location: t("brief.contact"),
+    email: social("Email")?.handle ?? "natyw4122@gmail.com",
+    github: social("GitHub")?.href ?? "https://github.com/natnael-wubet",
+    telegram: social("Telegram")?.href ?? "https://t.me/nnaty_w20",
+  },
+  lenses,
+};
+---
+
+<div class="brief-backdrop" id="brief" role="dialog" aria-modal="true" aria-label={t("brief.title")}>
+  <div class="brief-sheet">
+    <header class="brief-head">
+      <div class="brief-head-text">
+        <span class="brief-eyebrow">{t("brief.chip")}</span>
+        <h2 class="brief-title">{t("brief.title")}</h2>
+        <p class="brief-sub">{t("brief.sub")}</p>
+      </div>
+      <button class="brief-close" id="brief-close" type="button" aria-label={t("brief.close")}>×</button>
+    </header>
+
+    <div class="brief-rail" id="brief-rail" role="tablist" aria-label={t("brief.role")}></div>
+
+    <div class="brief-body">
+      <article class="brief-doc" id="brief-doc" role="tabpanel"></article>
+      <div class="brief-actions">
+        <button class="brief-btn brief-btn-primary" type="button" data-brief-action="copy">
+          {t("brief.copy")}
+        </button>
+        <button class="brief-btn" type="button" data-brief-action="download">{t("brief.download")}</button>
+        <button class="brief-btn" type="button" data-brief-action="link">{t("brief.link")}</button>
+        <button class="brief-btn" type="button" data-brief-action="print">{t("brief.print")}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="application/json" id="brief-data" set:html={JSON.stringify(payload)} />
+
+<script>
+  type Work = { name: string; tagline: string; description: string; url: string; stack: string[] };
+  type Award = { title: string; org: string; detail: string; year: string };
+  type Repo = { name: string; description: string; url: string; language: string };
+  type Lens = {
+    id: string;
+    title: string;
+    blurb: string;
+    why: string;
+    skills: string[];
+    work: Work[];
+    awards: Award[];
+    also: Repo[];
+  };
+  type Payload = {
+    lang: string;
+    build: string;
+    date: string;
+    labels: {
+      work: string;
+      awards: string;
+      also: string;
+      why: string;
+      stack: string;
+      copied: string;
+      linked: string;
+      downloaded: string;
+    };
+    contact: { name: string; location: string; email: string; github: string; telegram: string };
+    lenses: Lens[];
+  };
+
+  const payload = JSON.parse(
+    document.getElementById("brief-data")?.textContent ?? "{}"
+  ) as Payload;
+  const backdrop = document.getElementById("brief") as HTMLElement;
+  const doc = document.getElementById("brief-doc") as HTMLElement;
+  const rail = document.getElementById("brief-rail") as HTMLElement;
+  const closeBtn = document.getElementById("brief-close") as HTMLButtonElement;
+
+  let current = payload.lenses[0]?.id ?? "product";
+  let opener: HTMLElement | null = null;
+
+  const el = <K extends keyof HTMLElementTagNameMap>(tag: K, cls?: string): HTMLElementTagNameMap[K] => {
+    const node = document.createElement(tag);
+    if (cls) node.className = cls;
+    return node;
+  };
+
+  const bare = (url: string) => url.replace(/^https?:\/\//, "").replace(/\/$/, "");
+
+  const copyText = async (text: string): Promise<boolean> => {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const toast = (message: string) => {
+    document.dispatchEvent(new CustomEvent("ui:toast", { detail: message }));
+  };
+
+  const lensById = (id: string) => payload.lenses.find((l) => l.id === id) ?? payload.lenses[0];
+
+  // ── Markdown ────────────────────────────────────────────────
+  //    Composed from the same objects the document renders, so the copy and
+  //    the screen can never drift apart.
+  const markdown = (lens: Lens): string => {
+    const c = payload.contact;
+    const lines: string[] = [
+      `# ${c.name} — ${lens.title}`,
+      "",
+      [c.location, c.email, bare(c.github), bare(c.telegram)].filter(Boolean).join(" · "),
+      "",
+      lens.blurb,
+      "",
+      `${payload.labels.stack}: ${lens.skills.join(", ")}`,
+      "",
+      `## ${payload.labels.work}`,
+      "",
+    ];
+
+    lens.work.forEach((w) => {
+      lines.push(
+        `### ${w.name} — ${w.tagline}`,
+        "",
+        w.description,
+        "",
+        `${payload.labels.stack}: ${w.stack.join(", ")}`,
+        "",
+        w.url,
+        ""
+      );
+    });
+
+    if (lens.awards.length) {
+      lines.push(`## ${payload.labels.awards}`, "");
+      lens.awards.forEach((a) => {
+        lines.push(`- **${a.title}** — ${a.detail} (${a.org}, ${a.year})`);
+      });
+      lines.push("");
+    }
+
+    if (lens.also.length) {
+      lines.push(`## ${payload.labels.also}`, "");
+      lens.also.forEach((r) => {
+        lines.push(`- **${r.name}** — ${r.description} (${r.url})`);
+      });
+      lines.push("");
+    }
+
+    lines.push(`## ${payload.labels.why}`, "", lens.why, "");
+    lines.push("---", "", `${location.origin}${location.pathname}?brief=${lens.id} · build ${payload.build}`);
+    return lines.join("\n");
+  };
+
+  // ── Document ────────────────────────────────────────────────
+  const heading = (text: string): HTMLElement => {
+    const h = el("h3", "brief-section-title");
+    h.textContent = text;
+    return h;
+  };
+
+  const para = (text: string, cls = "brief-text"): HTMLElement => {
+    const p = el("p", cls);
+    p.textContent = text;
+    return p;
+  };
+
+  const link = (url: string): HTMLElement => {
+    const a = el("a", "brief-link");
+    a.href = url;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = bare(url);
+    return a;
+  };
+
+  const renderDoc = (lens: Lens) => {
+    const c = payload.contact;
+    const frag = document.createDocumentFragment();
+
+    const head = el("header", "brief-doc-head");
+    const name = el("h2", "brief-name");
+    name.textContent = c.name;
+    const role = el("p", "brief-role");
+    role.textContent = lens.title;
+    const meta = el("p", "brief-meta");
+    meta.textContent = [c.location, c.email, bare(c.github), bare(c.telegram)].join(" · ");
+    head.append(name, role, meta);
+    frag.append(head);
+
+    frag.append(para(lens.blurb, "brief-blurb"));
+
+    // Skills for this lens
+    const skills = el("div", "brief-skills");
+    lens.skills.forEach((skill) => {
+      const chip = el("span", "brief-skill");
+      chip.textContent = skill;
+      skills.append(chip);
+    });
+    frag.append(skills);
+
+    // Selected work — only when this lens has live deployments.
+    if (lens.work.length) {
+      frag.append(heading(payload.labels.work));
+      lens.work.forEach((w) => {
+        const art = el("article", "brief-work");
+        const h = el("h4", "brief-work-title");
+        h.textContent = w.name;
+        const tag = el("span", "brief-work-tagline");
+        tag.textContent = w.tagline;
+        h.append(" ", tag);
+        const stack = el("p", "brief-meta");
+        stack.textContent = `${payload.labels.stack}: ${w.stack.join(" · ")}`;
+        art.append(h, para(w.description), stack, link(w.url));
+        frag.append(art);
+      });
+    }
+
+    if (lens.awards.length) {
+      frag.append(heading(payload.labels.awards));
+      lens.awards.forEach((a) => {
+        const award = el("p", "brief-award");
+        award.textContent = `${a.title} — ${a.detail} (${a.org}, ${a.year})`;
+        frag.append(award);
+      });
+    }
+
+    // Also relevant
+    if (lens.also.length) {
+      frag.append(heading(payload.labels.also));
+      const ul = el("ul", "brief-list");
+      lens.also.forEach((r) => {
+        const li = el("li");
+        const strong = el("strong");
+        strong.textContent = r.name;
+        li.append(strong, " — ", r.description, " ", link(r.url));
+        ul.append(li);
+      });
+      frag.append(ul);
+    }
+
+    // Why this lens
+    frag.append(heading(payload.labels.why));
+    frag.append(para(lens.why));
+
+    doc.replaceChildren(frag);
+  };
+
+  const renderRail = () => {
+    rail.replaceChildren(
+      ...payload.lenses.map((lens) => {
+        const btn = el("button", "brief-lens");
+        btn.type = "button";
+        btn.textContent = lens.title;
+        btn.dataset.active = String(lens.id === current);
+        btn.dataset.lens = lens.id;
+        btn.tabIndex = lens.id === current ? 0 : -1;
+        btn.setAttribute("role", "tab");
+        btn.setAttribute("aria-controls", "brief-doc");
+        btn.setAttribute("aria-selected", String(lens.id === current));
+        btn.addEventListener("click", () => select(lens.id));
+        return btn;
+      })
+    );
+  };
+
+  const select = (id: string, focus = false) => {
+    current = id;
+    renderRail();
+    renderDoc(lensById(id));
+    if (focus) rail.querySelector<HTMLElement>(`[data-lens="${id}"]`)?.focus();
+  };
+
+  // Arrow keys move between lenses, as a tablist should.
+  rail.addEventListener("keydown", (e) => {
+    const keys = ["ArrowDown", "ArrowUp", "ArrowRight", "ArrowLeft", "Home", "End"];
+    if (!keys.includes(e.key)) return;
+    e.preventDefault();
+    const n = payload.lenses.length;
+    const idx = payload.lenses.findIndex((l) => l.id === current);
+    let next = idx;
+    if (e.key === "ArrowDown" || e.key === "ArrowRight") next = (idx + 1) % n;
+    else if (e.key === "ArrowUp" || e.key === "ArrowLeft") next = (idx - 1 + n) % n;
+    else if (e.key === "Home") next = 0;
+    else next = n - 1;
+    select(payload.lenses[next].id, true);
+  });
+
+  // ── Open / close ────────────────────────────────────────────
+  const isOpen = () => backdrop.classList.contains("open");
+
+  const open = (id?: string) => {
+    if (id && payload.lenses.some((l) => l.id === id)) current = id;
+    renderRail();
+    renderDoc(lensById(current));
+    backdrop.classList.add("open");
+    document.body.classList.add("brief-open");
+    document.body.style.overflow = "hidden";
+    closeBtn.focus();
+  };
+
+  const close = () => {
+    backdrop.classList.remove("open");
+    document.body.classList.remove("brief-open");
+    document.body.style.overflow = "";
+    doc.replaceChildren();
+    opener?.focus();
+    opener = null;
+  };
+
+  // Any element can be a trigger; the hero CTA is one.
+  document.addEventListener("click", (e) => {
+    const trigger = (e.target as HTMLElement | null)?.closest<HTMLElement>("[data-brief-open]");
+    if (!trigger) return;
+    e.preventDefault();
+    opener = trigger;
+    if (isOpen()) close();
+    else open(trigger.dataset.briefOpen || undefined);
+  });
+
+  document.addEventListener("opt:brief", (e) => {
+    const id = (e as CustomEvent<string | undefined>).detail;
+    if (isOpen()) close();
+    else open(id);
+  });
+
+  closeBtn.addEventListener("click", close);
+  backdrop.addEventListener("click", (e) => {
+    if (e.target === backdrop) close();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && isOpen()) close();
+  });
+
+  // ── Actions ─────────────────────────────────────────────────
+  document.querySelectorAll<HTMLButtonElement>("[data-brief-action]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const lens = lensById(current);
+      const action = btn.dataset.briefAction;
+
+      if (action === "copy") {
+        if (await copyText(markdown(lens))) toast(payload.labels.copied);
+      } else if (action === "download") {
+        const blob = new Blob([markdown(lens)], { type: "text/markdown;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `natnael-wubet-${lens.id}-brief.md`;
+        a.click();
+        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+        toast(payload.labels.downloaded);
+      } else if (action === "link") {
+        const url = new URL(location.href);
+        url.search = "";
+        url.searchParams.set("brief", lens.id);
+        url.searchParams.set("theme", localStorage.getItem("cv:theme") ?? "system");
+        url.searchParams.set("accent", localStorage.getItem("cv:accent") ?? "lime");
+        if (await copyText(url.toString())) toast(payload.labels.linked);
+      } else if (action === "print") {
+        window.print();
+      }
+    });
+  });
+
+  // A shared ?brief=<id> opens on load.
+  const initial = new URLSearchParams(location.search).get("brief");
+  if (initial && payload.lenses.some((l) => l.id === initial)) {
+    requestAnimationFrame(() => open(initial));
+  }
+</script>
+
+<style>
+  .brief-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 230;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: color-mix(in srgb, var(--color-ink) 80%, transparent);
+    backdrop-filter: blur(10px);
+  }
+
+  .brief-backdrop.open {
+    display: flex;
+  }
+
+  .brief-sheet {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    width: min(1000px, 100%);
+    max-height: min(88vh, 920px);
+    border: 1px solid var(--color-line-2);
+    background: var(--color-ink-2);
+    box-shadow: 0 50px 140px -40px color-mix(in srgb, #000 72%, transparent);
+    overflow: hidden;
+  }
+
+  .brief-head {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.1rem 1.25rem 1rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .brief-head-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .brief-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-signal);
+  }
+
+  .brief-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--color-chalk);
+  }
+
+  .brief-sub {
+    margin: 0;
+    max-width: 60ch;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-fog-2);
+  }
+
+  .brief-close {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--color-line-2);
+    background: transparent;
+    color: var(--color-fog-2);
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .brief-close:hover {
+    border-color: var(--color-signal);
+    color: var(--color-chalk);
+  }
+
+  .brief-rail {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem;
+    border-right: 1px solid var(--color-line);
+    overflow-y: auto;
+  }
+
+  .brief-lens {
+    width: 100%;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--color-fog-2);
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: left;
+    cursor: pointer;
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .brief-lens:hover {
+    border-color: var(--color-line-2);
+    color: var(--color-chalk);
+  }
+
+  .brief-lens[data-active="true"] {
+    border-color: var(--color-signal);
+    background: color-mix(in srgb, var(--color-signal) 9%, transparent);
+    color: var(--color-signal);
+  }
+
+  .brief-body {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .brief-doc {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.4rem 1.6rem 1.6rem;
+    overflow-y: auto;
+  }
+
+  .brief-doc-head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .brief-name {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--color-chalk);
+  }
+
+  .brief-role {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-signal);
+  }
+
+  .brief-meta {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    line-height: 1.6;
+    letter-spacing: 0.04em;
+    color: var(--color-fog);
+    overflow-wrap: anywhere;
+  }
+
+  .brief-blurb {
+    margin: 0.35rem 0 0;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--color-fog-2);
+  }
+
+  .brief-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.35rem;
+  }
+
+  .brief-skill {
+    border: 1px solid var(--color-line);
+    padding: 0.18rem 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-fog);
+  }
+
+  .brief-section-title {
+    margin: 0.9rem 0 0.1rem;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-fog);
+  }
+
+  .brief-work {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.7rem 0 0.75rem;
+    border-bottom: 1px dotted var(--color-line);
+  }
+
+  .brief-work-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-chalk);
+  }
+
+  .brief-work-tagline {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-signal);
+  }
+
+  .brief-text {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-fog-2);
+  }
+
+  .brief-award {
+    margin: 0.35rem 0 0;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    color: var(--color-fog-2);
+    padding-left: 0.9rem;
+    border-left: 2px solid var(--color-signal);
+  }
+
+  .brief-list {
+    margin: 0.35rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .brief-list li {
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    color: var(--color-fog-2);
+  }
+
+  .brief-list strong {
+    color: var(--color-chalk);
+    font-weight: 500;
+  }
+
+  .brief-link {
+    color: var(--color-signal);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-signal) 40%, transparent);
+    overflow-wrap: anywhere;
+  }
+
+  .brief-link:hover {
+    border-bottom-color: var(--color-signal);
+  }
+
+  .brief-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.9rem 1.6rem;
+    border-top: 1px solid var(--color-line);
+    background: color-mix(in srgb, var(--color-ink) 55%, transparent);
+  }
+
+  .brief-btn {
+    padding: 0.55rem 0.9rem;
+    border: 1px solid var(--color-line-2);
+    background: transparent;
+    color: var(--color-fog-2);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .brief-btn:hover {
+    border-color: var(--color-signal);
+    color: var(--color-chalk);
+  }
+
+  .brief-btn-primary {
+    border-color: var(--color-signal);
+    color: var(--color-signal);
+  }
+
+  .brief-btn-primary:hover {
+    background: var(--color-signal);
+    color: var(--color-ink);
+  }
+
+  @media (max-width: 760px) {
+    .brief-sheet {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto auto minmax(0, 1fr);
+      max-height: 92vh;
+    }
+
+    .brief-rail {
+      flex-direction: row;
+      gap: 0.35rem;
+      padding: 0.6rem 1rem;
+      border-right: none;
+      border-bottom: 1px solid var(--color-line);
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+
+    .brief-lens {
+      width: auto;
+      white-space: nowrap;
+    }
+
+    .brief-doc {
+      padding: 1.1rem 1.1rem 1.3rem;
+    }
+
+    .brief-actions {
+      padding: 0.8rem 1.1rem;
+    }
+
+    .brief-sub {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .brief-backdrop,
+    .brief-sheet {
+      transition: none;
+    }
+  }
+</style>
+
+<style is:global>
+  /* Printing a brief should produce the brief, not the site around it. */
+  @media print {
+    body.brief-open > *:not(#brief) {
+      display: none !important;
+    }
+
+    body.brief-open {
+      background: #fff !important;
+    }
+
+    body.brief-open #brief {
+      position: static;
+      display: block;
+      padding: 0;
+      background: #fff;
+      backdrop-filter: none;
+    }
+
+    body.brief-open #brief .brief-sheet {
+      display: block;
+      width: 100%;
+      max-width: none;
+      max-height: none;
+      border: none;
+      box-shadow: none;
+      background: #fff;
+      overflow: visible;
+    }
+
+    body.brief-open #brief .brief-head,
+    body.brief-open #brief .brief-rail,
+    body.brief-open #brief .brief-actions {
+      display: none !important;
+    }
+
+    body.brief-open #brief .brief-doc,
+    body.brief-open #brief .brief-doc * {
+      color: #101315 !important;
+      background: transparent !important;
+      overflow: visible !important;
+    }
+
+    body.brief-open #brief .brief-role,
+    body.brief-open #brief .brief-work-tagline,
+    body.brief-open #brief .brief-link {
+      color: #333 !important;
+    }
+
+    body.brief-open #brief .brief-award {
+      border-left-color: #101315 !important;
+    }
+  }
+</style>

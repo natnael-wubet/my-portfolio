@@ -59,6 +59,10 @@ const stats = [
           <div class="flex flex-col gap-4">
             <div class="fade-up flex flex-wrap gap-3" style="animation-delay: 0.45s">
               <a class="btn btn-primary" href="#work">{t("hero.ctaWork")}</a>
+              <button class="btn btn-brief" type="button" data-brief-open>
+                {t("brief.open")}
+                <span aria-hidden="true">→</span>
+              </button>
               <a class="btn" href="https://github.com/natnael-wubet" target="_blank" rel="noopener">GitHub</a>
               <a class="btn" href="https://t.me/nnaty_w20" target="_blank" rel="noopener">Telegram</a>
             </div>
@@ -512,5 +516,19 @@ const stats = [
       animation: none;
       transform: translateX(60%);
     }
+  }
+
+  /* The one CTA that says the page can reconfigure itself. */
+  .btn-brief {
+    border-style: dashed;
+    border-color: color-mix(in srgb, var(--color-signal) 45%, transparent);
+    color: var(--color-signal);
+  }
+
+  .btn-brief:hover {
+    background: var(--color-signal);
+    border-color: var(--color-signal);
+    border-style: solid;
+    color: var(--color-on-signal);
   }
 </style>

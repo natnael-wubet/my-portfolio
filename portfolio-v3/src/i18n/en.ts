@@ -58,6 +58,7 @@ export const en = {
   "shortcuts.theme": "Cycle theme · dark → light → system",
   "shortcuts.accent": "Cycle accent colour",
   "shortcuts.diag": "Open the diagnostics drawer",
+  "shortcuts.brief": "Compose a tailored brief",
   "shortcuts.xray": "Toggle X-ray / instrument mode",
   "shortcuts.help": "Show this sheet",
   "shortcuts.updown": "Move the selection",
@@ -253,6 +254,8 @@ export const en = {
   "palette.opt.diagMeta": "Live measurements for this page",
   "palette.opt.xray": "X-ray mode",
   "palette.opt.xrayMeta": "Section bounds, grid and colour tokens",
+  "palette.opt.brief": "Tailored brief",
+  "palette.opt.briefMeta": "Compose a brief for a team",
   "palette.opt.langAm": "Switch to Amharic",
   "palette.opt.langAmMeta": "ድር ጣቢያውን በአማርኛ አሳይ",
   "palette.opt.langEn": "Switch to English",
@@ -290,6 +293,53 @@ export const en = {
   "diag.clock": "Local time",
   "diag.xray": "X-ray",
   "diag.empty": "unavailable",
+
+  // ── Tailored brief ────────────────────────────────────────
+  "brief.chip": "Brief",
+  "brief.title": "Tailored brief",
+  "brief.sub": "Choose the lens that matches your team. The page composes a one-page brief from the work below.",
+  "brief.close": "Close",
+  "brief.role": "Role",
+  "brief.work": "Selected work",
+  "brief.awards": "Recognition",
+  "brief.also": "Also relevant",
+  "brief.why": "Why this lens",
+  "brief.stack": "Stack",
+  "brief.contact": "Bahir Dar, Ethiopia",
+  "brief.copy": "Copy as Markdown",
+  "brief.download": "Download .md",
+  "brief.link": "Copy link",
+  "brief.print": "Print / PDF",
+  "brief.copied": "Brief copied",
+  "brief.downloaded": "Brief downloaded",
+  "brief.linked": "Link copied",
+  "brief.open": "Tailor this page",
+  "brief.openMeta": "Compose a brief for your team",
+  "brief.lens.product": "Product engineer",
+  "brief.lens.productBlurb":
+    "I take products from a rough idea to a paying user: schema, auth, payments, admin, and the interface that ties them together. The work below is live, not a case study.",
+  "brief.lens.productWhy":
+    "You need one person who can own the whole path — database to deploy, checkout to support console — and keep shipping after launch.",
+  "brief.lens.games": "Game engineer",
+  "brief.lens.gamesBlurb":
+    "Games with real stakes: a 3D tic-tac-toe with an AI opponent, a real-money bingo room, and a Telegram-native client. Mechanics, game loops, and the unglamorous parts that keep them honest.",
+  "brief.lens.gamesWhy":
+    "Gameplay is a systems problem and a psychology problem at once. I build both, and I ship to real players.",
+  "brief.lens.security": "Security engineer",
+  "brief.lens.securityBlurb":
+    "I started in offensive security: scanners, payload delivery and credential tooling in PowerShell, Python and C. The tools are public; the discipline is still how I read systems.",
+  "brief.lens.securityWhy":
+    "You get someone who thinks like an attacker while designing auth, payments or a deploy pipeline.",
+  "brief.lens.protocols": "Protocol & research engineer",
+  "brief.lens.protocolsBlurb":
+    "Verifiable attribution for scientific work: content hashed to IPFS, anchored on Bitcoin with OpenTimestamps, contributions settled in audited contracts on Base L2, linked to ORCID. Also physics and philosophy, self-taught and in public.",
+  "brief.lens.protocolsWhy":
+    "You need someone comfortable with cryptography, incentive design and the long tail of edge cases — and who can explain all three to people who are not cryptographers.",
+  "brief.lens.founding": "Founding engineer",
+  "brief.lens.foundingBlurb":
+    "I have been the engineer, the ops, the person on the phone with a payment provider, and the one answering support at 2am. Real-money bingo, a nationwide bus ticketing system, a car marketplace.",
+  "brief.lens.foundingWhy":
+    "Early teams need range and judgement more than a specialisation. I bring both, plus a bias for shipping something real this month.",
 } as const;
 
 export type Dict = typeof en;

@@ -27,6 +27,7 @@ const groups = [
       { keys: ["T"], label: t("shortcuts.theme") },
       { keys: ["A"], label: t("shortcuts.accent") },
       { keys: ["D"], label: t("shortcuts.diag") },
+      { keys: ["B"], label: t("shortcuts.brief") },
       { keys: ["I"], label: t("shortcuts.xray") },
       { keys: ["?"], label: t("shortcuts.help") },
     ],
@@ -128,6 +129,8 @@ const groups = [
       import("../scripts/options").then((m) => m.cycleAccent());
     } else if (e.key.toLowerCase() === "d") {
       document.dispatchEvent(new CustomEvent("opt:diag"));
+    } else if (e.key.toLowerCase() === "b") {
+      document.dispatchEvent(new CustomEvent("opt:brief"));
     } else if (e.key.toLowerCase() === "i") {
       document.dispatchEvent(new CustomEvent("opt:xray"));
     } else if (e.key.toLowerCase() === "h") {

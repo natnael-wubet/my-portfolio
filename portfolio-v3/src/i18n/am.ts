@@ -57,6 +57,7 @@ export const am: Dict & Record<string, string> = {
   "shortcuts.theme": "ገጽታ ቀይር · ጨለማ → ብርሃን → ስርዓት",
   "shortcuts.accent": "የምልክት ቀለም ቀይር",
   "shortcuts.diag": "የምርመራ መሳቢያ ክፈት",
+  "shortcuts.brief": "የተዘጋጀ መግለጫ አዘጋጅ",
   "shortcuts.xray": "የኤክስ-ሬይ / መሣሪያ ሁነታ ቀይር",
   "shortcuts.help": "ይህን ወረቀት አሳይ",
   "shortcuts.updown": "ምርጫውን አንቀሳቅስ",
@@ -252,6 +253,8 @@ export const am: Dict & Record<string, string> = {
   "palette.opt.diagMeta": "ለዚህ ገጽ ቀጥታ መለኪያዎች",
   "palette.opt.xray": "የኤክስ-ሬይ ሁነታ",
   "palette.opt.xrayMeta": "የክፍል ወሰኖች፣ ፍርግርግና የቀለም ቶከኖች",
+  "palette.opt.brief": "የተዘጋጀ መግለጫ",
+  "palette.opt.briefMeta": "ለቡድን መግለጫ ያዘጋጁ",
   "palette.opt.langAm": "ወደ አማርኛ ቀይር",
   "palette.opt.langAmMeta": "ድር ጣቢያውን በአማርኛ አሳይ",
   "palette.opt.langEn": "ወደ እንግሊዝኛ ቀይር",
@@ -289,4 +292,51 @@ export const am: Dict & Record<string, string> = {
   "diag.clock": "የአካባቢ ሰዓት",
   "diag.xray": "ኤክስ-ሬይ",
   "diag.empty": "አይገኝም",
+
+  // ── Tailored brief ────────────────────────────────────────
+  "brief.chip": "መግለጫ",
+  "brief.title": "የተዘጋጀ መግለጫ",
+  "brief.sub": "ለቡድንዎ የሚስማማውን እይታ ይምረጡ። ገጹ ከታች ካለው ሥራ የአንድ ገጽ መግለጫ ይሠራል።",
+  "brief.close": "ዝጋ",
+  "brief.role": "ሚና",
+  "brief.work": "የተመረጠ ሥራ",
+  "brief.awards": "እውቅና",
+  "brief.also": "ተዛማጅ ሌሎች",
+  "brief.why": "ይህ እይታ ለምን",
+  "brief.stack": "ቴክኖሎጂ",
+  "brief.contact": "ባህር ዳር፣ ኢትዮጵያ",
+  "brief.copy": "እንደ Markdown ቅዳ",
+  "brief.download": ".md አውርድ",
+  "brief.link": "አገናኝ ቅዳ",
+  "brief.print": "አትም / PDF",
+  "brief.copied": "መግለጫው ተቀድቷል",
+  "brief.downloaded": "መግለጫው ወርዷል",
+  "brief.linked": "አገናኝ ተቀድቷል",
+  "brief.open": "ይህን ገጽ አስተካክል",
+  "brief.openMeta": "ለቡድንዎ መግለጫ ያዘጋጁ",
+  "brief.lens.product": "የምርት ኢንጂነር",
+  "brief.lens.productBlurb":
+    "ምርቶችን ከሻካራ ሐሳብ እስከ ክፍያ የሚከፍል ተጠቃሚ እወስዳለሁ፡ ስኪማ፣ ማረጋገጫ፣ ክፍያ፣ አስተዳዳሪና ሁሉንም የሚያገናኘው ገጽታ። ከታች ያለው ሥራ በሥራ ላይ ነው፣ የጥናት ምሳሌ አይደለም።",
+  "brief.lens.productWhy":
+    "ከዳታቤዝ እስከ ማሰማራት፣ ከክፍያ እስከ ድጋፍ ኮንሶል ድረስ መላውን መንገድ የሚይዝ እና ከልቀት በኋላም መላክን የሚቀጥል አንድ ሰው ያስፈልግዎታል።",
+  "brief.lens.games": "የጨዋታ ኢንጂነር",
+  "brief.lens.gamesBlurb":
+    "እውነተኛ አደጋ ያላቸው ጨዋታዎች፡ ከAI ተቀናቃኝ ጋር ባለ ሶስት አቅጣጫ ቲክ-ታክ-ቶ፣ በእውነተኛ ገንዘብ የሚጫወት የቢንጎ ክፍል፣ እና ለTelegram የተዘጋጀ ደንበኛ። ሜካኒኮች፣ የጨዋታ ዑደቶች እና ታማኝ እንዲሆኑ የሚያደርጉት ደስ የማይሉ ክፍሎች።",
+  "brief.lens.gamesWhy":
+    "ጨዋታ በአንድ ጊዜ የሥርዓት ችግርና የሳይኮሎጂ ችግር ነው። ሁለቱንም እገነባለሁ፣ እና ለእውነተኛ ተጫዋቾች አደርሳለሁ።",
+  "brief.lens.security": "የደህንነት ኢንጂነር",
+  "brief.lens.securityBlurb":
+    "የጀመርኩት በጥቃት ደህንነት ነበር፡ መቃኛዎች፣ የpayload ማድረስና በPowerShell፣ Python እና C የተጻፉ የምስክር መሣሪያዎች። መሣሪያዎቹ ይፋዊ ናቸው፤ የሥርዓት አንባቢነቴ አሁንም ከዚያ የመጣ ነው።",
+  "brief.lens.securityWhy":
+    "ማረጋገጫ፣ ክፍያ ወይም የማሰማራት መስመር ሲነድፉ እንደ አጥቂ የሚያስብ ሰው ያገኛሉ።",
+  "brief.lens.protocols": "የፕሮቶኮልና ምርምር ኢንጂነር",
+  "brief.lens.protocolsBlurb":
+    "ለሳይንሳዊ ሥራ የሚረጋገጥ ምስክርነት፡ ይዘት ወደ IPFS ተሃሽቶ፣ በOpenTimestamps በቢትኮይን ላይ የተሰካ፣ አስተዋጽኦዎች በBase L2 ላይ በተመረመሩ ኮንትራቶች የሚጠናቀቁ፣ ከORCID ጋር የተሳሰሩ። እንዲሁም ፊዚክስና ፍልስፍና፣ በራስ ተምሬ በአደባባይ።",
+  "brief.lens.protocolsWhy":
+    "በምስጢራዊ ጽሑፍ፣ በማበረታቻ ንድፍና በረዥሙ የጠርዝ ጉዳዮች ውስጥ የሚመች እና ሁሉንም ለምስጢራዊ-ጽሑፍ ባለሙያዎች ላልሆኑ ሰዎች ማስረዳት የሚችል ሰው ያስፈልግዎታል።",
+  "brief.lens.founding": "መስራች ኢንጂነር",
+  "brief.lens.foundingBlurb":
+    "ኢንጂነሩ፣ ኦፕሬሽኑ፣ ከክፍያ አገልግሎት አቅራቢ ጋር በስልክ የተነጋገረው፣ እና ሌሊቱን ሁለት ሰዓት ላይ ድጋፍ የመለሰው ሰው ሆኛለሁ። በእውነተኛ ገንዘብ የሚጫወት ቢንጎ፣ በአገር አቀፍ ደረጃ የአውቶቡስ ቲኬት ሥርዓት፣ የመኪና ገበያ።",
+  "brief.lens.foundingWhy":
+    "ቀደምት ቡድኖች ከልዩ ሙያ ይልቅ ስፋትና ብልህነት ይፈልጋሉ። ሁለቱንም አመጣለሁ፣ ከዚህ ወር ውስጥ እውነተኛ ነገር የመላክ ዝንባሌ ጋር።",
 };

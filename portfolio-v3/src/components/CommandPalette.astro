@@ -97,6 +97,7 @@ const items: PaletteItem[] = [
   { label: t("palette.opt.share"), meta: t("palette.opt.shareMeta"), href: "action:share", kind: KIND.option, keywords: "share link url copy view theme accent section" },
   { label: t("palette.opt.diag"), meta: t("palette.opt.diagMeta"), href: "action:diag", kind: KIND.option, keywords: "diagnostics stats performance telemetry measure fps memory network build" },
   { label: t("palette.opt.xray"), meta: t("palette.opt.xrayMeta"), href: "action:xray", kind: KIND.option, keywords: "xray x-ray inspect outline grid tokens colours layout debug" },
+  { label: t("palette.opt.brief"), meta: t("palette.opt.briefMeta"), href: "action:brief", kind: KIND.option, keywords: "brief tailored lens hire team product games security protocols founding download markdown cv resume" },
   // Language is a navigation, not a state toggle: both locales are static.
   {
     label: lang === "en" ? t("palette.opt.langAm") : t("palette.opt.langEn"),
@@ -446,6 +447,8 @@ const items: PaletteItem[] = [
       document.dispatchEvent(new CustomEvent("opt:diag"));
     } else if (kind === "xray") {
       document.dispatchEvent(new CustomEvent("opt:xray"));
+    } else if (kind === "brief") {
+      document.dispatchEvent(new CustomEvent("opt:brief"));
     } else if (kind === "share") {
       // Reproduce the current view: palette preference + the section in view.
       const url = new URL(location.href);
