@@ -107,9 +107,30 @@ export const en = {
 
   // ── Section 02 · Repositories ─────────────────────────────
   "sec.repos.eyebrow": "Source · all {n} repositories",
-  "sec.repos.title": "Every repository",
+  "sec.repos.title": "The source, read closely",
   "sec.repos.lead":
-    "The full public footprint on GitHub — offensive tooling, games, desktop apps, configs and experiments. Nothing curated, everything honest.",
+    "Every public repository is below. Before the full shelf, a closer read of the ones that carry the most engineering — starting with the engine that turns a terminal into a canvas.",
+  "sec.repos.featured": "Featured dossier",
+  "sec.repos.dossierNo": "Dossier 01",
+  "sec.repos.artefact":
+    "Four channels and their sum, generated at build time from the same point/line model — not a screenshot.",
+  "sec.repos.what": "What it is",
+  "sec.repos.why": "Why it matters",
+  "sec.repos.honest": "The honest read",
+  "sec.repos.fieldNotes": "Field notes",
+  "sec.repos.fieldNotesLead":
+    "Four more repositories, read against their own READMEs — what they promise, and what the code actually does.",
+  "sec.repos.total": "in the index",
+  "sec.repos.note": "Field note",
+  "sec.repos.assessment": "Assessment",
+  "sec.repos.readme": "README",
+  "sec.repos.files": "files",
+  "sec.repos.fact.renderer": "Renderer",
+  "sec.repos.fact.canvas": "Canvas",
+  "sec.repos.fact.api": "API",
+  "sec.repos.fact.demos": "Demos",
+  "sec.repos.allRepos": "The rest of the shelf",
+  "sec.repos.allReposLead": "Every public repository, searchable and filterable by group, name and stars.",
   "sec.repos.open": "Open GitHub ↗",
   "sec.repos.all": "All",
   "sec.repos.fork": "fork",

@@ -106,9 +106,30 @@ export const am: Dict & Record<string, string> = {
 
   // ── Section 02 · Repositories ─────────────────────────────
   "sec.repos.eyebrow": "ምንጭ · ሁሉም {n} ማከማቻዎች",
-  "sec.repos.title": "እያንዳንዱ ማከማቻ",
+  "sec.repos.title": "ምንጩን በቅርብ አንብብ",
   "sec.repos.lead":
-    "በ GitHub ላይ ያለው ሙሉ የግል ሥራ — የመጥቃት መሣሪያዎች፣ ጨዋታዎች፣ የዴስክቶፕ መተግበሪያዎች፣ ማዋቀሪያዎችና ሙከራዎች። ምንም ያመለከተ የለም፣ ሁሉም እውነት ነው።",
+    "ሁሉም የግል ማከማቻዎች ከታች አሉ። ከሙሉው መደርደሪያ በፊት፣ ብዙ ምህንድስና የያዙትን በቅርብ እናንብብ — ተርሚናልን ሸራ የሚያደርገው ኤንጂን ይጀምራል።",
+  "sec.repos.featured": "የተመረጠ ሰነድ",
+  "sec.repos.dossierNo": "ሰነድ 01",
+  "sec.repos.artefact":
+    "አራት ቻናሎችና ድምራቸው፣ በግንባታ ጊዜ ከዚያው point/line ሞዴል የተፈጠረ — ስክሪንሾት አይደለም።",
+  "sec.repos.what": "ምን ነው",
+  "sec.repos.why": "ለምን ይጠቅማል",
+  "sec.repos.honest": "ቀጥተኛው እይታ",
+  "sec.repos.fieldNotes": "የመስክ ማስታወሻዎች",
+  "sec.repos.fieldNotesLead":
+    "አራት ተጨማሪ ማከማቻዎች፣ ከራሳቸው README ጋር ተነጻጽረው — ምን ቃል እንደገቡና ኮዱ በእውነት ምን እንደሚያደርግ።",
+  "sec.repos.total": "በመዝገቡ",
+  "sec.repos.note": "የመስክ ማስታወሻ",
+  "sec.repos.assessment": "ግምገማ",
+  "sec.repos.readme": "README",
+  "sec.repos.files": "ፋይሎች",
+  "sec.repos.fact.renderer": "ሬንደረር",
+  "sec.repos.fact.canvas": "ሸራ",
+  "sec.repos.fact.api": "API",
+  "sec.repos.fact.demos": "ማሳያዎች",
+  "sec.repos.allRepos": "የቀረው መደርደሪያ",
+  "sec.repos.allReposLead": "ሁሉም የግል ማከማቻዎች፣ በቡድን፣ በስምና በኮከብ ተፈልገው ሊጣሩ ይችላሉ።",
   "sec.repos.open": "GitHub ክፈት ↗",
   "sec.repos.all": "ሁሉም",
   "sec.repos.fork": "ቅርንጫፍ",

@@ -211,6 +211,32 @@ export const amData: Record<string, string> = {
   Ethical: "ሥነ ምግባራዊ",
   Progress: "ዕድገት",
 
+  /* ─── Repository dossiers ─────────────────────────────────── */
+  "ConAnim is a p5-style drawing API that renders into a terminal framebuffer. You call size(), point(), line(), rect() and display(); it resolves those calls into a character grid and prints the frame. The repository is the sketchbook around that idea — waveform plots, Lissajous line art, a snake, pong, a recursive tree, gravity — each one a single Script class.":
+    "ConAnim በp5 መልክ የተሠራ የስዕል API ነው፣ ወደ ተርሚናል ፍሬምባፈር የሚያቀርብ። size()፣ point()፣ line()፣ rect() እና display() ትጠራለህ፤ እሱም ጥሪዎቹን ወደ ቁምፊ ሰንጠረዥ ቀይሮ ፍሬሙን ያትማል። ማከማቻው በዚያ ሐሳብ ዙሪያ ያለ የስዕል ደብተር ነው — የሞገድ ግራፎች፣ የLissajous መስመር ጥበብ፣ እባብ፣ ፖንግ፣ ተደጋጋሚ ዛፍ፣ ስበት — እያንዳንዱ አንድ Script ክላስ።",
+  "A small P5py class holds a two-dimensional array of characters. point() writes one cell, line() samples every cell between two coordinates, rect() fills a range, and display() prints the grid. A sketch subclasses a Script object, sets a canvas size in cells, and draws inside the engine's loop.":
+    "ትንሽ P5py ክላስ ባለ ሁለት አቅጣጫ የቁምፊ ድርድር ይይዛል። point() አንድ ሕዋስ ይጽፋል፣ line() በሁለት መጋጠሚያዎች መካከል ያሉትን ሕዋሶች ይነሳል፣ rect() ክልል ይሞላል፣ display() ደግሞ ሰንጠረዡን ያትማል። ስዕል የScript ነገርን ይወርሳል፣ የሸራ መጠን በሕዋሶች ያዘጋጃል፣ ከዚያ በኤንጂኑ ዑደት ውስጥ ይስላል።",
+  "It is the Processing instinct applied to the one surface that never needs a GPU: the terminal. The constraint is the point. At 200 by 30 cells you cannot hide behind resolution, so motion has to be legible as characters, and the frame budget is whatever clear and print cost.":
+    "የProcessing ውስጣዊ ስሜት በጭራሽ GPU የማይፈልገው ገጽ ላይ ተተግብሯል፦ ተርሚናል። ገደቡ ራሱ ዓላማው ነው። በ200 በ30 ሕዋሶች በጥራት መደበቅ አትችልም፤ ስለዚህ እንቅስቃሴ በቁምፊዎች መነበብ አለበት፣ የፍሬም በጀቱም clear እና print የሚያስከፍሉት ነው።",
+  "The README is 174 bytes and a video, the repository commits __pycache__, and several files are workbench leftovers (runner.py hard-codes one demo, drawtest.py.save contains an unrelated Colorama example). The engine is real and readable; the packaging is still a workbench.":
+    "READMEው 174 ባይትና አንድ ቪዲዮ ነው፣ ማከማቻው __pycache__ ያካትታል፣ አንዳንድ ፋይሎችም የሥራ ጠረጴዛ ቅሪቶች ናቸው (runner.py አንድ ማሳያ ብቻ ይጽፋል፣ drawtest.py.save የማይገናኝ የColorama ምሳሌ ይዟል)። ኤንጂኑ እውነተኛና ሊነበብ የሚችል ነው፤ ማሸጊያው ግን አሁንም የሥራ ጠረጴዛ ነው።",
+  "A Windows GUI that repackages a .ps1 payload as .hta, .bat or .js, and can serve the result over HTTP — a delivery-format switcher for red-team style scripts.":
+    "የWindows GUI .ps1 ጭነትን እንደ .hta፣ .bat ወይም .js እንደገና የሚያሸግብ እና ውጤቱን በHTTP የሚያቀርብ — ለቀይ ቡድን መሰል ስክሪፕቶች የማድረሻ ቅርጽ ቀያይሪ።",
+  "The README is a five-line note with an email address, but the premise is clear: one payload, several execution surfaces. The engineering worth reading is in the wrappers and the HTTP delivery, not the interface.":
+    "READMEው አምስት መስመር ማስታወሻና ኢሜይል ነው፣ ግን ሐሳቡ ግልጽ ነው፦ አንድ ጭነት፣ ብዙ የማስፈጸሚያ ገጾች። ሊነበብ የሚገባው ምህንድስና በመጠቅለያዎቹና በHTTP ማድረስ ውስጥ ነው፣ በገጹ አይደለም።",
+  "A nationwide Ethiopian bus e-ticket system: search intercity routes, choose a seat, book it.":
+    "በአገር አቀፍ ደረጃ የኢትዮጵያ አውቶቡስ ኢ-ቲኬት ሥርዓት፦ የከተማ መካከል መስመሮችን ፈልግ፣ መቀመጫ ምረጥ፣ ያዝ።",
+  "The README is a title and a Heroku link, so the repository has to speak for itself. Intercity bus inventory and seat allocation are harder than a CRUD demo, and that is the part worth judging.":
+    "READMEው አርዕስትና የHeroku አገናኝ ነው፣ ስለዚህ ማከማቻው ራሱ መናገር አለበት። የከተማ መካከል አውቶቡስ ክምችትና የመቀመጫ ድልድል ከCRUD ማሳያ የበለጠ ከባድ ነው፣ ሊመዘን የሚገባውም ያ ክፍል ነው።",
+  "A research intelligence platform over OpenAlex, Semantic Scholar, Crossref and ORCID, with hybrid search and free-tier infrastructure end to end.":
+    "በOpenAlex፣ Semantic Scholar፣ Crossref እና ORCID ላይ የተመሠረተ የምርምር ኢንተለጀንስ መድረክ፣ በድብልቅ ፍለጋና ከመጀመሪያ እስከ መጨረሻ በነጻ ደረጃ መሠረተ ልማት።",
+  "This is the most system-shaped repository in the list, and its README is an architecture document: folder map, ingestion packages, and a retrieval pipeline that fuses BM25 with vector search before reranking. It states the whole machine, not just the idea.":
+    "ይህ በዝርዝሩ ውስጥ በጣም ሥርዓታዊ ቅርጽ ያለው ማከማቻ ነው፣ READMEውም የሥነ ሕንፃ ሰነድ ነው፦ የአቃፊ ካርታ፣ የመረጃ መግቢያ ጥቅሎች፣ እና BM25ን ከቬክተር ፍለጋ ጋር አዋህዶ ከዚያ ደግሞ የሚደረድር የመረጃ ቱቦ። ሐሳቡን ብቻ ሳይሆን መላውን ማሽን ይናገራል።",
+  "Four CPU schedulers — FCFS, SJF, SRTF and Round Robin — plus Banker's deadlock-avoidance algorithm, each in its own Python file.":
+    "አራት የCPU መርሐግብሮች — FCFS፣ SJF፣ SRTF እና Round Robin — እንዲሁም የBanker የመጨናነቅ መከላከያ ስልተ ቀመር፣ እያንዳንዱ በራሱ የPython ፋይል።",
+  "The best-documented repository here: a table of algorithms, inputs, outputs and exact run commands. It is coursework, and it reads like coursework done properly — small programs named after the mechanism, with the metrics printed.":
+    "በዚህ ዝርዝር ውስጥ በተሻለ የተሰነደው ማከማቻ፦ የስልተ ቀመሮች ሰንጠረዥ፣ ግብዓቶች፣ ውጤቶችና ትክክለኛ የሩጫ ትዕዛዞች። የትምህርት ሥራ ነው፣ እናም በአግባቡ የተሠራ የትምህርት ሥራ ይመስላል — በስልቱ የተሰየሙ ትንሽ ፕሮግራሞች፣ መለኪያዎቹም ታትመዋል።",
+
   /* ─── YouTube ────────────────────────────────────────────── */
   "Physics, taught out loud. Relativity, simulation and emergence, explained the way I wish someone had explained them to me.":
     "ፊዚክስ፣ በአደባባይ ተነግሮ። አንፃራዊነት፣ ማስመሰልና መገለጥ፣ አንድ ሰው ለእኔ ቢያስረዳኝ በሚፈልገው መንገድ ተብራርቷል።",

@@ -1,0 +1,286 @@
+---
+import { conanim, fieldNotes } from "../data/featured";
+import { conanimFrames } from "../lib/conanim";
+import { td, type T } from "../i18n";
+
+interface Props {
+  t: T;
+}
+const { t } = Astro.props;
+const frames = conanimFrames(6);
+---
+
+<div class="mt-14">
+  <!-- ── Featured dossier · ConAnim ─────────────────────────── -->
+  <article class="dossier" data-reveal>
+    <header class="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--color-line)] px-5 py-3.5 lg:px-7">
+      <span class="font-mono text-[0.625rem] tracking-[0.22em] text-[var(--color-signal)] uppercase">
+        {t("sec.repos.featured")}
+      </span>
+      <span class="font-mono text-[0.5625rem] tracking-[0.18em] text-[var(--color-fog)] uppercase">
+        {t("sec.repos.group.Tool")} · {conanim.name} · {t("sec.repos.readme")} {conanim.readmeBytes} B
+      </span>
+    </header>
+
+    <div class="grid lg:grid-cols-[1.08fr_1fr]">
+      <!-- Terminal artefact -->
+      <figure class="terminal m-0 flex flex-col border-b border-[var(--color-line)] lg:border-r lg:border-b-0">
+        <div class="flex items-center gap-2 border-b border-white/10 bg-white/[0.03] px-3.5 py-2">
+          <span class="h-2 w-2 rounded-full bg-[var(--color-signal)]/80"></span>
+          <span class="h-2 w-2 rounded-full bg-[var(--color-fog)]/30"></span>
+          <span class="h-2 w-2 rounded-full bg-[var(--color-fog)]/15"></span>
+          <span class="terminal-title ml-2 font-mono text-[0.5625rem] tracking-[0.14em] uppercase">
+            conanim — ffttest.py
+          </span>
+          <span class="ml-auto font-mono text-[0.5rem] tracking-[0.18em] text-[var(--color-line-2)] uppercase">py 3</span>
+        </div>
+
+        <div class="conanim-screen flex-1">
+          <div class="conanim-stack" aria-hidden="true">
+            {frames.map((frame, i) => <pre class="conanim-frame" style={`--f:${i}`}>{frame}</pre>)}
+          </div>
+        </div>
+
+        <div class="terminal-prompt border-t border-white/10 px-3.5 py-2">
+          <span class="text-[var(--color-signal)]">›</span> python3 ffttest.py
+          <span class="terminal-cursor" aria-hidden="true"></span>
+        </div>
+
+        <figcaption class="border-t border-[var(--color-line)] px-3.5 py-2.5 text-[0.6875rem] leading-relaxed text-[var(--color-fog)]">
+          {t("sec.repos.artefact")}
+        </figcaption>
+      </figure>
+
+      <!-- Editorial -->
+      <div class="flex flex-col gap-5 p-5 lg:p-7">
+        <span class="font-mono text-[0.625rem] tracking-[0.2em] text-[var(--color-fog)] uppercase">
+          {t("sec.repos.dossierNo")} · {conanim.kicker}
+        </span>
+        <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+          <h3 class="font-display text-3xl font-semibold tracking-tight text-[var(--color-chalk)] lg:text-4xl">
+            {conanim.name}
+          </h3>
+          <span class="font-mono text-[0.625rem] tracking-[0.16em] text-[var(--color-line-2)] uppercase">
+            Python · {conanim.files} {t("sec.repos.files")}
+          </span>
+        </div>
+
+        <p class="text-sm leading-relaxed text-[var(--color-fog-2)] lg:text-[0.9375rem]">{td(t, conanim.lead)}</p>
+
+        <dl class="mt-1 grid gap-px border border-[var(--color-line)] bg-[var(--color-line)] sm:grid-cols-2">
+          {
+            conanim.facts.map((fact) => (
+              <div class="flex flex-col gap-1 bg-[var(--color-ink-2)] px-3 py-2.5">
+                <dt class="font-mono text-[0.5rem] tracking-[0.18em] text-[var(--color-fog)] uppercase">{t(fact.label)}</dt>
+                <dd class="font-mono text-[0.6875rem] text-[var(--color-chalk)]">{fact.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+
+        <div class="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-[var(--color-line)] pt-4">
+          {
+            conanim.links.map((link, i) => (
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noopener"
+                class={`font-mono text-[0.625rem] tracking-[0.14em] uppercase transition-colors hover:text-[var(--color-signal)] ${
+                  i === 0 ? "text-[var(--color-signal)]" : "text-[var(--color-fog)]"
+                }`}
+              >
+                {link.label}
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- The honest read -->
+    <div class="grid gap-px border-t border-[var(--color-line)] bg-[var(--color-line)] md:grid-cols-3">
+      {
+        [
+          { label: t("sec.repos.what"), body: conanim.what },
+          { label: t("sec.repos.why"), body: conanim.why },
+          { label: t("sec.repos.honest"), body: conanim.honest },
+        ].map((block, i) => (
+          <div class="bg-[var(--color-ink)] p-5 lg:p-6">
+            <span class="flex items-baseline gap-2 font-mono text-[0.5625rem] tracking-[0.18em] text-[var(--color-fog)] uppercase">
+              <span class="text-[var(--color-signal)]">{String(i + 1).padStart(2, "0")}</span>
+              {block.label}
+            </span>
+            <p class="mt-3 text-[0.8125rem] leading-relaxed text-[var(--color-fog-2)]">{td(t, block.body)}</p>
+          </div>
+        ))
+      }
+    </div>
+  </article>
+
+  <!-- ── Field notes ────────────────────────────────────────── -->
+  <div class="mt-16 flex flex-col gap-3 border-t border-[var(--color-line)] pt-8 md:flex-row md:items-end md:justify-between">
+    <div class="flex flex-col gap-2">
+      <span class="eyebrow">{t("sec.repos.fieldNotes")}</span>
+      <p class="max-w-xl text-sm leading-relaxed text-[var(--color-fog-2)]">{t("sec.repos.fieldNotesLead")}</p>
+    </div>
+    <span class="font-mono text-[0.5625rem] tracking-[0.18em] text-[var(--color-line-2)] uppercase">
+      {fieldNotes.length} / {t("sec.repos.total")}
+    </span>
+  </div>
+
+  <div class="mt-7 grid gap-px bg-[var(--color-line)] md:grid-cols-2">
+    {
+      fieldNotes.map((repo, i) => (
+        <article class="note group flex flex-col gap-4 bg-[var(--color-ink)] p-5 lg:p-6">
+          <div class="flex items-center justify-between gap-3">
+            <span class="font-mono text-[0.5rem] tracking-[0.2em] text-[var(--color-line-2)] uppercase">
+              {String(i + 2).padStart(2, "0")} · {t("sec.repos.note")}
+            </span>
+            <span class="font-mono text-[0.5rem] tracking-[0.18em] text-[var(--color-fog)] uppercase">
+              {t(`sec.repos.group.${repo.group}`)} · {repo.language}
+            </span>
+          </div>
+
+          <div class="flex items-baseline justify-between gap-3">
+            <h4 class="font-display text-xl font-semibold tracking-tight text-[var(--color-chalk)] transition-colors group-hover:text-[var(--color-signal)]">
+              <a href={repo.url} target="_blank" rel="noopener">{repo.name}</a>
+            </h4>
+            {repo.stars ? <span class="font-mono text-[0.625rem] text-[var(--color-signal)]">★ {repo.stars}</span> : null}
+          </div>
+
+          <p class="text-[0.8125rem] leading-relaxed text-[var(--color-fog-2)]">{td(t, repo.summary)}</p>
+
+          <blockquote class="border-l border-[var(--color-line-2)] pl-3 font-mono text-[0.625rem] leading-relaxed whitespace-pre-line text-[var(--color-fog)]">
+            {repo.quote}
+          </blockquote>
+
+          <div class="flex flex-col gap-1.5">
+            <span class="font-mono text-[0.5rem] tracking-[0.18em] text-[var(--color-signal)] uppercase">{t("sec.repos.assessment")}</span>
+            <p class="text-[0.8125rem] leading-relaxed text-[var(--color-fog-2)]">{td(t, repo.assessment)}</p>
+          </div>
+
+          <div class="mt-auto flex items-center justify-between gap-3 border-t border-[var(--color-line)] pt-3 font-mono text-[0.5625rem] tracking-[0.14em] text-[var(--color-fog)] uppercase">
+            <span>
+              {t("sec.repos.readme")} {repo.readmeBytes} B
+            </span>
+            <a href={repo.url} target="_blank" rel="noopener" class="transition-colors hover:text-[var(--color-signal)]">↗</a>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .dossier {
+    border: 1px solid var(--color-line);
+    background: var(--color-ink);
+  }
+
+  /* The terminal is deliberately dark in both themes: it is an object,
+     not a surface that should invert with the page. */
+  .terminal {
+    background: #080a0b;
+    color: var(--color-chalk);
+  }
+
+  .conanim-screen {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 0;
+    overflow: hidden;
+    padding: 0.9rem 1rem;
+  }
+
+  .conanim-stack {
+    display: grid;
+    width: 100%;
+  }
+
+  .conanim-frame {
+    grid-area: 1 / 1;
+    margin: 0;
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: clamp(0.46rem, 0.82vw, 0.8rem);
+    line-height: 1.28;
+    white-space: pre;
+    color: var(--color-signal);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--color-signal) 38%, transparent);
+    opacity: 0;
+    will-change: opacity;
+    animation: conanim-cycle 4.8s linear infinite;
+    animation-delay: calc(var(--f) * 0.8s);
+  }
+
+  /* Scanlines: enough to say "screen", not enough to hurt the characters. */
+  .conanim-screen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(to bottom, transparent 0 2px, rgb(0 0 0 / 0.16) 2px 3px);
+  }
+
+  @keyframes conanim-cycle {
+    0%,
+    16.66% {
+      opacity: 1;
+    }
+    16.67%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .terminal-prompt {
+    background: rgb(255 255 255 / 0.03);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.1em;
+    color: #8b949e;
+  }
+
+  /* The terminal is an object; its labels must not inherit the page's
+     light-mode fog, which is dark enough to disappear on the screen. */
+  .terminal figcaption,
+  .terminal-title {
+    color: #8b949e;
+  }
+
+  .terminal figcaption {
+    border-color: rgb(255 255 255 / 0.08);
+  }
+
+  .terminal-cursor {
+    display: inline-block;
+    width: 0.4rem;
+    height: 0.65rem;
+    margin-left: 0.35rem;
+    vertical-align: -0.05rem;
+    background: var(--color-signal);
+    animation: cursor-blink 1.1s steps(1, end) infinite;
+  }
+
+  @keyframes cursor-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .conanim-frame {
+      animation: none;
+      opacity: 0;
+    }
+
+    .conanim-frame:first-child {
+      opacity: 1;
+    }
+
+    .terminal-cursor {
+      animation: none;
+    }
+  }
+</style>

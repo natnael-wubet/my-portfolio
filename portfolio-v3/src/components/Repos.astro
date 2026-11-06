@@ -1,5 +1,6 @@
 ---
 import { repos } from "../data/content";
+import RepoShowcase from "./RepoShowcase.astro";
 import { td, type T } from "../i18n";
 
 interface Props {
@@ -40,8 +41,21 @@ const langColor: Record<string, string> = {
       >
     </div>
 
+    <RepoShowcase t={t} />
+
+    <!-- the full shelf -->
+    <div class="mt-16 flex flex-col gap-3 border-t border-[var(--color-line)] pt-8 md:flex-row md:items-end md:justify-between">
+      <div class="flex flex-col gap-2">
+        <span class="eyebrow">{t("sec.repos.allRepos")}</span>
+        <p class="max-w-xl text-sm leading-relaxed text-[var(--color-fog-2)]">{t("sec.repos.allReposLead")}</p>
+      </div>
+      <span class="font-mono text-[0.5625rem] tracking-[0.18em] text-[var(--color-line-2)] uppercase">
+        {repos.length} {t("sec.repos.total")}
+      </span>
+    </div>
+
     <!-- filter tabs -->
-    <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
+    <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
       <div class="flex flex-wrap gap-2" id="repo-filters">
         <button class="filter-chip is-active" data-group="all" type="button">
           {t("sec.repos.all")} <span class="text-[var(--color-line-2)]">{repos.length}</span>
