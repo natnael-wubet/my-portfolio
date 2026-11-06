@@ -1,0 +1,1086 @@
+---
+/**
+ * Local role-fit check.
+ *
+ * Paste a job description and the page measures it against its own public
+ * record: which named technologies and domains line up, which are honest
+ * gaps, which projects/repositories are the evidence, and which of the five
+ * brief lenses the role points at. The matcher (src/lib/fit.ts) is pure and
+ * runs in the browser; the description never leaves the page.
+ *
+ *   opt:fit   → toggle the modal (also F, the palette and the brief)
+ *   cv:fit    → sessionStorage draft, cleared explicitly
+ */
+import { deployments } from "../data/deployments";
+import { repos, socials } from "../data/content";
+import { td, type Lang, type T } from "../i18n";
+import { LENS_DEFS } from "../lib/lenses";
+import { profile } from "../lib/profile";
+
+interface Props {
+  t: T;
+  lang: Lang;
+}
+const { t, lang } = Astro.props;
+
+const projects = deployments.map((d) => ({
+  slug: d.slug,
+  name: d.name,
+  tagline: d.tagline,
+  taglineLocal: td(t, d.tagline),
+  description: d.description,
+  descriptionLocal: td(t, d.description),
+  url: d.url,
+  year: d.year,
+  category: d.category,
+  stack: d.stack,
+  status: d.archived ? "archived" : "deployed",
+}));
+
+const repoData = repos.map((r) => ({
+  name: r.name,
+  description: r.description,
+  descriptionLocal: td(t, r.description),
+  language: r.language,
+  group: r.group,
+  url: r.url,
+  stars: r.stars ?? 0,
+  fork: Boolean(r.fork),
+}));
+
+const samples = [
+  { id: "product", label: t("fit.sample.product"), text: t("fit.sample.productText") },
+  { id: "games", label: t("fit.sample.games"), text: t("fit.sample.gamesText") },
+  { id: "security", label: t("fit.sample.security"), text: t("fit.sample.securityText") },
+  { id: "protocol", label: t("fit.sample.protocol"), text: t("fit.sample.protocolText") },
+  { id: "founding", label: t("fit.sample.founding"), text: t("fit.sample.foundingText") },
+];
+
+const payload = {
+  lang,
+  labels: {
+    emptyTitle: t("fit.emptyTitle"),
+    emptyBody: t("fit.emptyBody"),
+    tooShort: t("fit.tooShort"),
+    noTerms: t("fit.noTerms"),
+    coverage: t("fit.coverage"),
+    coverageOf: t("fit.coverageOf"),
+    words: t("fit.words"),
+    signals: t("fit.signals"),
+    matched: t("fit.matched"),
+    gaps: t("fit.gaps"),
+    noGaps: t("fit.noGaps"),
+    evidence: t("fit.evidence"),
+    lens: t("fit.lens"),
+    noLens: t("fit.noLens"),
+    openBrief: t("fit.openBrief"),
+    project: t("fit.project"),
+    repo: t("fit.repo"),
+    hits: t("fit.hits"),
+    copied: t("fit.copied"),
+    copyFailed: t("fit.copyFailed"),
+    cleared: t("fit.cleared"),
+    roleFallback: t("fit.roleFallback"),
+    noteCoverage: t("fit.noteCoverage"),
+    noteMatched: t("fit.noteMatched"),
+    noteGaps: t("fit.noteGaps"),
+    noteEvidence: t("fit.noteEvidence"),
+    noteLens: t("fit.noteLens"),
+    noteFooter: t("fit.noteFooter"),
+    scoreAria: t("fit.scoreAria"),
+  },
+  samples,
+  data: {
+    projects,
+    repos: repoData,
+    skills: profile.skills,
+    domains: profile.domains,
+    interests: profile.interests,
+    awards: profile.awards,
+    lenses: LENS_DEFS.map((def) => ({ ...def, title: t(`brief.lens.${def.id}`) })),
+    contact: {
+      name: "Natnael Wubet",
+      email: profile.contact.email,
+      telegram: profile.contact.telegram,
+      github: profile.contact.github,
+      linkedin: profile.contact.linkedin,
+      location: profile.contact.location,
+      timezone: profile.contact.timezone,
+    },
+  },
+};
+---
+
+<div class="fit-backdrop" id="fit" role="dialog" aria-modal="true" aria-label={t("fit.title")}>
+  <div class="fit-sheet">
+    <header class="fit-head">
+      <div class="fit-head-text">
+        <span class="fit-eyebrow">{t("fit.eyebrow")}</span>
+        <h2 class="fit-title">{t("fit.title")}</h2>
+        <p class="fit-sub">{t("fit.sub")}</p>
+      </div>
+      <button class="fit-close" id="fit-close" type="button" aria-label={t("fit.close")}>×</button>
+    </header>
+
+    <div class="fit-body">
+      <div class="fit-input-wrap">
+        <label class="fit-label" for="fit-input">{t("fit.inputLabel")}</label>
+        <textarea
+          id="fit-input"
+          class="fit-input"
+          rows="7"
+          spellcheck="false"
+          placeholder={t("fit.placeholder")}
+        ></textarea>
+
+        <div class="fit-samples">
+          <span class="fit-samples-label">{t("fit.samples")}</span>
+          {
+            samples.map((sample) => (
+              <button class="fit-sample" type="button" data-sample={sample.id}>
+                {sample.label}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="fit-results" id="fit-results"></div>
+      <p class="sr-only" id="fit-status" aria-live="polite"></p>
+    </div>
+
+    <footer class="fit-foot">
+      <span class="fit-privacy">{t("fit.privacy")}</span>
+      <span class="fit-foot-actions">
+        <button class="fit-action" id="fit-clear" type="button">{t("fit.clear")}</button>
+        <button class="fit-action fit-action-primary" id="fit-copy" type="button" disabled>
+          {t("fit.copy")}
+        </button>
+      </span>
+    </footer>
+  </div>
+</div>
+
+<script type="application/json" id="fit-data" set:html={JSON.stringify(payload)} />
+
+<script>
+  import { analyzeFit, type FitData, type FitResult } from "../lib/fit";
+
+  type Labels = Record<string, string>;
+  type Sample = { id: string; label: string; text: string };
+  type Payload = { lang: string; labels: Labels; samples: Sample[]; data: FitData };
+
+  const payload = JSON.parse(
+    (document.getElementById("fit-data") as HTMLScriptElement).textContent ?? "{}"
+  ) as Payload;
+  const { labels, data } = payload;
+
+  const backdrop = document.getElementById("fit") as HTMLDivElement;
+  const closeBtn = document.getElementById("fit-close") as HTMLButtonElement;
+  const input = document.getElementById("fit-input") as HTMLTextAreaElement;
+  const results = document.getElementById("fit-results") as HTMLDivElement;
+  const copyBtn = document.getElementById("fit-copy") as HTMLButtonElement;
+  const clearBtn = document.getElementById("fit-clear") as HTMLButtonElement;
+
+  const toast = (message: string) =>
+    document.dispatchEvent(new CustomEvent("ui:toast", { detail: message }));
+
+  const element = <K extends keyof HTMLElementTagNameMap>(
+    tag: K,
+    className = "",
+    text?: string
+  ): HTMLElementTagNameMap[K] => {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  };
+
+  const projectById = new Map(data.projects.map((project) => [project.slug, project]));
+  const repoById = new Map(data.repos.map((repo) => [repo.name, repo]));
+  const lensById = new Map(data.lenses.map((lens) => [lens.id, lens]));
+
+  let result: FitResult | null = null;
+  let timer: number | undefined;
+
+  // ── Rendering ───────────────────────────────────────────────
+  const renderEmpty = (message: string) => {
+    results.replaceChildren();
+    const box = element("div", "fit-empty");
+    const title = element("p", "fit-empty-title", labels.emptyTitle);
+    const body = element("p", "fit-empty-body", message);
+    box.append(title, body);
+    results.append(box);
+    copyBtn.disabled = true;
+  };
+
+  const sectionTitle = (text: string) => element("h3", "fit-section-title", text);
+
+  const coverageMeta = (next: FitResult) => {
+    const counted = next.signals.filter((signal) => signal.kind !== "practice").length;
+    const total = counted + next.gaps.length;
+    return total
+      ? labels.coverageOf.replace("{matched}", String(counted)).replace("{total}", String(total))
+      : "";
+  };
+
+  const renderResult = (next: FitResult) => {
+    results.replaceChildren();
+    copyBtn.disabled = next.noTerms;
+
+    if (next.noTerms) {
+      renderEmpty(labels.noTerms);
+      return;
+    }
+
+    const score = element("div", "fit-score");
+    const top = element("div", "fit-score-top");
+    const number = element("span", "fit-score-num", String(next.coverage));
+    const percent = element("span", "fit-score-pct", "%");
+    const label = element("span", "fit-score-label", labels.coverage);
+    const meta = element("span", "fit-score-meta", coverageMeta(next));
+    top.append(number, percent, label, meta);
+
+    const bar = element("div", "fit-bar");
+    const fill = element("span", "fit-bar-fill");
+    fill.style.width = `${next.coverage}%`;
+    bar.append(fill);
+    bar.setAttribute("role", "progressbar");
+    bar.setAttribute("aria-valuenow", String(next.coverage));
+    bar.setAttribute("aria-valuemin", "0");
+    bar.setAttribute("aria-valuemax", "100");
+    bar.setAttribute("aria-label", labels.scoreAria.replace("{coverage}", String(next.coverage)));
+
+    const facts = element("div", "fit-facts");
+    facts.append(
+      element("span", "", labels.words.replace("{count}", String(next.wordCount))),
+      element("span", "", labels.signals.replace("{count}", String(next.matched.length)))
+    );
+
+    score.append(top, bar, facts);
+
+    // Signals + gaps, left column.
+    const left = element("div", "fit-col");
+    left.append(score);
+
+    const signals = element("section", "fit-section fit-signals");
+    signals.append(sectionTitle(labels.matched));
+    const chips = element("div", "fit-chips");
+    next.signals.forEach((signal) => {
+      const chip = element("span", "fit-chip", signal.name);
+      chip.dataset.kind = signal.kind;
+      chip.title = signal.category;
+      chips.append(chip);
+    });
+    signals.append(chips);
+    left.append(signals);
+
+    const gaps = element("section", "fit-section fit-gaps");
+    gaps.append(sectionTitle(labels.gaps));
+    if (next.gaps.length) {
+      const gapChips = element("div", "fit-chips");
+      next.gaps.forEach((name) => {
+        const chip = element("span", "fit-chip fit-chip-gap", name);
+        gapChips.append(chip);
+      });
+      gaps.append(gapChips);
+    } else {
+      gaps.append(element("p", "fit-note-body", labels.noGaps));
+    }
+    left.append(gaps);
+
+    // Lens + evidence, right column.
+    const right = element("div", "fit-col");
+
+    const lens = element("section", "fit-section fit-lens");
+    lens.append(sectionTitle(labels.lens));
+    if (next.lens) {
+      const lensData = lensById.get(next.lens.id);
+      const title = lensData?.title ?? next.lens.id;
+      const row = element("div", "fit-lens-row");
+      row.append(element("strong", "fit-lens-name", title));
+      if (lensData) {
+        const open = element("button", "fit-action fit-action-primary", labels.openBrief.replace("{lens}", title));
+        open.type = "button";
+        open.addEventListener("click", () => {
+          // The brief sits below this modal, so close first or it opens behind.
+          close();
+          document.dispatchEvent(new CustomEvent("opt:brief", { detail: lensData.id }));
+        });
+        row.append(open);
+      }
+      lens.append(row);
+    } else {
+      lens.append(element("p", "fit-note-body", labels.noLens));
+    }
+    right.append(lens);
+
+    const evidence = element("section", "fit-section fit-evidence-section");
+    evidence.append(sectionTitle(labels.evidence));
+    const list = element("div", "fit-evidence-list");
+    next.evidence.forEach((item) => {
+      const source =
+        item.kind === "project" ? projectById.get(item.id) : repoById.get(item.id);
+      const href = source?.url;
+      const row = element(href ? "a" : "div", "fit-evidence");
+      if (href) {
+        (row as HTMLAnchorElement).href = href;
+        (row as HTMLAnchorElement).target = "_blank";
+        (row as HTMLAnchorElement).rel = "noopener";
+      }
+
+      const kind = element(
+        "span",
+        "fit-evidence-kind",
+        item.kind === "project" ? labels.project : labels.repo
+      );
+      const body = element("span", "fit-evidence-body");
+      body.append(element("span", "fit-evidence-name", item.name));
+      body.append(
+        element(
+          "span",
+          "fit-evidence-hits",
+          item.hits.length ? item.hits.join(" · ") : labels.hits.replace("{count}", "0")
+        )
+      );
+      const arrow = element("span", "fit-evidence-arrow", "↗");
+      arrow.setAttribute("aria-hidden", "true");
+      row.append(kind, body, arrow);
+      list.append(row);
+    });
+    evidence.append(list);
+    right.append(evidence);
+
+    const grid = element("div", "fit-grid");
+    grid.append(left, right);
+    results.append(grid);
+  };
+
+  const analyze = () => {
+    const raw = input.value;
+    const status = document.getElementById("fit-status");
+    try {
+      if (raw.trim()) sessionStorage.setItem("cv:fit", raw);
+      else sessionStorage.removeItem("cv:fit");
+    } catch {
+      /* storage can be blocked; the check still works */
+    }
+
+    if (raw.trim().length < 40) {
+      result = null;
+      if (status) status.textContent = raw.trim() ? labels.tooShort : "";
+      renderEmpty(raw.trim() ? labels.tooShort : labels.emptyBody);
+      return;
+    }
+
+    result = analyzeFit(raw, data);
+    renderResult(result);
+    if (status) {
+      status.textContent = result.noTerms
+        ? labels.noTerms
+        : `${result.coverage}% ${labels.coverage}. ${coverageMeta(result)}`;
+    }
+  };
+
+  const schedule = () => {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(analyze, 90);
+  };
+
+  // ── Copy ────────────────────────────────────────────────────
+  const fitNote = (): string => {
+    if (!result || result.noTerms) return "";
+    const lens = result.lens ? lensById.get(result.lens.id) : null;
+    const lines = [
+      `# ${data.contact.name} — ${result.roleTitle || labels.roleFallback}`,
+      "",
+      `${labels.noteCoverage}: ${result.coverage}%`,
+      `${labels.noteMatched}: ${result.matched.join(", ") || "—"}`,
+      `${labels.noteGaps}: ${result.gaps.join(", ") || "—"}`,
+      `${labels.noteLens}: ${lens?.title ?? "—"}`,
+      "",
+      `## ${labels.noteEvidence}`,
+      ...result.evidence.map((item) => {
+        const source = item.kind === "project" ? projectById.get(item.id) : repoById.get(item.id);
+        return `- ${item.name} (${item.kind === "project" ? labels.project : labels.repo})${
+          source?.url ? ` — ${source.url}` : ""
+        }`;
+      }),
+      "",
+      `${data.contact.name} · ${data.contact.email} · ${data.contact.telegram}`,
+      labels.noteFooter.replace("{url}", `${location.origin}/`),
+    ];
+    return `${lines.join("\n")}\n`;
+  };
+
+  copyBtn.addEventListener("click", async () => {
+    const note = fitNote();
+    if (!note) return;
+    try {
+      await navigator.clipboard.writeText(note);
+      toast(labels.copied);
+    } catch {
+      toast(labels.copyFailed);
+    }
+  });
+
+  clearBtn.addEventListener("click", () => {
+    input.value = "";
+    result = null;
+    try {
+      sessionStorage.removeItem("cv:fit");
+    } catch {
+      /* ignore */
+    }
+    const status = document.getElementById("fit-status");
+    if (status) status.textContent = "";
+    renderEmpty(labels.emptyBody);
+    toast(labels.cleared);
+    input.focus();
+  });
+
+  // ── Open / close ────────────────────────────────────────────
+  const isOpen = () => backdrop.classList.contains("open");
+
+  const open = () => {
+    // One sheet at a time: the brief and the help sheet both sit below this.
+    const brief = document.getElementById("brief");
+    if (brief?.classList.contains("open")) {
+      document.dispatchEvent(new CustomEvent("opt:brief"));
+    }
+    const shortcuts = document.getElementById("shortcuts");
+    if (shortcuts?.classList.contains("open")) {
+      (document.getElementById("shortcuts-close") as HTMLButtonElement | null)?.click();
+    }
+
+    backdrop.classList.add("open");
+    document.body.style.overflow = "hidden";
+    try {
+      const stored = sessionStorage.getItem("cv:fit");
+      if (stored && !input.value) {
+        input.value = stored;
+        analyze();
+      }
+    } catch {
+      /* ignore */
+    }
+    requestAnimationFrame(() => input.focus());
+  };
+
+  const close = () => {
+    backdrop.classList.remove("open");
+    document.body.style.overflow = "";
+  };
+
+  document.addEventListener("opt:fit", () => {
+    if (isOpen()) close();
+    else open();
+  });
+
+  closeBtn.addEventListener("click", close);
+  backdrop.addEventListener("click", (event) => {
+    if (event.target === backdrop) close();
+  });
+
+  input.addEventListener("input", schedule);
+  document.querySelectorAll<HTMLButtonElement>("[data-sample]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const sample = payload.samples.find((entry) => entry.id === button.dataset.sample);
+      if (!sample) return;
+      input.value = sample.text;
+      analyze();
+      input.focus();
+    });
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (!isOpen()) return;
+    if (event.key === "Escape") {
+      event.preventDefault();
+      close();
+      return;
+    }
+    if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
+      event.preventDefault();
+      copyBtn.click();
+    }
+  });
+
+  renderEmpty(labels.emptyBody);
+</script>
+
+<style is:global>
+  .fit-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 240;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: color-mix(in srgb, var(--color-ink) 80%, transparent);
+    backdrop-filter: blur(10px);
+  }
+
+  .fit-backdrop.open {
+    display: flex;
+  }
+
+  .fit-sheet {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    width: min(980px, 100%);
+    max-height: min(90vh, 940px);
+    border: 1px solid var(--color-line-2);
+    background: var(--color-ink-2);
+    box-shadow: 0 50px 140px -40px color-mix(in srgb, #000 72%, transparent);
+    overflow: hidden;
+  }
+
+  .fit-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.1rem 1.25rem 1rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .fit-head-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .fit-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-signal);
+  }
+
+  .fit-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--color-chalk);
+  }
+
+  .fit-sub {
+    margin: 0;
+    max-width: 66ch;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    color: var(--color-fog-2);
+  }
+
+  .fit-close {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--color-line-2);
+    background: transparent;
+    color: var(--color-fog-2);
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .fit-close:hover {
+    border-color: var(--color-signal);
+    color: var(--color-chalk);
+  }
+
+  .fit-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.1rem 1.25rem 1.2rem;
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  .fit-label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-fog);
+  }
+
+  .fit-input {
+    display: block;
+    width: 100%;
+    min-height: 8.5rem;
+    resize: vertical;
+    padding: 0.75rem 0.85rem;
+    border: 1px solid var(--color-line-2);
+    background: var(--color-ink-3);
+    color: var(--color-chalk);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    line-height: 1.55;
+  }
+
+  .fit-input::placeholder {
+    color: var(--color-fog);
+  }
+
+  .fit-input:focus {
+    outline: none;
+    border-color: var(--color-signal);
+  }
+
+  .fit-samples {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.6rem;
+  }
+
+  .fit-samples-label {
+    margin-right: 0.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-fog);
+  }
+
+  .fit-sample {
+    padding: 0.25rem 0.5rem;
+    border: 1px solid var(--color-line-2);
+    background: transparent;
+    color: var(--color-fog-2);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .fit-sample:hover {
+    border-color: var(--color-signal);
+    color: var(--color-signal);
+  }
+
+  /* ── Results ─────────────────────────────────────────────── */
+  .fit-empty {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    padding: 1.6rem 1.2rem;
+    border: 1px dashed var(--color-line-2);
+    background: color-mix(in srgb, var(--color-ink-3) 50%, transparent);
+  }
+
+  .fit-empty-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-chalk);
+  }
+
+  .fit-empty-body {
+    margin: 0;
+    max-width: 70ch;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    color: var(--color-fog-2);
+  }
+
+  .fit-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 1.1rem;
+    align-items: start;
+  }
+
+  .fit-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    min-width: 0;
+  }
+
+  .fit-score {
+    padding: 0.9rem 1rem 0.95rem;
+    border: 1px solid var(--color-line-2);
+    background: color-mix(in srgb, var(--color-ink-3) 55%, transparent);
+  }
+
+  .fit-score-top {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .fit-score-num {
+    font-family: var(--font-display);
+    font-size: 2.1rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--color-signal);
+  }
+
+  .fit-score-pct {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-signal);
+  }
+
+  .fit-score-label {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-fog);
+  }
+
+  .fit-score-meta {
+    flex-basis: 100%;
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: var(--color-fog-2);
+  }
+
+  .fit-bar {
+    height: 4px;
+    margin-top: 0.65rem;
+    background: var(--color-line);
+    overflow: hidden;
+  }
+
+  .fit-bar-fill {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-signal), var(--color-cyan));
+    transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .fit-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.9rem;
+    margin-top: 0.65rem;
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-fog);
+  }
+
+  .fit-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .fit-section-title {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-fog);
+  }
+
+  .fit-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .fit-chip {
+    border: 1px solid color-mix(in srgb, var(--color-signal) 34%, transparent);
+    background: color-mix(in srgb, var(--color-signal) 6%, transparent);
+    padding: 0.2rem 0.42rem;
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.06em;
+    color: var(--color-chalk);
+  }
+
+  .fit-chip[data-kind="domain"] {
+    border-color: var(--color-line-2);
+    background: transparent;
+    color: var(--color-fog-2);
+  }
+
+  .fit-chip[data-kind="practice"] {
+    border-style: dashed;
+    border-color: var(--color-line-2);
+    background: transparent;
+    color: var(--color-fog);
+  }
+
+  .fit-chip-gap {
+    border: 1px dashed color-mix(in srgb, var(--color-rose) 60%, transparent);
+    background: color-mix(in srgb, var(--color-rose) 6%, transparent);
+    color: color-mix(in srgb, var(--color-rose) 82%, var(--color-chalk));
+  }
+
+  .fit-note-body {
+    margin: 0;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    color: var(--color-fog-2);
+  }
+
+  .fit-lens {
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--color-line-2);
+    border-left: 2px solid var(--color-signal);
+    background: color-mix(in srgb, var(--color-signal) 4%, transparent);
+  }
+
+  .fit-lens-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .fit-lens-name {
+    font-family: var(--font-display);
+    font-size: 1.02rem;
+    font-weight: 600;
+    color: var(--color-chalk);
+  }
+
+  .fit-evidence-list {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px dotted var(--color-line-2);
+  }
+
+  .fit-evidence {
+    display: grid;
+    grid-template-columns: 4.4rem minmax(0, 1fr) 1rem;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px dotted var(--color-line);
+    text-decoration: none;
+    color: inherit;
+    transition:
+      background-color 0.2s ease,
+      padding-left 0.2s ease;
+  }
+
+  a.fit-evidence:hover {
+    padding-left: 0.4rem;
+    background: color-mix(in srgb, var(--color-signal) 4%, transparent);
+  }
+
+  .fit-evidence-kind {
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-signal);
+  }
+
+  .fit-evidence-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.12rem;
+    min-width: 0;
+  }
+
+  .fit-evidence-name {
+    font-family: var(--font-display);
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--color-chalk);
+    overflow-wrap: anywhere;
+  }
+
+  .fit-evidence-hits {
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.04em;
+    line-height: 1.45;
+    color: var(--color-fog);
+    overflow-wrap: anywhere;
+  }
+
+  .fit-evidence-arrow {
+    justify-self: end;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-line-2);
+    transition:
+      color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  a.fit-evidence:hover .fit-evidence-arrow {
+    color: var(--color-signal);
+    transform: translateX(2px);
+  }
+
+  /* ── Footer ──────────────────────────────────────────────── */
+  .fit-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding: 0.8rem 1.25rem;
+    border-top: 1px solid var(--color-line);
+    background: color-mix(in srgb, var(--color-ink) 55%, transparent);
+  }
+
+  .fit-privacy {
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-fog);
+  }
+
+  .fit-foot-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .fit-action {
+    padding: 0.5rem 0.8rem;
+    border: 1px solid var(--color-line-2);
+    background: transparent;
+    color: var(--color-fog-2);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .fit-action:hover:not(:disabled) {
+    border-color: var(--color-signal);
+    color: var(--color-chalk);
+  }
+
+  .fit-action-primary {
+    border-color: color-mix(in srgb, var(--color-signal) 55%, transparent);
+    background: color-mix(in srgb, var(--color-signal) 10%, transparent);
+    color: var(--color-signal);
+  }
+
+  .fit-action:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 760px) {
+    .fit-sheet {
+      max-height: 92vh;
+    }
+
+    .fit-head {
+      padding: 0.9rem 1rem 0.85rem;
+    }
+
+    /* The description is the argument; the subtitle is not. */
+    .fit-sub {
+      display: none;
+    }
+
+    .fit-body {
+      gap: 0.8rem;
+      padding: 0.9rem 1rem 1rem;
+    }
+
+    .fit-input {
+      min-height: 6.5rem;
+      /* 16px stops iOS from zooming the sheet when the field takes focus. */
+      font-size: 1rem;
+    }
+
+    .fit-sample {
+      padding: 0.35rem 0.55rem;
+      font-size: 0.625rem;
+    }
+
+    .fit-grid {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Read the result in priority order on a phone: score, lens, evidence,
+       then the supporting signals and the gaps. */
+    .fit-col {
+      display: contents;
+    }
+
+    .fit-score {
+      order: 1;
+    }
+
+    .fit-lens {
+      order: 2;
+    }
+
+    .fit-evidence-section {
+      order: 3;
+    }
+
+    .fit-signals {
+      order: 4;
+    }
+
+    .fit-gaps {
+      order: 5;
+    }
+
+    .fit-foot {
+      align-items: flex-start;
+      flex-direction: column;
+      padding: 0.7rem 1rem;
+    }
+
+    .fit-foot-actions {
+      width: 100%;
+    }
+
+    .fit-action {
+      flex: 1;
+      min-height: 2.2rem;
+      text-align: center;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fit-bar-fill,
+    .fit-evidence,
+    .fit-evidence-arrow,
+    .fit-sample,
+    .fit-action {
+      transition: none;
+    }
+  }
+</style>

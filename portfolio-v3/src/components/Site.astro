@@ -19,6 +19,7 @@ import CommandPalette from "./CommandPalette.astro";
 import Shortcuts from "./Shortcuts.astro";
 import Instrument from "./Instrument.astro";
 import Brief from "./Brief.astro";
+import Fit from "./Fit.astro";
 import { makeT, type Lang } from "../i18n";
 import { repos } from "../data/content";
 import { deployments } from "../data/deployments";
@@ -53,4 +54,5 @@ const description = t("meta.descriptionCounted", { live, repos: repos.length });
   <Shortcuts t={t} />
   <Instrument t={t} build={build} />
   <Brief t={t} lang={lang} build={build} />
+  <Fit t={t} lang={lang} />
 </Base>

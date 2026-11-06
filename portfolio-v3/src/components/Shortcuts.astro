@@ -28,6 +28,7 @@ const groups = [
       { keys: ["A"], label: t("shortcuts.accent") },
       { keys: ["D"], label: t("shortcuts.diag") },
       { keys: ["B"], label: t("shortcuts.brief") },
+      { keys: ["F"], label: t("shortcuts.fit") },
       { keys: ["I"], label: t("shortcuts.xray") },
       { keys: ["?"], label: t("shortcuts.help") },
     ],
@@ -131,6 +132,8 @@ const groups = [
       document.dispatchEvent(new CustomEvent("opt:diag"));
     } else if (e.key.toLowerCase() === "b") {
       document.dispatchEvent(new CustomEvent("opt:brief"));
+    } else if (e.key.toLowerCase() === "f") {
+      document.dispatchEvent(new CustomEvent("opt:fit"));
     } else if (e.key.toLowerCase() === "i") {
       document.dispatchEvent(new CustomEvent("opt:xray"));
     } else if (e.key.toLowerCase() === "h") {

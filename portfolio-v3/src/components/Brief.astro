@@ -16,6 +16,7 @@ import { deployments } from "../data/deployments";
 import { repos, awards, socials } from "../data/content";
 import { td, type Lang, type T } from "../i18n";
 import type { BuildInfo } from "../lib/build";
+import { LENS_DEFS } from "../lib/lenses";
 
 interface Props {
   t: T;
@@ -24,61 +25,8 @@ interface Props {
 }
 const { t, lang, build } = Astro.props;
 
-interface LensDef {
-  id: string;
-  deploy: string[];
-  repos: string[];
-  awards: string[];
-  skills: string[];
-}
-
-// The editor, not the code: which work speaks to which team. Every entry is
-// resolved against the real data below, so a typo in a slug simply drops the
-// row instead of breaking the build.
-const LENS_DEFS: LensDef[] = [
-  {
-    id: "product",
-    deploy: ["bigxo", "gameo", "ticketye", "day-flow"],
-    repos: ["hallo_reminder", "amecoassets", "ticketye_app"],
-    awards: ["SolveIT"],
-    skills: ["TypeScript", "React", "Next", "Vue", "Ionic", "Capacitor", "Firebase", "Supabase", "Node"],
-  },
-  {
-    id: "games",
-    deploy: ["bigxo", "bigxo-mini", "gameo"],
-    repos: ["ConAnim", "royal_balz_3D", "dessert_jumper", "pong"],
-    awards: ["D5 GameCon", "GDC"],
-    skills: ["Processing", "p5.js", "Three.js", "TypeScript", "AI opponents", "Game loops"],
-  },
-  {
-    id: "security",
-    deploy: [],
-    repos: [
-      "PAYLOADer",
-      "windows--password-cracker",
-      "ssh-password-attack",
-      "hash_cracker",
-      "file-locker",
-      "payloads",
-    ],
-    awards: ["World Science Day"],
-    skills: ["PowerShell", "Python", "C", "Linux", "Network scanning", "Credential tooling"],
-  },
-  {
-    id: "protocols",
-    deploy: ["cite-chain"],
-    repos: [],
-    awards: ["SolveIT"],
-    skills: ["Bitcoin", "OpenTimestamps", "IPFS", "Base L2", "Cryptography", "TypeScript"],
-  },
-  {
-    id: "founding",
-    deploy: ["gameo", "bigxo", "ticketye", "rim-addis"],
-    repos: ["ticketye_app", "hallo_reminder", "amecoassets"],
-    awards: ["Software Development Competition"],
-    skills: ["TypeScript", "Node", "React", "PostgreSQL", "Firebase", "Chapa", "Linux"],
-  },
-];
+// The editor, not the code: which work speaks to which team. The definitions
+// live in src/lib/lenses.ts so the brief and the fit check stay in sync.
 
 const deployBySlug = new Map(deployments.map((d) => [d.slug, d]));
 const repoByName = new Map(repos.map((r) => [r.name, r]));
@@ -164,6 +112,7 @@ const payload = {
         <button class="brief-btn" type="button" data-brief-action="download">{t("brief.download")}</button>
         <button class="brief-btn" type="button" data-brief-action="link">{t("brief.link")}</button>
         <button class="brief-btn" type="button" data-brief-action="print">{t("brief.print")}</button>
+        <button class="brief-btn" type="button" data-brief-action="fit">{t("brief.fit")}</button>
       </div>
     </div>
   </div>
@@ -427,6 +376,16 @@ const payload = {
   const isOpen = () => backdrop.classList.contains("open");
 
   const open = (id?: string) => {
+    // One sheet at a time: the fit check sits above this modal.
+    const fit = document.getElementById("fit");
+    if (fit?.classList.contains("open")) {
+      document.dispatchEvent(new CustomEvent("opt:fit"));
+    }
+    const shortcuts = document.getElementById("shortcuts");
+    if (shortcuts?.classList.contains("open")) {
+      (document.getElementById("shortcuts-close") as HTMLButtonElement | null)?.click();
+    }
+
     if (id && payload.lenses.some((l) => l.id === id)) current = id;
     renderRail();
     renderDoc(lensById(current));
@@ -495,6 +454,10 @@ const payload = {
         if (await copyText(url.toString())) toast(payload.labels.linked);
       } else if (action === "print") {
         window.print();
+      } else if (action === "fit") {
+        // Close first; the fit check manages its own focus and scroll lock.
+        close();
+        document.dispatchEvent(new CustomEvent("opt:fit"));
       }
     });
   });
@@ -506,7 +469,7 @@ const payload = {
   }
 </script>
 
-<style>
+<style is:global>
   .brief-backdrop {
     position: fixed;
     inset: 0;

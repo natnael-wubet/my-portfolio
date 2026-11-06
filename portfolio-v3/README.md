@@ -36,6 +36,11 @@ npm run preview  # serve dist/ locally
   repositories, awards, stack, and an argument for that team. Copy it as
   Markdown, download `.md`, share it as `?brief=<lens>`, or print it: the
   print stylesheet strips the site and leaves the brief on white.
+- **Fit check.** Paste a role description and the page scores its own evidence
+  against it: role coverage, matched signals, honest gaps, the closest lens,
+  and five concrete pieces of proof drawn from deployments, repositories and
+  awards. It runs entirely in the browser — nothing is uploaded — and the
+  result can be copied as a short fit note or used to open the matching brief.
 - **Machine-readable record.** The page is also a public file: `/profile.json`
   is a canonical, versioned profile with its own JSON Schema; `/llms.txt` and
   `/llms-full.txt` are an index and full text for LLM crawlers; `/resume.md`
@@ -57,12 +62,12 @@ npm run preview  # serve dist/ locally
   every colour token read live from the cascade. It repaints when the theme
   or accent changes and is remembered per tab, never for new visitors.
 - **Keyboard layer.** `T` cycles theme, `A` cycles accent, `D` opens
-  diagnostics, `I` toggles X-ray, `B` opens the tailored brief, `H` jumps to
-  the top, `?` opens the shortcut sheet. Inside the palette: arrows to move,
-  `Enter` to run, `Esc` to close.
+  diagnostics, `I` toggles X-ray, `B` opens the tailored brief, `F` opens the
+  fit check, `H` jumps to the top, `?` opens the shortcut sheet. Inside the
+  palette: arrows to move, `Enter` to run, `Esc` to close.
 - **One event bus.** Cross-component actions are DOM events on `document`:
   `opt:theme`, `opt:accent`, `opt:lang`, `opt:help`, `opt:diag`, `opt:xray`,
-  `opt:brief`, plus `ui:toast` for the single aria-live status line.
+  `opt:brief`, `opt:fit`, plus `ui:toast` for the single aria-live status line.
 - **Small enhancements.** Hero stats count up when first seen, the contact
   terminal copies any answer on click (or with `copy`), and the repository
   list filters and sorts in place.
@@ -78,7 +83,8 @@ src/
 ├── components/       # Nav, Hero, Deployments, Repos, Origin, Mind, Vault,
 │                     # Awards, Photos, Connect, Footer, CommandPalette,
 │                     # Shortcuts, DisplayOptions, Instrument (diagnostics +
-│                     # X-ray + toast), Brief (tailored one-pager), Site
+│                     # X-ray + toast), Brief (tailored one-pager),
+│                     # Fit (role matcher), Site
 ├── data/             # English source of truth for deployments and prose
 ├── i18n/
 │   ├── en.ts         # chrome keys — the typed dictionary shape
@@ -88,6 +94,8 @@ src/
 ├── layouts/Base.astro
 ├── lib/
 │   ├── build.ts      # git commit + timestamp captured at build time
+│   ├── fit.ts        # pure role matcher, scoring and evidence selection
+│   ├── lenses.ts     # the five hiring lenses shared by brief and fit
 │   ├── profile.ts    # canonical public record, built from src/data
 │   ├── profile-schema.ts  # JSON Schema for /profile.json
 │   ├── site.ts       # canonical URL, identity and contact facts
