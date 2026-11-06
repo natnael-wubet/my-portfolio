@@ -60,6 +60,7 @@ export const en = {
   "shortcuts.diag": "Open the diagnostics drawer",
   "shortcuts.brief": "Compose a tailored brief",
   "shortcuts.fit": "Check a role fit",
+  "shortcuts.scan": "Toggle the specimen scan",
   "shortcuts.xray": "Toggle X-ray / instrument mode",
   "shortcuts.help": "Show this sheet",
   "shortcuts.updown": "Move the selection",
@@ -84,6 +85,9 @@ export const en = {
   "hero.stat.years.k": "Years shipping",
   "hero.stat.years.s": "since 2014",
   "hero.scroll": "Scroll",
+  "hero.relicHint": "The bust is the record’s other half",
+  "hero.scan": "Scan",
+  "hero.relicCaption": "Scanned from the previous site · still turning",
 
   // ── Section 01 · Deployments ──────────────────────────────
   "sec.deployments.eyebrow": "Section 01 · Deployments",
@@ -126,6 +130,7 @@ export const en = {
   "sec.origin.milestones": "Milestones",
   "sec.origin.entries": "{n} entries · 2014 → now",
   "sec.origin.chips": "Bahir Dar|Enkutatesh|Coffee ceremony|Amharic",
+
 
   // ── Section 04 · The interior ─────────────────────────────
   "sec.mind.eyebrow": "Section 03 · The interior",

@@ -41,6 +41,13 @@ npm run preview  # serve dist/ locally
   and five concrete pieces of proof drawn from deployments, repositories and
   awards. It runs entirely in the browser — nothing is uploaded — and the
   result can be copied as a short fit note or used to open the matching brief.
+- **Hero specimen.** The opening screen carries the photogrammetry bust from
+  the previous portfolio, but with a job: the point-field body of the
+  instrument contracts as the scan arrives, and a world-space seam divides the
+  real surface (left) from a hologram (right). The pointer turns the head and
+  drags the seam; `S` goes full hologram. Two plates from the old site parallax
+  behind it, and the whole scene re-tints with the theme and accent. Phones
+  keep the lighter point-field body instead of paying for the 900 KB scan.
 - **Machine-readable record.** The page is also a public file: `/profile.json`
   is a canonical, versioned profile with its own JSON Schema; `/llms.txt` and
   `/llms-full.txt` are an index and full text for LLM crawlers; `/resume.md`
@@ -63,8 +70,9 @@ npm run preview  # serve dist/ locally
   or accent changes and is remembered per tab, never for new visitors.
 - **Keyboard layer.** `T` cycles theme, `A` cycles accent, `D` opens
   diagnostics, `I` toggles X-ray, `B` opens the tailored brief, `F` opens the
-  fit check, `H` jumps to the top, `?` opens the shortcut sheet. Inside the
-  palette: arrows to move, `Enter` to run, `Esc` to close.
+  fit check, `S` toggles the hero specimen scan, `H` jumps to the top, `?`
+  opens the shortcut sheet. Inside the palette: arrows to move, `Enter` to
+  run, `Esc` to close.
 - **One event bus.** Cross-component actions are DOM events on `document`:
   `opt:theme`, `opt:accent`, `opt:lang`, `opt:help`, `opt:diag`, `opt:xray`,
   `opt:brief`, `opt:fit`, plus `ui:toast` for the single aria-live status line.
@@ -80,8 +88,9 @@ npm run preview  # serve dist/ locally
 
 ```text
 src/
-├── components/       # Nav, Hero, Deployments, Repos, Origin, Mind, Vault,
-│                     # Awards, Photos, Connect, Footer, CommandPalette,
+├── components/       # Nav, Hero (specimen + instrument), Deployments, Repos,
+│                     # Origin, Mind, Vault, Awards, Photos, Connect, Footer,
+│                     # CommandPalette,
 │                     # Shortcuts, DisplayOptions, Instrument (diagnostics +
 │                     # X-ray + toast), Brief (tailored one-pager),
 │                     # Fit (role matcher), Site

@@ -19,9 +19,24 @@ const stats = [
 ---
 
 <section id="top" class="relative overflow-hidden pt-28 lg:pt-36">
+  <!-- The previous portfolio's archive plates, kept as depth layers. -->
+  <div class="hero-plates pointer-events-none absolute inset-0" aria-hidden="true">
+    <figure class="hero-plate hero-plate--atlas" style="--depth:0.42;--rot:2deg">
+      <img src="/assets/relic/plate-atlas.webp" alt="" width="1400" height="1400" decoding="async" fetchpriority="low" />
+    </figure>
+    <figure class="hero-plate hero-plate--field" style="--depth:0.24;--rot:-7deg">
+      <img src="/assets/relic/plate-field.webp" alt="" width="1200" height="1200" decoding="async" fetchpriority="low" />
+    </figure>
+  </div>
+
   <canvas id="hero-canvas" class="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true"></canvas>
   <!-- Scrim: keeps the copy column clean while the instrument stays visible -->
   <div class="hero-scrim pointer-events-none absolute inset-0" aria-hidden="true"></div>
+
+  <p class="hero-specimen" aria-hidden="true">
+    <span>N–001</span>
+    <span>{t("hero.relicCaption")}</span>
+  </p>
 
   <div class="shell relative z-10">
     <div class="flex flex-col gap-10">
@@ -49,14 +64,14 @@ const stats = [
           >
         </h1>
 
-        <div class="mt-6 grid gap-8 border-t border-[var(--color-line)] pt-6 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
+        <div class="mt-6 border-t border-[var(--color-line)] pt-6">
           <p
             class="fade-up max-w-2xl text-lg leading-relaxed text-[var(--color-fog-2)] lg:text-xl"
             style="animation-delay: 0.35s"
             set:html={rich(t("hero.lead"))}
           />
 
-          <div class="flex flex-col gap-4">
+          <div class="mt-7 flex max-w-2xl flex-col gap-4 lg:mt-9">
             <div class="fade-up flex flex-wrap gap-3" style="animation-delay: 0.45s">
               <a class="btn btn-primary" href="#work">{t("hero.ctaWork")}</a>
               <button class="btn btn-brief" type="button" data-brief-open>
@@ -66,8 +81,13 @@ const stats = [
               <a class="btn" href="https://github.com/natnael-wubet" target="_blank" rel="noopener">GitHub</a>
               <a class="btn" href="https://t.me/nnaty_w20" target="_blank" rel="noopener">Telegram</a>
             </div>
-            <div class="fade-up flex items-center gap-4 font-mono text-[0.6875rem] tracking-[0.14em] text-[var(--color-fog)] uppercase" style="animation-delay: 0.55s">
-              <span>{t("hero.hint")}</span>
+            <div class="fade-up flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[0.6875rem] tracking-[0.14em] text-[var(--color-fog)] uppercase" style="animation-delay: 0.55s">
+              <span class="hero-hint">{t("hero.hint")}</span>
+              <span class="hero-hint-sep" aria-hidden="true">·</span>
+              <span data-hero-specimen-ui>{t("hero.relicHint")}</span>
+              <button class="hero-scan" type="button" data-hero-scan aria-pressed="false" data-hero-specimen-ui>
+                <kbd>S</kbd><span>{t("hero.scan")}</span>
+              </button>
             </div>
           </div>
         </div>
@@ -170,22 +190,87 @@ const stats = [
   //    never stranded invisible if a script fails. Nothing to do here but
   //    keep the clock and the WebGL backdrop running.
 
-  // ── WebGL backdrop: a point-cloud body inside a gyroscope ──
-  //    Reads as an instrument, not decoration: a dot-sphere with a lime
-  //    equator, counter-rotating rings, a graduated tick collar, and a
-  //    deep starfield that parallaxes with the pointer.
+  // ── Archive parallax: the old site's plates, kept as depth layers ──
+  //    They move under the canvas with the pointer and the first scroll,
+  //    so the hero has memory behind the instrument even before WebGL
+  //    has painted anything.
+  const heroSection = document.getElementById("top");
+  const plateLayer = document.querySelector<HTMLElement>(".hero-plates");
+  if (heroSection && plateLayer) {
+    const reducePlates = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reducePlates) {
+      let px = 0;
+      let py = 0;
+      let sy = 0;
+      let queued = false;
+      const writePlates = () => {
+        queued = false;
+        plateLayer.style.setProperty("--hero-px", `${px.toFixed(2)}px`);
+        plateLayer.style.setProperty("--hero-py", `${py.toFixed(2)}px`);
+        plateLayer.style.setProperty("--hero-sy", `${sy.toFixed(2)}px`);
+      };
+      const queuePlates = () => {
+        if (!queued) {
+          queued = true;
+          requestAnimationFrame(writePlates);
+        }
+      };
+      window.addEventListener(
+        "pointermove",
+        (event) => {
+          px = (event.clientX / Math.max(window.innerWidth, 1) - 0.5) * 46;
+          py = (event.clientY / Math.max(window.innerHeight, 1) - 0.5) * 28;
+          queuePlates();
+        },
+        { passive: true }
+      );
+      window.addEventListener(
+        "scroll",
+        () => {
+          sy = -Math.min(window.scrollY, heroSection.offsetHeight) * 0.055;
+          queuePlates();
+        },
+        { passive: true }
+      );
+      writePlates();
+    }
+  }
+
+  // ── WebGL backdrop: the scanned body inside a gyroscope ──
+  //    The abstract dot-body is the preloader: when the old site's
+  //    photogrammetry bust arrives, the dots contract and the specimen
+  //    takes their place. A world-space seam divides surface from record,
+  //    the pointer turns the head, and S goes full hologram.
   const initBackdrop = async () => {
     const canvas = document.getElementById("hero-canvas") as HTMLCanvasElement | null;
     if (!canvas) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Phones keep the point-field body: the scan would sit under the copy and
+    // fight the headline, and a 900 KB specimen is not worth the bandwidth.
+    const phone = window.matchMedia("(max-width: 767px)").matches;
+    const scanBtn = document.querySelector<HTMLButtonElement>("[data-hero-scan]");
+    const specimenUI = Array.from(document.querySelectorAll<HTMLElement>("[data-hero-specimen-ui]"));
+    let fullScan = false;
+
+    const toggleScan = () => {
+      fullScan = !fullScan;
+      scanBtn?.setAttribute("aria-pressed", String(fullScan));
+    };
+    scanBtn?.addEventListener("click", toggleScan);
+    document.addEventListener("opt:scan", toggleScan);
 
     try {
       const THREE = await import("three");
+      const { GLTFLoader } = await import("three/examples/jsm/loaders/GLTFLoader.js");
 
       const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.setClearColor(0x000000, 0);
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.05;
+      renderer.localClippingEnabled = true;
 
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 120);
@@ -251,9 +336,16 @@ const stats = [
       );
       rig.add(stars);
 
-      // ── The body: a Fibonacci point-sphere with a lime equator ─
+      // ── Anchor: the specimen and its armature share one position ──
+      const BODY = new THREE.Vector3(5.45, 1.35, 0);
+      const anchor = new THREE.Group();
+      anchor.position.copy(BODY);
+      rig.add(anchor);
+
+      // ── The preloader body: a Fibonacci point-sphere ─────────
       const R = 4.4;
-      const BODY = new THREE.Vector3(5.4, 0.7, 0);
+      const orb = new THREE.Group();
+      anchor.add(orb);
 
       const N = 2800;
       const bPos = new Float32Array(N * 3);
@@ -292,34 +384,27 @@ const stats = [
         bodyGeo.attributes.color.needsUpdate = true;
       };
 
-      const body = new THREE.Group();
-      body.position.copy(BODY);
-      body.add(
-        new THREE.Points(
-          bodyGeo,
-          new THREE.PointsMaterial({
-            size: 0.065,
-            vertexColors: true,
-            transparent: true,
-            opacity: 0.95,
-            sizeAttenuation: true,
-            depthWrite: false,
-          })
-        )
-      );
-      rig.add(body);
+      const orbMat = new THREE.PointsMaterial({
+        size: 0.065,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.95,
+        sizeAttenuation: true,
+        depthWrite: false,
+      });
+      orb.add(new THREE.Points(bodyGeo, orbMat));
 
       // Ghost core: a low-poly wireframe nested inside the dots.
+      const coreMat = new THREE.LineBasicMaterial({ color: C_LINE, transparent: true, opacity: 0.7 });
       const core = new THREE.LineSegments(
         new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(R * 0.6, 1)),
-        new THREE.LineBasicMaterial({ color: C_LINE, transparent: true, opacity: 0.7 })
+        coreMat
       );
-      body.add(core);
+      orb.add(core);
 
       // ── Gyroscope: rings + a graduated tick collar ───────────
       const gyro = new THREE.Group();
-      gyro.position.copy(BODY);
-      rig.add(gyro);
+      anchor.add(gyro);
 
       const ringPath = (radius: number, seg = 192) => {
         const pts: THREE.Vector3[] = [];
@@ -379,30 +464,202 @@ const stats = [
       );
       rig.add(trace);
 
-      // ── Live repaint: theme or accent changed ──────────────
-      // The palette entries above are snapshots at build time, so both the
-      // vertex-coloured fields and every line material get re-tinted here.
-      const repaint = () => {
-        C_FOG.copy(cssColor("--color-fog", "#6b7480"));
-        C_CHALK.copy(cssColor("--color-chalk", "#eef1f4"));
-        C_SIGNAL.copy(cssColor("--color-signal", "#d4ff3f"));
-        C_CYAN.copy(cssColor("--color-cyan", "#34d3e0"));
-        C_LINE.copy(cssColor("--color-line-2", "#2a3036"));
+      // ── Lights for the specimen ──────────────────────────────
+      const hemi = new THREE.HemisphereLight(0xffffff, 0x0b0d10, 0.85);
+      const keyLight = new THREE.DirectionalLight(0xffffff, 2.35);
+      keyLight.position.set(4, 4.5, 6);
+      const rimLight = new THREE.DirectionalLight(0xffffff, 2.3);
+      rimLight.position.set(-4, 2, -3);
+      const fillLight = new THREE.DirectionalLight(0xffffff, 0.65);
+      fillLight.position.set(3, -2, 4);
+      scene.add(hemi, keyLight, rimLight, fillLight);
 
-        paintStars();
-        paintBody();
+      // ── The seam: a thin laser that divides body from record ──
+      const seamCanvas = document.createElement("canvas");
+      seamCanvas.width = 16;
+      seamCanvas.height = 256;
+      const seamCtx = seamCanvas.getContext("2d");
+      if (seamCtx) {
+        const grad = seamCtx.createLinearGradient(0, 0, 0, 256);
+        grad.addColorStop(0, "rgba(255,255,255,0)");
+        grad.addColorStop(0.16, "rgba(255,255,255,0.8)");
+        grad.addColorStop(0.82, "rgba(255,255,255,0.8)");
+        grad.addColorStop(1, "rgba(255,255,255,0)");
+        seamCtx.fillStyle = grad;
+        seamCtx.fillRect(0, 0, 16, 256);
+      }
+      const seamTex = new THREE.CanvasTexture(seamCanvas);
+      seamTex.colorSpace = THREE.SRGBColorSpace;
 
-        (core.material as THREE.LineBasicMaterial).color.copy(C_LINE);
-        (ringA.material as THREE.LineBasicMaterial).color.copy(C_SIGNAL);
-        (ringB.material as THREE.LineBasicMaterial).color.copy(C_CYAN);
-        (ringC.material as THREE.LineBasicMaterial).color.copy(C_LINE);
-        (collar.material as THREE.LineBasicMaterial).color.copy(C_LINE);
-        (trace.material as THREE.LineBasicMaterial).color.copy(C_SIGNAL);
+      const seamGroup = new THREE.Group();
+      const seamGlowMat = new THREE.MeshBasicMaterial({
+        map: seamTex,
+        transparent: true,
+        opacity: 0,
+        depthWrite: false,
+        depthTest: false,
+        blending: THREE.AdditiveBlending,
+        color: C_SIGNAL,
+      });
+      const seamCoreMat = new THREE.MeshBasicMaterial({
+        map: seamTex,
+        transparent: true,
+        opacity: 0,
+        depthWrite: false,
+        depthTest: false,
+        blending: THREE.AdditiveBlending,
+        color: C_SIGNAL,
+      });
+      const seamGlow = new THREE.Mesh(new THREE.PlaneGeometry(0.24, 8.2), seamGlowMat);
+      const seamCore = new THREE.Mesh(new THREE.PlaneGeometry(0.035, 8.2), seamCoreMat);
+      seamGlow.position.z = -0.01;
+      seamGroup.add(seamGlow, seamCore);
+      seamGroup.visible = false;
+      scene.add(seamGroup);
+
+      // ── The specimen ──────────────────────────────────────────
+      let bustPivot: THREE.Group | null = null;
+      const skinMats: THREE.MeshStandardMaterial[] = [];
+      let scanMat: THREE.ShaderMaterial | null = null;
+      let reveal = 0;
+      let orbFade = 1;
+      let bustReady = false;
+      const solidPlane = new THREE.Plane(new THREE.Vector3(-1, 0, 0), 0);
+      const specimenWorld = new THREE.Vector3();
+      let seamUnit = 0.1;
+      let seamWorld = 0;
+      let seamAlpha = 1;
+
+      const loadBust = () => {
+        new GLTFLoader().load(
+          "/assets/relic/statue.glb",
+          (gltf) => {
+            const model = gltf.scene;
+
+            const box = new THREE.Box3().setFromObject(model);
+            const size = box.getSize(new THREE.Vector3());
+            model.scale.setScalar(7 / Math.max(size.y, 0.001));
+            model.updateMatrixWorld(true);
+            const scaledBox = new THREE.Box3().setFromObject(model);
+            const center = scaledBox.getCenter(new THREE.Vector3());
+            model.position.sub(center);
+            model.updateMatrixWorld(true);
+
+            let sourceMesh: THREE.Mesh | null = null;
+            model.traverse((obj) => {
+              const mesh = obj as THREE.Mesh;
+              if (!mesh.isMesh) return;
+              sourceMesh ??= mesh;
+              const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+              for (const material of materials) {
+                const m = material as THREE.MeshStandardMaterial;
+                if (!m.isMeshStandardMaterial) continue;
+                // The scan's baked lighting assumes no environment map; keep
+                // it matte or the face reads as dark chrome under our lamps.
+                m.metalness = 0.02;
+                m.roughness = 0.84;
+                m.transparent = true;
+                m.opacity = 0;
+                m.depthWrite = false;
+                m.clippingPlanes = [solidPlane];
+                skinMats.push(m);
+              }
+            });
+
+            const pivot = new THREE.Group();
+            pivot.rotation.y = Math.PI;
+            pivot.add(model);
+            anchor.add(pivot);
+            bustPivot = pivot;
+
+            if (sourceMesh) {
+              const mesh = sourceMesh as THREE.Mesh;
+              scanMat = new THREE.ShaderMaterial({
+                uniforms: {
+                  uColor: { value: C_SIGNAL.clone() },
+                  uColor2: { value: C_CYAN.clone() },
+                  uTime: { value: 0 },
+                  uOpacity: { value: 0 },
+                  uSeam: { value: 0 },
+                },
+                vertexShader: /* glsl */ `
+                  varying vec3 vNormalW;
+                  varying vec3 vViewDirW;
+                  varying vec3 vPosW;
+
+                  void main() {
+                    vec4 world = modelMatrix * vec4(position, 1.0);
+                    vPosW = world.xyz;
+                    vNormalW = normalize(mat3(modelMatrix) * normal);
+                    vViewDirW = normalize(cameraPosition - world.xyz);
+                    gl_Position = projectionMatrix * viewMatrix * world;
+                  }
+                `,
+                fragmentShader: /* glsl */ `
+                  uniform vec3 uColor;
+                  uniform vec3 uColor2;
+                  uniform float uTime;
+                  uniform float uOpacity;
+                  uniform float uSeam;
+
+                  varying vec3 vNormalW;
+                  varying vec3 vViewDirW;
+                  varying vec3 vPosW;
+
+                  void main() {
+                    // The surface side is handled by a real clipping plane on
+                    // the scan material; this is the other side of the seam.
+                    if (vPosW.x < uSeam) discard;
+
+                    vec3 n = normalize(vNormalW);
+                    vec3 v = normalize(vViewDirW);
+                    float fresnel = pow(1.0 - clamp(dot(n, v), 0.0, 1.0), 2.35);
+                    float scanY = sin(uTime * 0.55) * 1.7;
+                    float band = smoothstep(0.07, 0.0, abs(vPosW.y - scanY));
+                    float grid = smoothstep(0.8, 1.0, sin(vPosW.y * 120.0 + uTime * 2.2) * 0.5 + 0.5) * 0.1;
+
+                    float alpha = (0.045 + fresnel * 0.58 + band * 0.6 + grid) * uOpacity;
+                    vec3 color = mix(uColor2, uColor, 0.25 + fresnel * 0.75) + uColor * band * 0.75;
+
+                    gl_FragColor = vec4(color, alpha);
+                    #include <tonemapping_fragment>
+                    #include <colorspace_fragment>
+                  }
+                `,
+                transparent: true,
+                depthWrite: false,
+                side: THREE.DoubleSide,
+                blending:
+                  document.documentElement.dataset.theme === "light"
+                    ? THREE.NormalBlending
+                    : THREE.AdditiveBlending,
+              });
+
+              const scanMesh = new THREE.Mesh(mesh.geometry, scanMat);
+              scanMesh.position.copy(mesh.position);
+              scanMesh.rotation.copy(mesh.rotation);
+              scanMesh.scale.copy(mesh.scale);
+              (mesh.parent ?? model).add(scanMesh);
+            }
+
+            bustReady = true;
+            seamGroup.visible = true;
+            if (reduced) {
+              reveal = 1;
+              orbFade = 0;
+            }
+          },
+          undefined,
+          () => {
+            // Keep the instrument as it was; remove the controls that would
+            // promise a specimen that never arrived.
+            for (const el of specimenUI) el.hidden = true;
+          }
+        );
       };
-      paintStars();
-      paintBody();
-      document.addEventListener("theme:change", repaint);
-      document.addEventListener("accent:change", repaint);
+
+      // Let the first paint land before paying for the 900 KB scan.
+      if (!phone) setTimeout(loadBust, 450);
 
       // ── Sizing ───────────────────────────────────────────────
       const resize = () => {
@@ -411,11 +668,13 @@ const stats = [
         const h = Math.max(rect.height, 1);
         renderer.setSize(w, h, false);
         camera.aspect = w / h;
-        // Keep the body framed on the right at every aspect ratio.
+        // Keep the specimen framed on the right at every aspect ratio.
         const fit = Math.min(1, w / 1400);
-        rig.scale.setScalar(0.72 + fit * 0.28);
-        body.position.x = gyro.position.x = (w < 760 ? 0.8 : 7.6) / rig.scale.x;
-        body.position.y = gyro.position.y = (w < 760 ? 3.6 : 1.1) / rig.scale.x;
+        const compact = w < 768;
+        const scale = compact ? 0.55 : 0.72 + fit * 0.28;
+        rig.scale.setScalar(scale);
+        anchor.position.x = (compact ? 2.2 : 5.45) / scale;
+        anchor.position.y = (compact ? 4.6 : 1.0) / scale;
         camera.updateProjectionMatrix();
       };
       resize();
@@ -437,52 +696,146 @@ const stats = [
       );
 
       let visible = true;
-      const section = document.getElementById("top");
-      if (section) {
-        new IntersectionObserver(([en]) => (visible = en.isIntersecting), { threshold: 0.01 }).observe(section);
+      if (heroSection) {
+        new IntersectionObserver(([en]) => (visible = en.isIntersecting), { threshold: 0.01 }).observe(heroSection);
       }
 
-      const clock = new THREE.Clock();
+      // ── Live repaint: theme or accent changed ──────────────
+      // The palette entries above are snapshots at load time, so both the
+      // vertex-coloured fields and every line material get re-tinted here.
+      const repaint = () => {
+        C_FOG.copy(cssColor("--color-fog", "#6b7480"));
+        C_CHALK.copy(cssColor("--color-chalk", "#eef1f4"));
+        C_SIGNAL.copy(cssColor("--color-signal", "#d4ff3f"));
+        C_CYAN.copy(cssColor("--color-cyan", "#34d3e0"));
+        C_LINE.copy(cssColor("--color-line-2", "#2a3036"));
+
+        const light = document.documentElement.dataset.theme === "light";
+
+        paintStars();
+        paintBody();
+
+        (core.material as THREE.LineBasicMaterial).color.copy(C_LINE);
+        (ringA.material as THREE.LineBasicMaterial).color.copy(C_SIGNAL);
+        (ringB.material as THREE.LineBasicMaterial).color.copy(C_CYAN);
+        (ringC.material as THREE.LineBasicMaterial).color.copy(C_LINE);
+        (collar.material as THREE.LineBasicMaterial).color.copy(C_LINE);
+        (trace.material as THREE.LineBasicMaterial).color.copy(C_SIGNAL);
+
+        seamCoreMat.color.copy(C_SIGNAL);
+        seamGlowMat.color.copy(C_SIGNAL);
+
+        hemi.intensity = light ? 1.5 : 0.85;
+        hemi.color.copy(C_CHALK);
+        hemi.groundColor.copy(light ? C_FOG : new THREE.Color(0x0b0d10));
+        keyLight.color.copy(C_CHALK);
+        keyLight.intensity = light ? 2.6 : 2.35;
+        rimLight.color.copy(C_SIGNAL);
+        rimLight.intensity = light ? 1.8 : 2.3;
+        fillLight.color.copy(C_CYAN);
+        fillLight.intensity = light ? 0.5 : 0.65;
+
+        for (const m of skinMats) {
+          m.emissive.copy(C_CHALK);
+          m.emissiveIntensity = light ? 0.02 : 0.04;
+        }
+
+        if (scanMat) {
+          scanMat.uniforms.uColor.value.copy(C_SIGNAL);
+          scanMat.uniforms.uColor2.value.copy(C_CYAN);
+          scanMat.blending = light ? THREE.NormalBlending : THREE.AdditiveBlending;
+          scanMat.needsUpdate = true;
+        }
+      };
+      paintStars();
+      paintBody();
+      document.addEventListener("theme:change", repaint);
+      document.addEventListener("accent:change", repaint);
+
+      // ── Frame ────────────────────────────────────────────────
+      let last = performance.now();
+      let elapsed = 0;
 
       const frame = () => {
-        const t = clock.getElapsedTime();
+        const now = performance.now();
+        const dt = Math.min(0.05, (now - last) / 1000);
+        last = now;
+        elapsed += dt;
+        const t = elapsed;
 
-        body.rotation.y = t * 0.12;
-        body.rotation.x = Math.sin(t * 0.25) * 0.16;
+        mx += (tx - mx) * Math.min(1, dt * 4.5);
+        my += (ty - my) * Math.min(1, dt * 4.5);
+
+        orb.rotation.y = t * 0.12;
+        orb.rotation.x = Math.sin(t * 0.25) * 0.16;
         core.rotation.y = -t * 0.07;
+        orbMat.opacity = orbFade * 0.95;
+        coreMat.opacity = orbFade * 0.7;
+        orb.visible = orbFade > 0.01;
 
         ringA.rotation.z = t * 0.2;
         ringB.rotation.x = 1.35 + Math.sin(t * 0.3) * 0.25;
         ringC.rotation.y = -t * 0.1;
         collar.rotation.y = t * 0.06;
-
         trace.position.y = Math.sin(t * 0.4) * 0.5;
 
-        mx += (tx - mx) * 0.05;
-        my += (ty - my) * 0.05;
         rig.rotation.y = mx * 0.16;
         rig.rotation.x = my * 0.1;
         rig.position.x = mx * -0.6;
         rig.position.y = my * 0.45;
-
         stars.rotation.y = t * 0.004;
+
+        if (bustReady && bustPivot) {
+          reveal = reduced ? 1 : Math.min(1, reveal + dt * 0.75);
+          orbFade = reduced ? 0 : Math.max(0, orbFade - dt * 0.8);
+
+          for (const m of skinMats) {
+            m.opacity = reveal;
+            m.depthWrite = reveal > 0.85;
+          }
+
+          const targetYaw = Math.PI + mx * 0.55;
+          bustPivot.rotation.y += (targetYaw - bustPivot.rotation.y) * Math.min(1, dt * 3);
+          bustPivot.rotation.x = my * 0.06;
+          bustPivot.rotation.z = mx * -0.02;
+
+          if (scanMat) {
+            scanMat.uniforms.uTime.value = t;
+            scanMat.uniforms.uOpacity.value = reveal;
+          }
+
+          const breathe = reduced ? 0 : Math.sin(t * 0.5) * 0.2;
+          const seamTarget = fullScan ? -3.4 : -0.62 + mx * 1.9 + breathe;
+          seamUnit += (seamTarget - seamUnit) * Math.min(1, dt * 3.2);
+
+          anchor.getWorldPosition(specimenWorld);
+          seamWorld = specimenWorld.x + seamUnit * rig.scale.x;
+          solidPlane.constant = seamWorld;
+          if (scanMat) scanMat.uniforms.uSeam.value = seamWorld;
+
+          seamGroup.position.set(seamWorld, specimenWorld.y + 0.1, 2.8);
+          // In full-hologram mode there is no boundary left to draw.
+          seamAlpha += ((fullScan ? 0 : 1) - seamAlpha) * Math.min(1, dt * 4);
+          seamGroup.visible = reveal > 0.01 && seamAlpha > 0.01;
+          seamCoreMat.opacity = reveal * 0.8 * seamAlpha;
+          seamGlowMat.opacity = reveal * 0.22 * seamAlpha;
+        }
 
         renderer.render(scene, camera);
       };
 
-      if (reduced) {
-        // One static, fully-composed frame — no loop, no motion.
-        frame();
-      } else {
-        const animate = () => {
-          requestAnimationFrame(animate);
-          if (visible) frame();
-        };
-        animate();
-      }
+
+      // Even reduced motion needs the loop: the specimen arrives after the
+      // first paint, but the scene itself remains still.
+      const animate = () => {
+        requestAnimationFrame(animate);
+        if (visible) frame();
+      };
+      animate();
     } catch {
       // WebGL unavailable — the section still reads perfectly without it
       canvas.style.display = "none";
+      for (const el of specimenUI) el.hidden = true;
     }
   };
 
@@ -490,9 +843,69 @@ const stats = [
 </script>
 
 <style>
+  /* ── Archive plates ──────────────────────────────────────────
+     Two layers from the old portfolio, kept deliberately faint. They
+     sit under the canvas and move at different depths with the pointer
+     and the first scroll, so the hero has memory behind the instrument. */
+  .hero-plates {
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .hero-plate {
+    position: absolute;
+    margin: 0;
+    mix-blend-mode: screen;
+    will-change: transform;
+    transform: translate3d(
+      calc(var(--hero-px, 0px) * var(--depth, 0.3)),
+      calc(var(--hero-py, 0px) * var(--depth, 0.3) + var(--hero-sy, 0px) * var(--depth, 0.3)),
+      0
+    )
+      rotate(var(--rot, 0deg));
+  }
+
+  .hero-plate img {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: saturate(0.5) contrast(1.08) brightness(0.8);
+  }
+
+  .hero-plate--atlas {
+    top: -26%;
+    right: -20%;
+    width: min(68vw, 1020px);
+    opacity: 0.19;
+    -webkit-mask-image: radial-gradient(ellipse at 54% 46%, #000 16%, transparent 68%);
+    mask-image: radial-gradient(ellipse at 54% 46%, #000 16%, transparent 68%);
+  }
+
+  .hero-plate--field {
+    left: -18%;
+    bottom: -32%;
+    width: min(56vw, 760px);
+    opacity: 0.12;
+    -webkit-mask-image: radial-gradient(ellipse at 46% 54%, #000 14%, transparent 68%);
+    mask-image: radial-gradient(ellipse at 46% 54%, #000 14%, transparent 68%);
+  }
+
+  :global(html[data-theme="light"]) .hero-plate {
+    mix-blend-mode: multiply;
+    opacity: 0.1;
+  }
+
   /* The instrument lives on the right; this keeps the copy column quiet.
      Vertical fade also stops the starfield from muddying the stats strip. */
+  #hero-canvas {
+    z-index: 1;
+    /* The torso dissolves into the page instead of ending on a hard cut. */
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 64%, transparent 86%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 64%, transparent 86%);
+  }
+
   .hero-scrim {
+    z-index: 2;
     background:
       linear-gradient(
         100deg,
@@ -501,13 +914,107 @@ const stats = [
         color-mix(in srgb, var(--color-ink) 78%, transparent) 44%,
         transparent 66%
       ),
-      linear-gradient(to bottom, var(--color-ink) 0%, transparent 14%, transparent 78%, var(--color-ink) 100%);
+      linear-gradient(to bottom, var(--color-ink) 0%, transparent 14%, transparent 66%, var(--color-ink) 92%);
+  }
+
+  /* The specimen label runs along the right edge, like a museum tag. */
+  .hero-specimen {
+    position: absolute;
+    top: 52%;
+    right: clamp(0.75rem, 2.2vw, 2rem);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.85rem;
+    margin: 0;
+    transform: translateY(-50%);
+    writing-mode: vertical-rl;
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--color-fog);
+    opacity: 0.72;
+    pointer-events: none;
+  }
+
+  .hero-specimen span:first-child {
+    color: var(--color-signal);
+  }
+
+  .hero-hint-sep {
+    color: var(--color-line-2);
+  }
+
+  .hero-scan {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-fog);
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .hero-scan kbd {
+    display: grid;
+    min-width: 1.4rem;
+    height: 1.4rem;
+    place-items: center;
+    border: 1px solid var(--color-line-2);
+    background: color-mix(in srgb, var(--color-ink-2) 70%, transparent);
+    font: inherit;
+    font-size: 0.5625rem;
+    color: var(--color-chalk);
+    transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .hero-scan:hover,
+  .hero-scan[aria-pressed="true"] {
+    color: var(--color-signal);
+  }
+
+  .hero-scan:hover kbd,
+  .hero-scan[aria-pressed="true"] kbd {
+    border-color: var(--color-signal);
+    background: var(--color-signal);
+    color: var(--color-on-signal);
+  }
+
+  @media (max-width: 1199px) {
+    .hero-specimen {
+      display: none;
+    }
   }
 
   @media (max-width: 767px) {
     /* On phones the body sits behind the headline — fade it right down. */
     .hero-scrim {
       background: linear-gradient(to bottom, color-mix(in srgb, var(--color-ink) 55%, transparent), color-mix(in srgb, var(--color-ink) 88%, transparent));
+    }
+
+    .hero-plate--atlas {
+      display: none;
+    }
+
+    [data-hero-specimen-ui],
+    .hero-hint,
+    .hero-hint-sep {
+      display: none;
+    }
+
+    .hero-plate--field {
+      width: 120vw;
+      left: -38%;
+      bottom: -18%;
+      opacity: 0.08;
     }
   }
 

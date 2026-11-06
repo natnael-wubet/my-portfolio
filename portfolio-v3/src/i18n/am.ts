@@ -59,6 +59,7 @@ export const am: Dict & Record<string, string> = {
   "shortcuts.diag": "የምርመራ መሳቢያ ክፈት",
   "shortcuts.brief": "የተዘጋጀ መግለጫ አዘጋጅ",
   "shortcuts.fit": "የሚና ተስማሚነት ፍተሻ",
+  "shortcuts.scan": "የናሙናውን ቅኝት ቀያይር",
   "shortcuts.xray": "የኤክስ-ሬይ / መሣሪያ ሁነታ ቀይር",
   "shortcuts.help": "ይህን ወረቀት አሳይ",
   "shortcuts.updown": "ምርጫውን አንቀሳቅስ",
@@ -83,6 +84,9 @@ export const am: Dict & Record<string, string> = {
   "hero.stat.years.k": "የሥራ ዓመታት",
   "hero.stat.years.s": "ከ2014 ጀምሮ",
   "hero.scroll": "አንስ",
+  "hero.relicHint": "ቡስቱ የመዝገቡ ሌላኛው ግማሽ ነው",
+  "hero.scan": "ቃኝ",
+  "hero.relicCaption": "ከቀድሞው ገጽ የተቃኘ · አሁንም ይዞራል",
 
   // ── Section 01 · Deployments ──────────────────────────────
   "sec.deployments.eyebrow": "ክፍል 01 · ማስተላለፊያዎች",
@@ -125,6 +129,7 @@ export const am: Dict & Record<string, string> = {
   "sec.origin.milestones": "ማስታወሻዎች",
   "sec.origin.entries": "{n} ማስታወሻዎች · 2014 → አሁን",
   "sec.origin.chips": "ባህር ዳር|እንቁጣጣሽ|የቡና ሥነሥርዓት|አማርኛ",
+
 
   // ── Section 04 · The interior ─────────────────────────────
   "sec.mind.eyebrow": "ክፍል 03 · ውስጣዊው",
