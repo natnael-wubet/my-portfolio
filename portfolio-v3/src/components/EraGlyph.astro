@@ -1,0 +1,112 @@
+---
+/**
+ * Era glyphs for the origin timeline.
+ *
+ * One small line drawing per milestone, drawn in the same 64×64 box so the
+ * cards keep a shared rhythm. Strokes inherit `currentColor`, which lets the
+ * card tint them on hover without a second set of files.
+ */
+interface Props {
+  name: "origin" | "security" | "systems" | "web" | "ai" | "mind";
+}
+const { name } = Astro.props;
+---
+
+<svg
+  class="era-glyph"
+  viewBox="0 0 64 64"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.3"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+>
+  {
+    name === "origin" && (
+      <>
+        <rect x="12" y="10" width="40" height="44" rx="2" />
+        <path d="M12 20h40" />
+        <path d="M19 27h26" opacity="0.5" />
+        <path d="M19 34h10M19 41h10M19 48h10" />
+        <circle cx="39" cy="34" r="2" />
+        <circle cx="46" cy="34" r="2" />
+        <circle cx="39" cy="41" r="2" />
+        <circle cx="46" cy="41" r="2" />
+        <circle cx="39" cy="48" r="2" />
+        <circle cx="46" cy="48" r="2" />
+      </>
+    )
+  }
+  {
+    name === "security" && (
+      <>
+        <rect x="17" y="28" width="30" height="25" rx="2" />
+        <path d="M23 28v-7a9 9 0 0 1 18 0v7" />
+        <circle cx="32" cy="38" r="3" />
+        <path d="M32 41v5" />
+        <path d="M12 16l3 3M52 16l-3 3M12 52l3-3M52 52l-3-3" opacity="0.4" />
+      </>
+    )
+  }
+  {
+    name === "systems" && (
+      <>
+        <rect x="9" y="13" width="46" height="38" rx="2" />
+        <path d="M9 21h46" />
+        <circle cx="15" cy="17" r="1" />
+        <circle cx="19" cy="17" r="1" />
+        <path d="M18 31l7 5-7 5" />
+        <path d="M30 41h14" />
+        <path d="M42 17h7" opacity="0.4" />
+      </>
+    )
+  }
+  {
+    name === "web" && (
+      <>
+        <path d="M24 16c-7 0-6 7-6 10s1 6-4 6c5 0 4 3 4 6s-1 10 6 10" />
+        <path d="M40 16c7 0 6 7 6 10s-1 6 4 6c-5 0-4 3-4 6s1 10-6 10" />
+        <path d="M36 22L28 42" opacity="0.7" />
+        <circle cx="32" cy="32" r="2" opacity="0.5" />
+      </>
+    )
+  }
+  {
+    name === "ai" && (
+      <>
+        <circle cx="13" cy="20" r="3" />
+        <circle cx="13" cy="32" r="3" />
+        <circle cx="13" cy="44" r="3" />
+        <circle cx="33" cy="25" r="3" />
+        <circle cx="33" cy="39" r="3" />
+        <circle cx="51" cy="32" r="4" />
+        <path d="M16 21l14 3M16 32l14-7M16 32l14 7M16 43l14-4" opacity="0.55" />
+        <path d="M36 26l11 5M36 38l11-6" opacity="0.55" />
+        <path d="M45 24l3-3M54 26l2-2M45 40l3 3M54 38l2 2" opacity="0.35" />
+      </>
+    )
+  }
+  {
+    name === "mind" && (
+      <>
+        <ellipse cx="32" cy="32" rx="24" ry="10" transform="rotate(-28 32 32)" />
+        <ellipse cx="32" cy="32" rx="24" ry="10" transform="rotate(28 32 32)" />
+        <ellipse cx="32" cy="32" rx="24" ry="10" transform="rotate(90 32 32)" opacity="0.5" />
+        <circle cx="32" cy="32" r="3" />
+        <circle cx="49" cy="21" r="1.6" />
+        <circle cx="16" cy="44" r="1.6" />
+        <circle cx="45" cy="47" r="1.6" opacity="0.6" />
+      </>
+    )
+  }
+</svg>
+
+<style>
+  .era-glyph {
+    width: 3.25rem;
+    height: 3.25rem;
+    color: var(--color-line-2);
+    transition: color 0.35s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+</style>

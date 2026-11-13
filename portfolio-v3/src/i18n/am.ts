@@ -220,6 +220,13 @@ export const am: Dict & Record<string, string> = {
   "sec.origin.milestones": "ማስታወሻዎች",
   "sec.origin.entries": "{n} ማስታወሻዎች · 2013 → አሁን",
   "sec.origin.chips": "ባህር ዳር|እንቁጣጣሽ|የቡና ሥነሥርዓት|አማርኛ",
+  "sec.origin.years": "የኮድ ዓመታት",
+  "sec.origin.range": "2013 → አሁን",
+  "sec.origin.rail": "የጊዜ መስመር",
+  "sec.origin.place": "ባህር ዳር · ኢትዮጵያ",
+  "sec.origin.photoAlt": "ናትናኤል በባህር ዳር ውሃ አጠገብ ቆሞ",
+  "sec.origin.long": "ሙሉ ታሪኩ",
+  "sec.origin.longHint": "አራት አንቀጾች፣ በራሱ ቃላት",
 
 
   // ── Section 04 · The interior ─────────────────────────────

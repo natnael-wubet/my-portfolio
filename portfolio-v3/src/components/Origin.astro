@@ -1,6 +1,7 @@
 ---
 import { originIntro, originBody, heritage, timeline } from "../data/content";
 import { td, type T } from "../i18n";
+import EraGlyph from "./EraGlyph.astro";
 
 interface Props {
   t: T;
@@ -8,40 +9,110 @@ interface Props {
 const { t } = Astro.props;
 
 const chips = t("sec.origin.chips").split("|");
+const years = new Date().getFullYear() - 2013;
+
+const glyphs = ["origin", "security", "systems", "web", "ai", "mind"] as const;
+const accents = [
+  "var(--color-signal)",
+  "var(--color-amber)",
+  "var(--color-cyan)",
+  "var(--color-signal)",
+  "var(--color-rose)",
+  "var(--color-signal)",
+];
 ---
 
 <section id="origin" class="relative border-t border-[var(--color-line)]">
   <div class="shell py-24 lg:py-32">
-    <div class="flex flex-col gap-5">
-      <span class="eyebrow">{t("sec.origin.eyebrow")}</span>
-      <h2 class="display display-lg max-w-4xl">{td(t, originIntro)}</h2>
-    </div>
-
-    <div class="mt-14 grid gap-12 lg:grid-cols-[1.15fr_1fr] lg:gap-20">
-      <!-- Narrative -->
-      <div class="flex flex-col gap-7">
-        {
-          originBody.map((p, i) => (
-            <p class="text-base leading-relaxed text-[var(--color-fog-2)] lg:text-lg" data-reveal style={`--d:${i * 60}ms`}>
-              {p.lead && (
-                <span class="mr-3 inline-block border border-[var(--color-line-2)] px-2 py-0.5 align-middle font-mono text-[0.5625rem] tracking-[0.18em] text-[var(--color-signal)] uppercase">
-                  {td(t, p.lead)}
-                </span>
-              )}
-              <span class="text-[var(--color-chalk)]">{td(t, p.text)}</span>
-            </p>
-          ))
-        }
+    <div class="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+      <div class="flex flex-col gap-5" data-reveal>
+        <span class="eyebrow">{t("sec.origin.eyebrow")}</span>
+        <h2 class="display display-lg max-w-4xl">{td(t, originIntro)}</h2>
       </div>
 
-      <!-- Heritage card -->
-      <aside class="panel flex h-fit flex-col gap-4 p-7 lg:sticky lg:top-24" data-reveal>
+      <div class="origin-age flex items-end gap-3" data-reveal style="--d:120ms">
+        <span class="origin-age-num">{years}</span>
+        <span class="flex flex-col pb-1">
+          <span class="font-mono text-[0.625rem] tracking-[0.2em] text-[var(--color-fog)] uppercase">
+            {t("sec.origin.years")}
+          </span>
+          <span class="font-mono text-[0.5625rem] tracking-[0.16em] text-[var(--color-line-2)] uppercase">
+            {t("sec.origin.range")}
+          </span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Timeline rail: the dots follow the card under the pointer. -->
+    <div class="origin-track mt-14" data-reveal aria-hidden="true">
+      <span class="origin-track-end">2013</span>
+      <span class="origin-track-line">
+        <span class="origin-track-fill" id="origin-fill"></span>
+        {timeline.map((_, i) => <span class="origin-dot" data-era-dot={i} />)}
+      </span>
+      <span class="origin-track-end">{t("sec.origin.range").split("→").at(-1)?.trim()}</span>
+    </div>
+
+    <ol class="origin-eras mt-px" aria-label={t("sec.origin.rail")}>
+      {
+        timeline.map((m, i) => (
+          <li
+            class="origin-era"
+            data-era={i}
+            style={`--d:${i * 70}ms;--era-accent:${accents[i] ?? "var(--color-signal)"}`}
+            data-reveal
+          >
+            <span class="origin-era-glow" aria-hidden="true" />
+            <div class="origin-era-top">
+              <span class="origin-era-index">{String(i + 1).padStart(2, "0")}</span>
+              <EraGlyph name={glyphs[i] ?? "origin"} />
+            </div>
+            <span class="origin-era-year">{td(t, m.year)}</span>
+            <h3 class="origin-era-title">{td(t, m.title)}</h3>
+            <p class="origin-era-detail">{td(t, m.detail)}</p>
+            <span class="origin-era-tag">{td(t, m.tag)}</span>
+          </li>
+        ))
+      }
+    </ol>
+
+    <!-- Heritage: a real photograph, not another paragraph. -->
+    <div class="mt-16 grid gap-px border border-[var(--color-line)] bg-[var(--color-line)] lg:grid-cols-[1.05fr_1fr]">
+      <figure class="origin-photo m-0" data-reveal>
+        <img
+          src="/img/heritage.jpg"
+          alt={t("sec.origin.photoAlt")}
+          width="640"
+          height="420"
+          loading="lazy"
+          decoding="async"
+        />
+        <span class="origin-photo-shade" aria-hidden="true" />
+        <span class="origin-corner origin-corner--tl" aria-hidden="true"></span>
+        <span class="origin-corner origin-corner--tr" aria-hidden="true"></span>
+        <span class="origin-corner origin-corner--bl" aria-hidden="true"></span>
+        <span class="origin-corner origin-corner--br" aria-hidden="true"></span>
+        <figcaption class="origin-photo-caption">
+          <span>{t("sec.origin.place")}</span>
+          <span>11°35′N 37°23′E</span>
+        </figcaption>
+      </figure>
+
+      <aside class="origin-heritage panel flex flex-col gap-5 border-0 p-7 lg:p-10" data-reveal style="--d:100ms">
         <div class="flex items-center gap-3">
-          <span class="grid h-9 w-9 place-items-center border border-[var(--color-line-2)] font-mono text-[0.625rem] text-[var(--color-signal)]">BD</span>
-          <span class="font-mono text-[0.625rem] tracking-[0.2em] text-[var(--color-fog)] uppercase">{t("sec.origin.heritageTitle")}</span>
+          <span class="grid h-10 w-10 place-items-center border border-[var(--color-line-2)] font-mono text-[0.6875rem] tracking-[0.08em] text-[var(--color-signal)]">
+            BD
+          </span>
+          <span class="font-mono text-[0.625rem] tracking-[0.2em] text-[var(--color-fog)] uppercase">
+            {t("sec.origin.heritageTitle")}
+          </span>
         </div>
-        <p class="text-sm leading-relaxed text-[var(--color-fog-2)]">{td(t, heritage.text)}</p>
-        <div class="mt-2 flex flex-wrap gap-2 border-t border-[var(--color-line)] pt-4">
+
+        <p class="text-[0.9375rem] leading-relaxed text-[var(--color-fog-2)] lg:text-base">
+          {td(t, heritage.text)}
+        </p>
+
+        <div class="mt-auto flex flex-wrap gap-2 border-t border-[var(--color-line)] pt-5">
           {
             chips.map((c) => (
               <span class="border border-[var(--color-line)] px-2.5 py-1 font-mono text-[0.5625rem] tracking-[0.14em] text-[var(--color-fog)] uppercase">
@@ -53,40 +124,465 @@ const chips = t("sec.origin.chips").split("|");
       </aside>
     </div>
 
-    <!-- Timeline -->
-    <div class="mt-20 border-t border-[var(--color-line)] pt-10">
-      <div class="mb-8 flex items-center justify-between">
-        <span class="section-label">{t("sec.origin.milestones")}</span>
-        <span class="section-index">{t("sec.origin.entries", { n: timeline.length })}</span>
-      </div>
-
-      <ol class="relative m-0 list-none p-0">
-        <span class="absolute top-2 bottom-2 left-[0.4rem] w-px bg-[var(--color-line)] lg:left-[0.55rem]" aria-hidden="true"></span>
+    <!-- The narrative is still here, one tap away instead of always open. -->
+    <details class="origin-long panel mt-6" data-reveal>
+      <summary class="origin-long-summary">
+        <span class="origin-long-mark" aria-hidden="true">+</span>
+        <span class="origin-long-label">{t("sec.origin.long")}</span>
+        <span class="origin-long-hint">{t("sec.origin.longHint")}</span>
+      </summary>
+      <div class="origin-long-body">
         {
-          timeline.map((m, i) => (
-            <li class="group relative grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 py-6 pl-0 lg:grid-cols-[9rem_auto_1fr] lg:gap-x-8" data-reveal style={`--d:${i * 70}ms`}>
-              <span class="font-mono text-sm tracking-[0.14em] text-[var(--color-fog)] tabular-nums lg:text-base">{m.year}</span>
-
-              <span
-                class="relative z-10 mt-1.5 h-2 w-2 flex-none rounded-full bg-[var(--color-line-2)] ring-4 ring-[var(--color-ink)] transition-colors duration-300 group-hover:bg-[var(--color-signal)] lg:mt-2"
-                aria-hidden="true"
-              />
-
-              <div class="col-start-2 flex flex-col gap-1.5 lg:col-start-3">
-                <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                  <h3 class="font-display text-lg font-semibold tracking-tight text-[var(--color-chalk)] transition-colors duration-300 group-hover:text-[var(--color-signal)]">
-                    {td(t, m.title)}
-                  </h3>
-                  <span class="border border-[var(--color-line)] px-2 py-0.5 font-mono text-[0.5625rem] tracking-[0.14em] text-[var(--color-fog)] uppercase transition-colors duration-300 group-hover:border-[var(--color-line-2)]">
-                    {td(t, m.tag)}
-                  </span>
-                </div>
-                <p class="max-w-2xl text-sm leading-relaxed text-[var(--color-fog-2)]">{td(t, m.detail)}</p>
-              </div>
-            </li>
+          originBody.map((p, i) => (
+            <p class="origin-long-p">
+              {p.lead && <span class="origin-long-lead">{td(t, p.lead)}</span>}
+              <span class="text-[var(--color-chalk)]">{td(t, p.text)}</span>
+            </p>
           ))
         }
-      </ol>
-    </div>
+      </div>
+    </details>
   </div>
 </section>
+
+<script>
+  const eras = Array.from(document.querySelectorAll<HTMLElement>("[data-era]"));
+  const dots = Array.from(document.querySelectorAll<HTMLElement>("[data-era-dot]"));
+  const fill = document.getElementById("origin-fill");
+
+  const setEra = (index: number | null) => {
+    if (fill) {
+      fill.style.transform = `scaleX(${index === null ? 1 : (index + 1) / eras.length})`;
+      fill.classList.toggle("is-tracking", index !== null);
+    }
+    dots.forEach((dot, i) => dot.classList.toggle("is-on", index !== null && i <= index));
+  };
+
+  eras.forEach((card) => {
+    const index = Number(card.dataset.era);
+    card.addEventListener("pointerenter", () => setEra(index));
+    card.addEventListener("pointerleave", () => setEra(null));
+    card.addEventListener("focusin", () => setEra(index));
+    card.addEventListener("focusout", () => setEra(null));
+  });
+</script>
+
+<style>
+  .origin-age-num {
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 7vw, 6rem);
+    font-weight: 700;
+    line-height: 0.8;
+    letter-spacing: -0.05em;
+    color: var(--color-signal);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Rail ───────────────────────────────────────────────── */
+  .origin-track {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .origin-track-end {
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.18em;
+    color: var(--color-fog);
+    text-transform: uppercase;
+  }
+
+  .origin-track-line {
+    position: relative;
+    flex: 1;
+    height: 1px;
+    background: var(--color-line);
+  }
+
+  .origin-track-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--color-signal);
+    opacity: 0.45;
+    transform-origin: left center;
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  }
+
+  .origin-track-fill.is-tracking {
+    opacity: 1;
+  }
+
+  .origin-dot {
+    position: absolute;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    border: 1px solid var(--color-line-2);
+    border-radius: 50%;
+    background: var(--color-ink);
+    transform: translate(-50%, -50%);
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .origin-dot:nth-child(2) {
+    left: 0%;
+  }
+  .origin-dot:nth-child(3) {
+    left: 20%;
+  }
+  .origin-dot:nth-child(4) {
+    left: 40%;
+  }
+  .origin-dot:nth-child(5) {
+    left: 60%;
+  }
+  .origin-dot:nth-child(6) {
+    left: 80%;
+  }
+  .origin-dot:nth-child(7) {
+    left: 100%;
+  }
+
+  .origin-dot.is-on {
+    border-color: var(--color-signal);
+    background: var(--color-signal);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-signal) 16%, transparent);
+  }
+
+  /* ── Era grid ───────────────────────────────────────────── */
+  .origin-eras {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: var(--color-line);
+    border: 1px solid var(--color-line);
+    border-top: 0;
+  }
+
+  @media (min-width: 720px) {
+    .origin-eras {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1180px) {
+    .origin-eras {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .origin-era {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    overflow: hidden;
+    padding: 1.6rem;
+    background: var(--color-ink);
+    transition: background-color 0.35s ease;
+  }
+
+  @media (min-width: 1180px) {
+    .origin-era {
+      padding: 1.9rem;
+    }
+  }
+
+  .origin-era:hover {
+    background: var(--color-ink-2);
+  }
+
+  .origin-era-glow {
+    position: absolute;
+    top: -40%;
+    right: -25%;
+    width: 15rem;
+    height: 15rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--era-accent) 22%, transparent), transparent 68%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+  }
+
+  .origin-era:hover .origin-era-glow {
+    opacity: 1;
+  }
+
+  .origin-era-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .origin-era-index {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.2em;
+    color: var(--color-line-2);
+  }
+
+  .origin-era:hover :global(.era-glyph) {
+    color: var(--era-accent);
+    transform: translateY(-2px) scale(1.04);
+  }
+
+  .origin-era-year {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 3.4vw, 3.1rem);
+    font-weight: 700;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    color: var(--color-chalk);
+    font-variant-numeric: tabular-nums;
+    transition: color 0.3s ease;
+  }
+
+  .origin-era:hover .origin-era-year {
+    color: var(--era-accent);
+  }
+
+  .origin-era-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--color-chalk);
+  }
+
+  .origin-era-detail {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.65;
+    color: var(--color-fog-2);
+  }
+
+  .origin-era-tag {
+    align-self: flex-start;
+    margin-top: auto;
+    padding: 0.25rem 0.55rem;
+    border: 1px solid var(--color-line);
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.16em;
+    color: var(--color-fog);
+    text-transform: uppercase;
+    transition: border-color 0.3s ease, color 0.3s ease;
+  }
+
+  .origin-era:hover .origin-era-tag {
+    border-color: color-mix(in srgb, var(--era-accent) 55%, var(--color-line));
+    color: var(--era-accent);
+  }
+
+  /* ── Heritage ───────────────────────────────────────────── */
+  .origin-photo {
+    position: relative;
+    min-height: 19rem;
+    overflow: hidden;
+    background: var(--color-ink-3);
+  }
+
+  @media (min-width: 1024px) {
+    .origin-photo {
+      min-height: 27rem;
+    }
+  }
+
+  .origin-photo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 40%;
+    filter: saturate(0.72) contrast(1.04);
+    transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
+  }
+
+  .origin-photo:hover img {
+    transform: scale(1.03);
+    filter: saturate(0.95) contrast(1.04);
+  }
+
+  .origin-photo-shade {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(8, 9, 10, 0.3), transparent 32%),
+      linear-gradient(0deg, rgba(8, 9, 10, 0.84), transparent 48%);
+    pointer-events: none;
+  }
+
+  .origin-corner {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: 0 solid var(--color-signal);
+    opacity: 0.75;
+  }
+
+  .origin-corner--tl {
+    top: 12px;
+    left: 12px;
+    border-top-width: 1px;
+    border-left-width: 1px;
+  }
+
+  .origin-corner--tr {
+    top: 12px;
+    right: 12px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+  }
+
+  .origin-corner--bl {
+    bottom: 12px;
+    left: 12px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+  }
+
+  .origin-corner--br {
+    bottom: 12px;
+    right: 12px;
+    border-bottom-width: 1px;
+    border-right-width: 1px;
+  }
+
+  .origin-photo-caption {
+    position: absolute;
+    inset: auto 0 0;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.15rem;
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.16em;
+    color: #eef1f4;
+    text-transform: uppercase;
+  }
+
+  .origin-photo-caption span:last-child {
+    color: rgba(238, 241, 244, 0.62);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── Long version ───────────────────────────────────────── */
+  .origin-long {
+    margin-top: 1.5rem;
+  }
+
+  .origin-long-summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.1rem 1.35rem;
+    cursor: pointer;
+    list-style: none;
+    transition: background-color 0.25s ease;
+  }
+
+  .origin-long-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .origin-long-summary:hover {
+    background: var(--color-ink-2);
+  }
+
+  .origin-long-mark {
+    display: grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 1px solid var(--color-line-2);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-signal);
+    transition: transform 0.3s ease;
+  }
+
+  .origin-long[open] .origin-long-mark {
+    transform: rotate(45deg);
+  }
+
+  .origin-long-label {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.18em;
+    color: var(--color-chalk);
+    text-transform: uppercase;
+  }
+
+  .origin-long-hint {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.12em;
+    color: var(--color-fog);
+    text-transform: uppercase;
+  }
+
+  .origin-long-body {
+    display: grid;
+    gap: 1.25rem;
+    padding: 0 1.35rem 1.5rem;
+  }
+
+  @media (min-width: 900px) {
+    .origin-long-body {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.5rem 2.5rem;
+    }
+  }
+
+  .origin-long-p {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.7;
+    color: var(--color-fog-2);
+  }
+
+  .origin-long-lead {
+    display: inline-block;
+    margin-right: 0.6rem;
+    padding: 0.1rem 0.4rem;
+    border: 1px solid var(--color-line-2);
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.16em;
+    color: var(--color-signal);
+    text-transform: uppercase;
+    vertical-align: middle;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .origin-track-fill,
+    .origin-dot,
+    .origin-era,
+    .origin-era-glow,
+    .origin-era-year,
+    .origin-era-tag,
+    .origin-photo img,
+    .origin-long-mark,
+    :global(.era-glyph) {
+      transition: none;
+    }
+
+    .origin-photo:hover img {
+      transform: none;
+    }
+  }
+</style>

@@ -221,6 +221,13 @@ export const en = {
   "sec.origin.milestones": "Milestones",
   "sec.origin.entries": "{n} entries · 2013 → now",
   "sec.origin.chips": "Bahir Dar|Enkutatesh|Coffee ceremony|Amharic",
+  "sec.origin.years": "years of code",
+  "sec.origin.range": "2013 → now",
+  "sec.origin.rail": "Timeline",
+  "sec.origin.place": "Bahir Dar · Ethiopia",
+  "sec.origin.photoAlt": "Natnael standing by the water in Bahir Dar",
+  "sec.origin.long": "The long version",
+  "sec.origin.longHint": "Four paragraphs, in his own words",
 
 
   // ── Section 04 · The interior ─────────────────────────────
