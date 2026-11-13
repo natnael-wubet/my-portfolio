@@ -19,7 +19,7 @@ export const am: Dict & Record<string, string> = {
   "meta.description":
     "ናትናኤል ውቤት — ከኢትዮጵያ ባህር ዳር ጨዋታዎች፣ መድረኮች፣ ፕሮቶኮሎችና የደህንነት መሣሪያዎች የሚሠራ ሶፍትዌር ኢንጂነር እና ፊል-ስታክ ወይዘር።",
   "meta.descriptionCounted":
-    "ከተለይተው አደጋ ያላቸው ጨዋታዎች፣ ምስክር የሚያደርጉ ፕሮቶኮሎች፣ የሚሸጡ መድረኮች። {live} ቀጥታ የሚሰሩ ማስተላለፊያዎች፣ {repos} የግል ማከማቻዎች፣ የተወዳደሩ ሽጥራዎች — እና ከባህር ዳር፣ ኢትዮጵያ የአስራ አንድ ዓመት ሥራ።",
+    "ከተለይተው አደጋ ያላቸው ጨዋታዎች፣ ምስክር የሚያደርጉ ፕሮቶኮሎች፣ የሚሸጡ መድረኮች። {live} ቀጥታ የሚሰሩ ማስተላለፊያዎች፣ {repos} የግል ማከማቻዎች፣ የተወዳደሩ ሽጥራዎች — እና ከባህር ዳር፣ ኢትዮጵያ የአስራ ሦስት ዓመት ሥራ።",
 
   // ── Nav ───────────────────────────────────────────────────
   "nav.role": "ሶፍትዌር ኢንጂነር",
@@ -80,9 +80,10 @@ export const am: Dict & Record<string, string> = {
   "hero.stat.repos.k": "የግል ማከማቻዎች",
   "hero.stat.repos.s": "በ GitHub ላይ",
   "hero.stat.awards.k": "የተወዳደሩ ውድድሮች",
-  "hero.stat.awards.s": "1ኛ እና 3ኛ ቦታ",
-  "hero.stat.years.k": "የሥራ ዓመታት",
-  "hero.stat.years.s": "ከ2014 ጀምሮ",
+  "hero.stat.awards.s": "1ኛ፣ 2ኛ እና 3ኛ ቦታ",
+  "hero.stat.years.k": "ኮድ የጻፍኩበት ዓመታት",
+  "hero.stat.years.s": "ከ2013 ጀምሮ",
+  "hero.stat.years.live": "{y}ዓ {m}ወ {d}ቀ",
   "hero.scroll": "አንስ",
   "hero.relicHint": "ቡስቱ የመዝገቡ ሌላኛው ግማሽ ነው",
   "hero.scan": "ቃኝ",
@@ -106,21 +107,21 @@ export const am: Dict & Record<string, string> = {
 
   // ── Section 02 · Repositories ─────────────────────────────
   "sec.repos.eyebrow": "ምንጭ · ሁሉም {n} ማከማቻዎች",
-  "sec.repos.title": "ምንጩን በቅርብ አንብብ",
+  "sec.repos.title": "ማከማቻዎችን በቅርብ አንብብ",
   "sec.repos.lead":
-    "ሁሉም የግል ማከማቻዎች ከታች አሉ። ከሙሉው መደርደሪያ በፊት፣ ብዙ ምህንድስና የያዙትን በቅርብ እናንብብ — ተርሚናልን ሸራ የሚያደርገው ኤንጂን ይጀምራል።",
-  "sec.repos.featured": "የተመረጠ ሰነድ",
-  "sec.repos.dossierNo": "ሰነድ 01",
+    "ሁሉም የግል ማከማቻዎች ከታች አሉ። ከሙሉው ዝርዝር በፊት፣ ብዙ ምህንድስና የያዙትን በቅርብ እንመልከት፣ ተርሚናልን ሸራ የሚያደርገው ኤንጂን ይጀምራል።",
+  "sec.repos.featured": "የተመረጠ ማከማቻ",
+  "sec.repos.dossierNo": "ማከማቻ 01",
   "sec.repos.artefact":
-    "አራት ቻናሎችና ድምራቸው፣ በግንባታ ጊዜ ከዚያው point/line ሞዴል የተፈጠረ — ስክሪንሾት አይደለም።",
+    "አራት ቻናሎችና ድምራቸው፣ በግንባታ ጊዜ ከዚያው point/line ሞዴል የተፈጠረ። ይህ ስክሪንሾት አይደለም።",
   "sec.repos.what": "ምን ነው",
-  "sec.repos.why": "ለምን ይጠቅማል",
-  "sec.repos.honest": "ቀጥተኛው እይታ",
-  "sec.repos.fieldNotes": "የመስክ ማስታወሻዎች",
+  "sec.repos.why": "ለምን ይሠራል",
+  "sec.repos.honest": "የሻከረው",
+  "sec.repos.fieldNotes": "የተመረጡ ማከማቻዎች",
   "sec.repos.fieldNotesLead":
-    "አራት ተጨማሪ ማከማቻዎች፣ ከራሳቸው README ጋር ተነጻጽረው — ምን ቃል እንደገቡና ኮዱ በእውነት ምን እንደሚያደርግ።",
+    "አራት ተጨማሪ ማከማቻዎች፣ ከራሳቸው README ጋር ተነጻጽረው፦ ምን ቃል እንደገቡና ኮዱ በእውነት ምን እንደሚያደርግ።",
   "sec.repos.total": "በመዝገቡ",
-  "sec.repos.note": "የመስክ ማስታወሻ",
+  "sec.repos.note": "የተመረጠ",
   "sec.repos.assessment": "ግምገማ",
   "sec.repos.readme": "README",
   "sec.repos.files": "ፋይሎች",
@@ -128,7 +129,7 @@ export const am: Dict & Record<string, string> = {
   "sec.repos.fact.canvas": "ሸራ",
   "sec.repos.fact.api": "API",
   "sec.repos.fact.demos": "ማሳያዎች",
-  "sec.repos.allRepos": "የቀረው መደርደሪያ",
+  "sec.repos.allRepos": "ሁሉም ማከማቻዎች",
   "sec.repos.allReposLead": "ሁሉም የግል ማከማቻዎች፣ በቡድን፣ በስምና በኮከብ ተፈልገው ሊጣሩ ይችላሉ።",
   "sec.repos.open": "GitHub ክፈት ↗",
   "sec.repos.all": "ሁሉም",
@@ -148,7 +149,7 @@ export const am: Dict & Record<string, string> = {
   "sec.origin.eyebrow": "ክፍል 02 · መነሻ",
   "sec.origin.heritageTitle": "የመኩረት ቦታዬ",
   "sec.origin.milestones": "ማስታወሻዎች",
-  "sec.origin.entries": "{n} ማስታወሻዎች · 2014 → አሁን",
+  "sec.origin.entries": "{n} ማስታወሻዎች · 2013 → አሁን",
   "sec.origin.chips": "ባህር ዳር|እንቁጣጣሽ|የቡና ሥነሥርዓት|አማርኛ",
 
 

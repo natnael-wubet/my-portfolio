@@ -10,11 +10,32 @@ const { t } = Astro.props;
 
 const liveCount = deployments.filter((d) => !d.archived).length;
 
+// Time in code, measured from the first line of batch in 2013. The hero
+// renders the build-time figure, then the client clock keeps it honest.
+const codeStart = new Date("2013-01-01T00:00:00");
+const builtAt = new Date();
+const codeAge = (() => {
+  let y = builtAt.getFullYear() - codeStart.getFullYear();
+  let m = builtAt.getMonth() - codeStart.getMonth();
+  let d = builtAt.getDate() - codeStart.getDate();
+  if (d < 0) {
+    m -= 1;
+    d += new Date(builtAt.getFullYear(), builtAt.getMonth(), 0).getDate();
+  }
+  if (m < 0) {
+    y -= 1;
+    m += 12;
+  }
+  return { y, m, d };
+})();
+const liveTemplate = t("hero.stat.years.live", { y: "{y}", m: "{m}", d: "{d}" });
+const liveNow = t("hero.stat.years.live", codeAge);
+
 const stats = [
   { k: t("hero.stat.deploy.k"), v: String(liveCount), s: t("hero.stat.deploy.s"), n: liveCount },
   { k: t("hero.stat.repos.k"), v: String(repos.length), s: t("hero.stat.repos.s"), n: repos.length },
   { k: t("hero.stat.awards.k"), v: "4", s: t("hero.stat.awards.s"), n: 4 },
-  { k: t("hero.stat.years.k"), v: "11", s: t("hero.stat.years.s"), n: 11 },
+  { k: t("hero.stat.years.k"), v: "13", s: t("hero.stat.years.s"), n: 13, since: "2013-01-01" },
 ];
 ---
 
@@ -105,7 +126,15 @@ const stats = [
                 {stat.v}
               </span>
               <span class="font-mono text-[0.625rem] tracking-[0.16em] text-[var(--color-fog)] uppercase">{stat.k}</span>
-              <span class="font-mono text-[0.5625rem] tracking-[0.14em] text-[var(--color-line-2)] uppercase">{stat.s}</span>
+              <span class="font-mono text-[0.5625rem] tracking-[0.14em] text-[var(--color-line-2)] uppercase">
+                {stat.s}
+                {stat.since && (
+                  <>
+                    <span aria-hidden="true"> · </span>
+                    <span class="text-[var(--color-signal)]" data-code-clock data-since={stat.since} data-template={liveTemplate}>{liveNow}</span>
+                  </>
+                )}
+              </span>
             </div>
           ))
         }
@@ -184,6 +213,38 @@ const stats = [
     } else {
       counters.forEach(runCount);
     }
+  }
+
+  // ── Time-in-code clock ───────────────────────────────────
+  //    The years stat is a live measurement, not a label: it counts from
+  //    the first line of batch code and refreshes every minute, so the
+  //    figure is still right after a long-lived tab wakes up.
+  const codeClock = document.querySelector<HTMLElement>("[data-code-clock]");
+  if (codeClock) {
+    const start = new Date(codeClock.dataset.since || "2013-01-01T00:00:00");
+    const pad = (n: number) => String(n).padStart(2, "0");
+    const template = codeClock.dataset.template || "{y}y {m}m {d}d";
+    const tick = () => {
+      const now = new Date();
+      let years = now.getFullYear() - start.getFullYear();
+      let months = now.getMonth() - start.getMonth();
+      let days = now.getDate() - start.getDate();
+      if (days < 0) {
+        months -= 1;
+        const previous = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+        days += previous;
+      }
+      if (months < 0) {
+        years -= 1;
+        months += 12;
+      }
+      codeClock.textContent = template
+        .replace("{y}", String(years))
+        .replace("{m}", String(months))
+        .replace("{d}", pad(days));
+    };
+    tick();
+    setInterval(tick, 60_000);
   }
 
   // ── Entrance is CSS-driven (see global.css .rise/.fade-up) so content is

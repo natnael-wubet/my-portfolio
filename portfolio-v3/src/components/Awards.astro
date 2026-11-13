@@ -33,9 +33,11 @@ const { t } = Astro.props;
                     style={{
                       color: a.rank.startsWith("1")
                         ? "var(--color-signal)"
-                        : a.rank.startsWith("3")
-                          ? "var(--color-cyan)"
-                          : "var(--color-fog)",
+                        : a.rank.startsWith("2")
+                          ? "var(--color-amber)"
+                          : a.rank.startsWith("3")
+                            ? "var(--color-cyan)"
+                            : "var(--color-fog)",
                     }}
                   >
                     {td(t, a.rank)}

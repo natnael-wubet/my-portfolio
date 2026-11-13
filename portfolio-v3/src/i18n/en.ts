@@ -20,7 +20,7 @@ export const en = {
   "meta.description":
     "Natnael Wubet — software engineer and full-stack developer building games, platforms, protocols and security tooling from Bahir Dar, Ethiopia.",
   "meta.descriptionCounted":
-    "Games with real stakes, protocols that prove things, platforms that ship. {live} live deployments, {repos} public repositories, competition-winning work — and eleven years of it — from Bahir Dar, Ethiopia.",
+    "Games with real stakes, protocols that prove things, platforms that ship. {live} live deployments, {repos} public repositories, competition-winning work — and thirteen years of it — from Bahir Dar, Ethiopia.",
 
   // ── Nav ───────────────────────────────────────────────────
   "nav.role": "Software Engineer",
@@ -81,9 +81,10 @@ export const en = {
   "hero.stat.repos.k": "Public repositories",
   "hero.stat.repos.s": "on GitHub",
   "hero.stat.awards.k": "Competitions won",
-  "hero.stat.awards.s": "1st & 3rd place",
-  "hero.stat.years.k": "Years shipping",
-  "hero.stat.years.s": "since 2014",
+  "hero.stat.awards.s": "1st, 2nd & 3rd place",
+  "hero.stat.years.k": "Years writing code",
+  "hero.stat.years.s": "since 2013",
+  "hero.stat.years.live": "{y}y {m}m {d}d",
   "hero.scroll": "Scroll",
   "hero.relicHint": "The bust is the record’s other half",
   "hero.scan": "Scan",
@@ -107,21 +108,21 @@ export const en = {
 
   // ── Section 02 · Repositories ─────────────────────────────
   "sec.repos.eyebrow": "Source · all {n} repositories",
-  "sec.repos.title": "The source, read closely",
+  "sec.repos.title": "Repositories, read closely",
   "sec.repos.lead":
-    "Every public repository is below. Before the full shelf, a closer read of the ones that carry the most engineering — starting with the engine that turns a terminal into a canvas.",
-  "sec.repos.featured": "Featured dossier",
-  "sec.repos.dossierNo": "Dossier 01",
+    "Every public repository is below. Before the full list, a closer look at the ones that carry the most engineering, starting with the engine that turns a terminal into a canvas.",
+  "sec.repos.featured": "Featured repository",
+  "sec.repos.dossierNo": "Repository 01",
   "sec.repos.artefact":
-    "Four channels and their sum, generated at build time from the same point/line model — not a screenshot.",
+    "Four channels and their sum, generated at build time from the same point/line model. This is not a screenshot.",
   "sec.repos.what": "What it is",
-  "sec.repos.why": "Why it matters",
-  "sec.repos.honest": "The honest read",
-  "sec.repos.fieldNotes": "Field notes",
+  "sec.repos.why": "Why it works",
+  "sec.repos.honest": "What's rough",
+  "sec.repos.fieldNotes": "Selected repositories",
   "sec.repos.fieldNotesLead":
-    "Four more repositories, read against their own READMEs — what they promise, and what the code actually does.",
+    "Four more repositories, read against their own READMEs: what they promise, and what the code actually does.",
   "sec.repos.total": "in the index",
-  "sec.repos.note": "Field note",
+  "sec.repos.note": "Selected",
   "sec.repos.assessment": "Assessment",
   "sec.repos.readme": "README",
   "sec.repos.files": "files",
@@ -129,7 +130,7 @@ export const en = {
   "sec.repos.fact.canvas": "Canvas",
   "sec.repos.fact.api": "API",
   "sec.repos.fact.demos": "Demos",
-  "sec.repos.allRepos": "The rest of the shelf",
+  "sec.repos.allRepos": "All repositories",
   "sec.repos.allReposLead": "Every public repository, searchable and filterable by group, name and stars.",
   "sec.repos.open": "Open GitHub ↗",
   "sec.repos.all": "All",
@@ -149,7 +150,7 @@ export const en = {
   "sec.origin.eyebrow": "Section 02 · Origin",
   "sec.origin.heritageTitle": "Where I'm rooted",
   "sec.origin.milestones": "Milestones",
-  "sec.origin.entries": "{n} entries · 2014 → now",
+  "sec.origin.entries": "{n} entries · 2013 → now",
   "sec.origin.chips": "Bahir Dar|Enkutatesh|Coffee ceremony|Amharic",
 
 

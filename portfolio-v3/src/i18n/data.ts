@@ -43,7 +43,7 @@ export const amData: Record<string, string> = {
   "Academic intelligence platform": "የአካዳሚክ ኢንተለጀንስ መድረክ",
   "Digital book reading client": "ዲጂታል መጽሐፍ አንባቢ",
   "Asset management platform": "የንብረት አስተዳደር መድረክ",
-  "Reminder app — 3rd place at SolveIT": "የማስታወሻ መተግበሪያ — በSolveIT 3ኛ ደረጃ",
+  "Reminder app, 2nd place at SolveIT": "የማስታወሻ መተግበሪያ፣ በSolveIT 2ኛ ደረጃ",
   "Betting platform": "የውርርድ መድረክ",
   "Web application": "የድረ መተግበሪያ",
   "Web project": "የድረ ፕሮጀክት",
@@ -101,6 +101,7 @@ export const amData: Record<string, string> = {
 
   /* ─── Awards ─────────────────────────────────────────────── */
   "1st": "1ኛ",
+  "2nd": "2ኛ",
   "3rd": "3ኛ",
   Eng: "መሐንድ",
   "First place overall with Big XO": "ከBig XO ጋር በአጠቃላይ አንደኛ ደረጃ",
@@ -138,8 +139,8 @@ export const amData: Record<string, string> = {
   "From bare metal to production infra": "ከመሠረታዊ ሃርድዌር እስከ የምርት መሠረተ ልማት",
 
   /* ─── Origin ─────────────────────────────────────────────── */
-  "Eleven years of code, one straight line from a novel about symbols to writing the symbols myself.":
-    "የአስራ አንድ ዓመት ኮድ፣ ከምልክቶች ስለሚናገር ልብወለድ ወደ ምልክቶችን ራሴ መጻፍ የሚወስድ አንድ ቀጥተኛ መስመር።",
+  "Thirteen years of code, one straight line from a novel about symbols to writing the symbols myself.":
+    "የአስራ ሦስት ዓመት ኮድ፣ ከምልክቶች ስለሚናገር ልብወለድ ወደ ምልክቶችን ራሴ መጻፍ የሚወስድ አንድ ቀጥተኛ መስመር።",
   "I wrote my first batch code. A calculator, then a manager that copied and moved files in bulk — small things, but they taught me that a machine will do exactly what you tell it, and nothing more.":
     "የመጀመሪያዬን batch ኮድ ጻፍኩ። ካልኩሌተር፣ ከዚያ ፋይሎችን በጅምላ የሚቀዳና የሚያንቀሳቅስ አስተዳዳሪ — ትንንሽ ነገሮች፣ ግን ማሽን የምትነግራትን በትክክል እንደምትሠራና ከዚያ በላይ እንደማትሠራ አስተማሩኝ።",
   "The hook": "መስህቡ",

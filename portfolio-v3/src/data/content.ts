@@ -48,7 +48,7 @@ export const repos: Repo[] = [
   { name: "academia-iq-web", description: "Academic intelligence platform", language: "Python", url: "https://github.com/natnael-wubet/academia-iq-web", group: "Web" },
   { name: "BookReader", description: "Digital book reading client", language: "TypeScript", url: "https://github.com/natnael-wubet/BookReader", group: "Web" },
   { name: "amecoassets", description: "Asset management platform", language: "—", url: "https://github.com/natnael-wubet/amecoassets", group: "Web" },
-  { name: "hallo_reminder", description: "Reminder app — 3rd place at SolveIT", language: "—", url: "https://github.com/natnael-wubet/hallo_reminder", group: "Web" },
+  { name: "hallo_reminder", description: "Reminder app, 2nd place at SolveIT", language: "—", url: "https://github.com/natnael-wubet/hallo_reminder", group: "Web" },
   { name: "pubbet", description: "Betting platform", language: "—", url: "https://github.com/natnael-wubet/pubbet", group: "Web" },
   { name: "shama", description: "Web application", language: "JavaScript", url: "https://github.com/natnael-wubet/shama", group: "Web" },
   { name: "ubaj", description: "Web project", language: "—", url: "https://github.com/natnael-wubet/ubaj", group: "Web" },
@@ -104,10 +104,10 @@ export const awards: Award[] = [
     year: "2024",
   },
   {
-    rank: "3rd",
+    rank: "2nd",
     title: "SolveIT",
     org: "icogLabs · US Embassy · Humanity+",
-    detail: "Shipped “Hallo Reminder” with my team",
+    detail: "Second place with “Hallo Reminder”, shipped with my team",
     prize: "25,000 ETB",
     year: "2024",
   },
@@ -215,11 +215,11 @@ export const cvPages = [
    Drawn from Natnael's earlier portfolios, in his own framing.     */
 
 export const originIntro =
-  "Eleven years of code, one straight line from a novel about symbols to writing the symbols myself.";
+  "Thirteen years of code, one straight line from a novel about symbols to writing the symbols myself.";
 
 export const originBody: { lead?: string; text: string }[] = [
   {
-    lead: "2014",
+    lead: "2013",
     text: "I wrote my first batch code. A calculator, then a manager that copied and moved files in bulk — small things, but they taught me that a machine will do exactly what you tell it, and nothing more.",
   },
   {
@@ -249,7 +249,7 @@ export interface Milestone {
 }
 
 export const timeline: Milestone[] = [
-  { year: "2014", title: "First batch code", detail: "A calculator, then a bulk copy-and-move manager. The first time software did something for me that I had asked it to do.", tag: "Origin" },
+  { year: "2013", title: "First batch code", detail: "A calculator, then a bulk copy-and-move manager. The first time software did something for me that I had asked it to do.", tag: "Origin" },
   { year: "2016", title: "Fell for cryptography", detail: "The Da Vinci Code started it. Wrote my own encryption algorithms, moved into .NET, and became obsessed with Processing — later rebuilding it for the terminal as ConAnim.", tag: "Security" },
   { year: "2019", title: "Linux, C, Python", detail: "Left the comfortable path. Systems level, robotics with Lego Mindstorm in C++, and Processing/Java for anything visual.", tag: "Systems" },
   { year: "2020", title: "JavaScript stole my heart", detail: "Node for servers, Tauri with Rust for native apps, three.js and p5.js for the experimental kick. Still the language I reach for.", tag: "Web" },
