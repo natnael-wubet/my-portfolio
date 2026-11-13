@@ -242,15 +242,17 @@ const projects: ProjectRecord[] = rows.map((d) => ({
 
   // ── Filtering ──────────────────────────────────────────────
   //    The cards are already in the DOM; filtering only toggles `hidden`, so
-  //    the dossier's project order never changes under the reader.
+  //    nothing is fetched or rebuilt. The visible slugs are announced so the
+  //    dossier pages through the same set the reader is looking at.
   const setFilter = (value: string) => {
-    let visible = 0;
+    const visibleSlugs: string[] = [];
     cards.forEach((card) => {
       const match = value === "all" || card.dataset.category === value;
       card.hidden = !match;
       if (match) {
         card.classList.add("is-in");
-        visible += 1;
+        const slug = card.querySelector<HTMLElement>("[data-project]")?.dataset.project;
+        if (slug) visibleSlugs.push(slug);
       }
     });
     chips.forEach((chip) => {
@@ -259,9 +261,12 @@ const projects: ProjectRecord[] = rows.map((d) => ({
     grid?.classList.toggle("is-filtered", value !== "all");
     if (showing) {
       showing.textContent = template
-        .replace("{n}", String(visible))
+        .replace("{n}", String(visibleSlugs.length))
         .replace("{total}", String(cards.length));
     }
+    document.dispatchEvent(
+      new CustomEvent("deploy:filter", { detail: { slugs: visibleSlugs } })
+    );
   };
 
   chips.forEach((chip) => {
