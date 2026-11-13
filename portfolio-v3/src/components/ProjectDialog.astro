@@ -8,6 +8,7 @@
  * sites at three viewports, stored as WebP under /public/shots.
  */
 import type { T } from "../i18n";
+import ProjectLogo from "./ProjectLogo.astro";
 
 export interface ProjectRecord {
   slug: string;
@@ -94,7 +95,15 @@ const devices = [
             <div class="pd-screen">
               <img id="pd-shot" alt="" decoding="async" />
               <span class="pd-empty" id="pd-empty" hidden>
-                <span class="pd-empty-mark" aria-hidden="true">◻</span>
+                <span class="pd-empty-mark" aria-hidden="true">
+                  {
+                    projects.map((p) => (
+                      <span class="pd-empty-logo" data-mark={p.slug} hidden>
+                        <ProjectLogo slug={p.slug} accent={p.accent} />
+                      </span>
+                    ))
+                  }
+                </span>
                 <span id="pd-empty-text">{t("sec.deployments.dialog.noPreview")}</span>
               </span>
             </div>
@@ -227,6 +236,9 @@ const devices = [
       });
       frame.classList.toggle("is-empty", !available);
       empty.hidden = available;
+      empty.querySelectorAll<HTMLElement>("[data-mark]").forEach((mark) => {
+        mark.hidden = mark.dataset.mark !== p.slug;
+      });
       if (available) {
         shot.hidden = false;
         shot.src = `/shots/${p.slug}-${next}.webp`;
@@ -720,8 +732,36 @@ const devices = [
   }
 
   .pd-empty-mark {
-    font-size: 1.4rem;
+    display: grid;
+    place-items: center;
     color: var(--color-fog);
+    font-size: 1.4rem;
+  }
+
+  .pd-empty-logo {
+    display: grid;
+    place-items: center;
+    width: 96px;
+    height: 96px;
+    filter: drop-shadow(0 10px 22px color-mix(in srgb, var(--pd-accent, var(--color-signal)) 26%, transparent));
+  }
+
+  .pd-empty-logo[hidden] {
+    display: none;
+  }
+
+  .pd-empty-logo :global(.project-logo-img) {
+    max-height: 72px;
+    max-width: 96px;
+  }
+
+  .pd-empty-logo :global(.project-logo-mark) {
+    width: 68px;
+    height: 68px;
+  }
+
+  .pd-empty-logo :global(.project-logo-word) {
+    font-size: 1.1rem;
   }
 
   .pd-phone-notch {
