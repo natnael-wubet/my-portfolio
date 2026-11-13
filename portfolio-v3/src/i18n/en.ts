@@ -252,6 +252,15 @@ export const en = {
 
   // ── Section 06 · Awards ───────────────────────────────────
   "sec.awards.eyebrow": "Section 05 · Record",
+  "sec.awards.based": "Based in",
+  "sec.awards.communityNote": "The communities above meet here.",
+  "sec.awards.lead": "Six competitions, two Cisco certificates, six communities. The receipts are below.",
+  "sec.awards.first": "First place",
+  "sec.awards.second": "Second place",
+  "sec.awards.third": "Third place",
+  "sec.awards.other": "Selected",
+  "sec.awards.certAlt": "{name} certificate",
+  "sec.awards.open": "Open PDF",
   "sec.awards.title": "Placed, ranked,\ncertified",
   "sec.awards.competitions": "Competitions",
   "sec.awards.certifications": "Certifications",

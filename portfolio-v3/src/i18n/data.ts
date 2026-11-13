@@ -125,6 +125,12 @@ export const amData: Record<string, string> = {
     "ትንሽ የትርጉም ጠረጴዛ፦ ሀብታም ጽሑፍ ይለጥፉ ወይም ይጻፉ፣ የመድረሻ ቋንቋ ይምረጡ፣ ከገጹ ሳይወጡ ውጤቱን ያንብቡ። በIonic መተግበሪያ፣ በታብ የተደረደረ የሞባይል ቅርፊትና በFirebase Hosting ማሰማራት የተሠራ።",
 
   /* ─── Awards ─────────────────────────────────────────────── */
+  "Software Development Competition": "የሶፍትዌር ልማት ውድድር",
+  "World Science Day": "የዓለም ሳይንስ ቀን",
+  "UNESCO Innovation Competition": "የUNESCO ፈጠራ ውድድር",
+  "Bahir Dar University STEM Center": "ባህር ዳር ዩኒቨርሲቲ STEM ማዕከል",
+  "Addis Ababa · Bahir Dar STEM Center": "አዲስ አበባ · ባህር ዳር STEM ማዕከል",
+  "Second place with “Hallo Reminder”, shipped with my team": "ከቡድኔ ጋር “Hallo Reminder”ን አውጥተን ሁለተኛ ደረጃ አገኘን",
   "1st": "1ኛ",
   "2nd": "2ኛ",
   "3rd": "3ኛ",

@@ -251,6 +251,15 @@ export const am: Dict & Record<string, string> = {
 
   // ── Section 06 · Awards ───────────────────────────────────
   "sec.awards.eyebrow": "ክፍል 05 · መዝገብ",
+  "sec.awards.based": "መኖሪያ ቦታ",
+  "sec.awards.communityNote": "ከላይ ያሉት ማህበረሰቦች እዚህ ይገናኛሉ።",
+  "sec.awards.lead": "ስድስት ውድድሮች፣ ሁለት የCisco ሰነዶች፣ ስድስት ማህበረሰቦች። ማስረጃዎቹ ከዚህ በታች ናቸው።",
+  "sec.awards.first": "አንደኛ ደረጃ",
+  "sec.awards.second": "ሁለተኛ ደረጃ",
+  "sec.awards.third": "ሦስተኛ ደረጃ",
+  "sec.awards.other": "የተመረጠ",
+  "sec.awards.certAlt": "የ{name} ሰነድ",
+  "sec.awards.open": "PDF ክፈት",
   "sec.awards.title": "ቦታ ያገኙ፣ ደረጃ ያገኙ፣\nማስረጃ ያገኙ",
   "sec.awards.competitions": "ውድድሮች",
   "sec.awards.certifications": "ማስረጃዎች",

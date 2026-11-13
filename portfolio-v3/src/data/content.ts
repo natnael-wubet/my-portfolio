@@ -133,6 +133,8 @@ export interface Certification {
   issuer: string;
   detail: string;
   file: string;
+  /** First page of the PDF, rendered to WebP for the card preview. */
+  thumb: string;
 }
 
 export const certifications: Certification[] = [
@@ -141,12 +143,14 @@ export const certifications: Certification[] = [
     issuer: "Cisco Systems",
     detail: "Networking fundamentals, IP services, security and automation.",
     file: "/assets/ccna.pdf",
+    thumb: "/assets/cert-ccna.webp",
   },
   {
     name: "CCNA ITN: Updated Course Completion",
     issuer: "Cisco Networking Academy",
     detail: "Refreshed curriculum completion certificate.",
     file: "/assets/ccna-itn.pdf",
+    thumb: "/assets/cert-ccna-itn.webp",
   },
 ];
 

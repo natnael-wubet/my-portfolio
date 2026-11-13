@@ -6,13 +6,71 @@ interface Props {
   t: T;
 }
 const { t } = Astro.props;
+
+const tone = (rank: string) =>
+  rank.startsWith("1")
+    ? "var(--color-signal)"
+    : rank.startsWith("2")
+      ? "var(--color-amber)"
+      : rank.startsWith("3")
+        ? "var(--color-cyan)"
+        : "var(--color-fog)";
+
+const tally = [
+  {
+    rank: "1st",
+    count: awards.filter((a) => a.rank.startsWith("1")).length,
+    label: t("sec.awards.first"),
+    tone: "var(--color-signal)",
+  },
+  {
+    rank: "2nd",
+    count: awards.filter((a) => a.rank.startsWith("2")).length,
+    label: t("sec.awards.second"),
+    tone: "var(--color-amber)",
+  },
+  {
+    rank: "3rd",
+    count: awards.filter((a) => a.rank.startsWith("3")).length,
+    label: t("sec.awards.third"),
+    tone: "var(--color-cyan)",
+  },
+  {
+    rank: "Eng",
+    count: awards.filter((a) => !/^[123]/.test(a.rank)).length,
+    label: t("sec.awards.other"),
+    tone: "var(--color-fog)",
+  },
+];
 ---
 
 <section id="awards" class="relative border-t border-[var(--color-line)]">
   <div class="shell py-24 lg:py-32">
-    <div class="flex flex-col gap-5">
-      <span class="eyebrow">{t("sec.awards.eyebrow")}</span>
-      <h2 class="display display-lg" set:html={rich(t("sec.awards.title"))} />
+    <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <div class="flex flex-col gap-5" data-reveal>
+        <span class="eyebrow">{t("sec.awards.eyebrow")}</span>
+        <h2 class="display display-lg" set:html={rich(t("sec.awards.title"))} />
+      </div>
+      <p class="max-w-sm text-sm leading-relaxed text-[var(--color-fog-2)]" data-reveal style="--d:120ms">
+        {t("sec.awards.lead")}
+      </p>
+    </div>
+
+    <!-- The shelf, at a glance. -->
+    <div class="awards-tally mt-12" data-reveal>
+      {
+        tally.map((item) => (
+          <div class="awards-stat" style={`--medal:${item.tone}`}>
+            <span class="awards-disc">
+              <span class="awards-disc-rank">{td(t, item.rank)}</span>
+            </span>
+            <span class="awards-stat-meta">
+              <span class="awards-stat-count">×{String(item.count).padStart(2, "0")}</span>
+              <span class="awards-stat-label">{item.label}</span>
+            </span>
+          </div>
+        ))
+      }
     </div>
 
     <div class="mt-14 grid gap-12 lg:grid-cols-[1.35fr_1fr] lg:gap-16">
@@ -26,34 +84,35 @@ const { t } = Astro.props;
         <div class="flex flex-col">
           {
             awards.map((a, i) => (
-              <article class="group grid grid-cols-[auto_1fr] gap-5 border-b border-[var(--color-line)] py-6 transition-colors hover:bg-[var(--color-ink-2)] sm:grid-cols-[7rem_1fr] sm:gap-8">
-                <div class="flex flex-col gap-1">
-                  <span
-                    class="font-display text-3xl font-bold leading-none tracking-tight sm:text-4xl"
-                    style={{
-                      color: a.rank.startsWith("1")
-                        ? "var(--color-signal)"
-                        : a.rank.startsWith("2")
-                          ? "var(--color-amber)"
-                          : a.rank.startsWith("3")
-                            ? "var(--color-cyan)"
-                            : "var(--color-fog)",
-                    }}
-                  >
-                    {td(t, a.rank)}
+              <article
+                class="award-row group grid grid-cols-[auto_1fr] gap-5 border-b border-[var(--color-line)] py-6 sm:gap-8"
+                data-reveal
+                style={`--d:${i * 60}ms;--medal:${tone(a.rank)}`}
+              >
+                <div class="award-rank">
+                  <span class="award-disc">
+                    <span class="award-disc-rank">{td(t, a.rank)}</span>
+                    <span class="award-ribbon" aria-hidden="true" />
                   </span>
-                  <span class="font-mono text-[0.625rem] tracking-[0.18em] text-[var(--color-line-2)] uppercase">{a.year}</span>
+                  <span class="award-year">{a.year}</span>
                 </div>
+
                 <div class="flex flex-col gap-1.5">
                   <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                    <h3 class="font-display text-lg font-semibold tracking-tight text-[var(--color-chalk)]">{a.title}</h3>
+                    <h3 class="font-display text-lg font-semibold tracking-tight text-[var(--color-chalk)] transition-colors group-hover:text-[var(--color-signal)]">
+                      {td(t, a.title)}
+                    </h3>
                     {a.prize && (
                       <span class="border border-[var(--color-line-2)] px-2 py-0.5 font-mono text-[0.5625rem] tracking-[0.14em] text-[var(--color-signal)] uppercase">
-                        {a.prize ? td(t, a.prize) : ""}
+                        {td(t, a.prize)}
                       </span>
                     )}
                   </div>
-                  <span class="font-mono text-[0.6875rem] tracking-[0.1em] text-[var(--color-fog)] uppercase">{a.org}</span>
+                  {a.org !== a.title && (
+                    <span class="font-mono text-[0.6875rem] tracking-[0.1em] text-[var(--color-fog)] uppercase">
+                      {td(t, a.org)}
+                    </span>
+                  )}
                   <p class="text-sm leading-relaxed text-[var(--color-fog-2)]">{td(t, a.detail)}</p>
                 </div>
               </article>
@@ -77,18 +136,26 @@ const { t } = Astro.props;
                   href={c.file}
                   target="_blank"
                   rel="noopener"
-                  class="group flex items-start gap-4 border border-[var(--color-line)] p-5 no-underline transition-colors hover:border-[var(--color-signal)]"
+                  class="cert-card group grid grid-cols-[7.5rem_1fr] no-underline"
+                  data-reveal
                 >
-                  <span class="grid h-11 w-11 flex-none place-items-center border border-[var(--color-line-2)] font-mono text-[0.625rem] tracking-[0.1em] text-[var(--color-fog)] transition-colors group-hover:border-[var(--color-signal)] group-hover:text-[var(--color-signal)]">
-                    PDF
+                  <span class="cert-thumb">
+                    <img
+                      src={c.thumb}
+                      alt={t("sec.awards.certAlt", { name: c.name })}
+                      width="900"
+                      height="640"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <span class="cert-thumb-shade" aria-hidden="true" />
+                    <span class="cert-open">{t("sec.awards.open")} ↗</span>
                   </span>
-                  <span class="flex flex-col gap-1">
-                    <span class="font-display text-[0.95rem] font-semibold leading-snug text-[var(--color-chalk)]">{c.name}</span>
-                    <span class="font-mono text-[0.625rem] tracking-[0.16em] text-[var(--color-fog)] uppercase">{c.issuer}</span>
-                    <span class="text-sm leading-relaxed text-[var(--color-fog-2)]">{td(t, c.detail)}</span>
-                  </span>
-                  <span class="ml-auto font-mono text-[var(--color-line-2)] transition-all group-hover:translate-x-1 group-hover:text-[var(--color-signal)]">
-                    ↗
+
+                  <span class="cert-body">
+                    <span class="cert-issuer">{c.issuer}</span>
+                    <span class="cert-name">{c.name}</span>
+                    <span class="cert-detail">{td(t, c.detail)}</span>
                   </span>
                 </a>
               ))
@@ -123,8 +190,455 @@ const { t } = Astro.props;
           </div>
         </div>
 
+        <div class="awards-place panel" data-reveal>
+          <div class="place-map" aria-hidden="true">
+            <span class="place-ring place-ring--1"></span>
+            <span class="place-ring place-ring--2"></span>
+            <span class="place-cross place-cross--x"></span>
+            <span class="place-cross place-cross--y"></span>
+            <span class="place-dot"></span>
+          </div>
+          <div class="place-copy">
+            <span class="section-label">{t("sec.awards.based")}</span>
+            <span class="place-name">Bahir Dar, Ethiopia</span>
+            <span class="place-coords">11°35′N 37°23′E</span>
+            <span class="place-note">{t("sec.awards.communityNote")}</span>
+          </div>
+        </div>
+
         <a class="btn btn-primary w-full" href="/assets/cv.pdf" download>{t("sec.awards.download")}</a>
       </div>
     </div>
   </div>
 </section>
+
+<style>
+  /* ── Tally shelf ────────────────────────────────────────── */
+  .awards-tally {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    border: 1px solid var(--color-line);
+    background: var(--color-line);
+  }
+
+  @media (min-width: 720px) {
+    .awards-tally {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .awards-stat {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.1rem 1.25rem;
+    background: var(--color-ink);
+    transition: background-color 0.3s ease;
+  }
+
+  .awards-stat:hover {
+    background: var(--color-ink-2);
+  }
+
+  .awards-disc {
+    position: relative;
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 3.4rem;
+    height: 3.4rem;
+    border: 1px solid color-mix(in srgb, var(--medal) 65%, var(--color-line-2));
+    border-radius: 50%;
+    color: var(--medal);
+    background: color-mix(in srgb, var(--medal) 6%, transparent);
+  }
+
+  .awards-disc::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border: 1px dashed currentColor;
+    border-radius: 50%;
+    opacity: 0.35;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .awards-stat:hover .awards-disc::before {
+    transform: rotate(45deg);
+  }
+
+  .awards-disc-rank {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .awards-stat-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+
+  .awards-stat-count {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--color-chalk);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .awards-stat-label {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.14em;
+    color: var(--color-fog-2);
+    text-transform: uppercase;
+  }
+
+  /* ── Award rows ─────────────────────────────────────────── */
+  .award-row {
+    transition: background-color 0.3s ease;
+  }
+
+  .award-row:hover {
+    background: var(--color-ink-2);
+  }
+
+  .award-rank {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.15rem;
+    width: 4.6rem;
+  }
+
+  @media (min-width: 640px) {
+    .award-rank {
+      width: 6.4rem;
+    }
+  }
+
+  .award-disc {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border: 1px solid color-mix(in srgb, var(--medal) 70%, var(--color-line-2));
+    border-radius: 50%;
+    color: var(--medal);
+    background:
+      radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--medal) 14%, transparent), transparent 68%),
+      var(--color-ink);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  }
+
+  @media (min-width: 640px) {
+    .award-disc {
+      width: 4.6rem;
+      height: 4.6rem;
+    }
+  }
+
+  .award-disc::before {
+    content: "";
+    position: absolute;
+    inset: 5px;
+    border: 1px dashed currentColor;
+    border-radius: 50%;
+    opacity: 0.3;
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  }
+
+  .award-row:hover .award-disc {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px color-mix(in srgb, var(--medal) 16%, transparent);
+  }
+
+  .award-row:hover .award-disc::before {
+    transform: rotate(60deg);
+    opacity: 0.55;
+  }
+
+  .award-disc-rank {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  @media (min-width: 640px) {
+    .award-disc-rank {
+      font-size: 1.5rem;
+    }
+  }
+
+  .award-ribbon {
+    position: absolute;
+    top: calc(100% - 2px);
+    left: 50%;
+    width: 0.8rem;
+    height: 0.9rem;
+    background: currentColor;
+    opacity: 0.35;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 72%, 0 100%);
+    transform: translateX(-50%);
+  }
+
+  .award-year {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.16em;
+    color: var(--color-line-2);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Certificates ───────────────────────────────────────── */
+  .cert-card {
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    background: var(--color-ink);
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+  }
+
+  .cert-card:hover,
+  .cert-card:focus-visible {
+    border-color: var(--color-signal);
+    background: var(--color-ink-2);
+  }
+
+  .cert-thumb {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background: #e9ecef;
+  }
+
+  .cert-thumb img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 28%;
+    filter: saturate(0.88) contrast(1.02);
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+  }
+
+  .cert-card:hover .cert-thumb img {
+    transform: scale(1.04);
+    filter: none;
+  }
+
+  .cert-thumb-shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 58%, rgba(8, 9, 10, 0.62));
+    pointer-events: none;
+  }
+
+  .cert-open {
+    position: absolute;
+    inset: auto 0.45rem 0.45rem auto;
+    padding: 0.18rem 0.4rem;
+    background: rgba(8, 9, 10, 0.72);
+    color: #eef1f4;
+    font-family: var(--font-mono);
+    font-size: 0.4375rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    backdrop-filter: blur(4px);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .cert-card:hover .cert-open {
+    background: var(--color-signal);
+    color: var(--color-on-signal);
+  }
+
+  .cert-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.85rem 0.95rem;
+    min-width: 0;
+  }
+
+  .cert-issuer {
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.16em;
+    color: var(--color-fog);
+    text-transform: uppercase;
+  }
+
+  .cert-name {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--color-chalk);
+    transition: color 0.25s ease;
+  }
+
+  .cert-card:hover .cert-name {
+    color: var(--color-signal);
+  }
+
+  .cert-detail {
+    font-size: 0.75rem;
+    line-height: 1.55;
+    color: var(--color-fog-2);
+  }
+
+  @media (max-width: 420px) {
+    .cert-card {
+      grid-template-columns: 6rem 1fr;
+    }
+  }
+
+  /* ── Locator ────────────────────────────────────────────── */
+  .awards-place {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1.1rem;
+  }
+
+  .place-map {
+    position: relative;
+    flex: none;
+    width: 7.5rem;
+    height: 7.5rem;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    background:
+      radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--color-line-2) 70%, transparent) 1px, transparent 0) 0 0 / 14px 14px,
+      var(--color-ink-2);
+  }
+
+  .place-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 1px solid var(--color-signal);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.35;
+  }
+
+  .place-ring--1 {
+    width: 2.6rem;
+    height: 2.6rem;
+  }
+
+  .place-ring--2 {
+    width: 4.8rem;
+    height: 4.8rem;
+    border-style: dashed;
+    opacity: 0.2;
+  }
+
+  .place-cross {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: var(--color-line-2);
+    transform: translate(-50%, -50%);
+  }
+
+  .place-cross--x {
+    width: 100%;
+    height: 1px;
+  }
+
+  .place-cross--y {
+    width: 1px;
+    height: 100%;
+  }
+
+  .place-dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--color-signal);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--color-signal) 16%, transparent);
+    transform: translate(-50%, -50%);
+    animation: place-pulse 3.2s ease-in-out infinite;
+  }
+
+  @keyframes place-pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 0 5px color-mix(in srgb, var(--color-signal) 16%, transparent);
+    }
+    50% {
+      box-shadow: 0 0 0 11px color-mix(in srgb, var(--color-signal) 4%, transparent);
+    }
+  }
+
+  .place-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 0;
+  }
+
+  .place-name {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--color-chalk);
+  }
+
+  .place-coords,
+  .place-note {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.12em;
+    color: var(--color-fog);
+  }
+
+  .place-note {
+    margin-top: 0.25rem;
+    color: var(--color-fog-2);
+    letter-spacing: 0.06em;
+    line-height: 1.6;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .awards-stat,
+    .awards-disc::before,
+    .award-row,
+    .award-disc,
+    .award-disc::before,
+    .cert-card,
+    .cert-thumb img,
+    .cert-open,
+    .cert-name {
+      transition: none;
+    }
+
+    .award-row:hover .award-disc,
+    .cert-card:hover .cert-thumb img,
+    .awards-stat:hover .awards-disc::before,
+    .award-row:hover .award-disc::before {
+      transform: none;
+    }
+
+    .place-dot {
+      animation: none;
+    }
+  }
+</style>
