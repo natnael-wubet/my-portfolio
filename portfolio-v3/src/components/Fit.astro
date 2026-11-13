@@ -392,18 +392,18 @@ const payload = {
     if (!result || result.noTerms) return "";
     const lens = result.lens ? lensById.get(result.lens.id) : null;
     const lines = [
-      `# ${data.contact.name} — ${result.roleTitle || labels.roleFallback}`,
+      `# ${data.contact.name} · ${result.roleTitle || labels.roleFallback}`,
       "",
       `${labels.noteCoverage}: ${result.coverage}%`,
-      `${labels.noteMatched}: ${result.matched.join(", ") || "—"}`,
-      `${labels.noteGaps}: ${result.gaps.join(", ") || "—"}`,
-      `${labels.noteLens}: ${lens?.title ?? "—"}`,
+      `${labels.noteMatched}: ${result.matched.join(", ") || "n/a"}`,
+      `${labels.noteGaps}: ${result.gaps.join(", ") || "n/a"}`,
+      `${labels.noteLens}: ${lens?.title ?? "n/a"}`,
       "",
       `## ${labels.noteEvidence}`,
       ...result.evidence.map((item) => {
         const source = item.kind === "project" ? projectById.get(item.id) : repoById.get(item.id);
         return `- ${item.name} (${item.kind === "project" ? labels.project : labels.repo})${
-          source?.url ? ` — ${source.url}` : ""
+          source?.url ? `: ${source.url}` : ""
         }`;
       }),
       "",

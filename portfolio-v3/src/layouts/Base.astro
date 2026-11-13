@@ -19,7 +19,7 @@ const pageDescription = description ?? t("meta.description");
 // JSON-LD is generated from the same profile, so it cannot drift from the page.
 const ld = JSON.stringify(structuredData()).replace(/</g, "\\u003c");
 
-// Ethiopic has no Latin glyphs — only the Amharic page pays for the font.
+// Ethiopic has no Latin glyphs, only the Amharic page pays for the font.
 const fontHref =
   "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap";
 const fontHrefAm =
@@ -57,7 +57,7 @@ const fontHrefAm =
     <meta property="og:image" content="/og.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Natnael Wubet — Software Engineer" />
+    <meta property="og:image:alt" content="Natnael Wubet · Software Engineer" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />
@@ -75,7 +75,7 @@ const fontHrefAm =
     </script>
     <!--
       Theme + accent are applied before first paint so switching never flashes
-      the wrong colour scheme. Mirrors src/scripts/options.ts — keep in sync.
+      the wrong colour scheme. Mirrors src/scripts/options.ts. Keep in sync.
     -->
     <script is:inline>
       (() => {
@@ -97,7 +97,7 @@ const fontHrefAm =
           const meta = document.getElementById("theme-color-meta");
           if (meta) meta.setAttribute("content", theme === "light" ? "#f7f8f6" : "#08090a");
         } catch {
-          /* private mode / blocked storage — the dark default stands */
+          /* private mode / blocked storage, the dark default stands */
         }
       })();
     </script>
@@ -206,7 +206,7 @@ const fontHrefAm =
         line-height: 1.1;
       }
 
-      /* 9–11px labels are unreadable in Ethiopic — floor them at 11–12px. */
+      /* 9–11px labels are unreadable in Ethiopic, floor them at 11–12px. */
       html[lang="am"] [class*="text-[0.5"] {
         font-size: 0.7rem !important;
       }

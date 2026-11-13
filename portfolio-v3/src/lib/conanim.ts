@@ -3,8 +3,8 @@
  *
  * The real engine (src: github.com/natnael-wubet/ConAnim) holds a 2-D array
  * of characters, samples `line()` into cells, and prints the grid. These
- * frames use the same idea — an oscilloscope-style readout of three phases
- * and their sum — so the portfolio can show an honest artefact instead of a
+ * frames use the same idea, an oscilloscope-style readout of three phases
+ * and their sum, so the portfolio can show an honest artefact instead of a
  * screenshot. Frames are generated once at build time and cycled in CSS.
  */
 

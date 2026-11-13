@@ -1,4 +1,4 @@
-# Natnael Wubet — portfolio
+# Natnael Wubet · portfolio
 
 A single-page portfolio built with Astro and rendered twice at build time:
 English at [`/`](https://naty-wubet.web.app/) and Amharic at `/am/`.
@@ -22,7 +22,7 @@ npm run preview  # serve dist/ locally
   light-mode value, and WebGL scenes re-read the palette when either changes.
 - **Build-time truth.** Every live deployment URL is requested while the site
   is built; the status badges, latency and "N / M responding" line are the
-  real HTTP results. Archived projects are never probed — they link to source.
+  real HTTP results. Archived projects are never probed. They link to source.
 - **Command palette.** `⌘K` / `Ctrl-K` or `/` opens a fuzzy palette over
   deployments, repositories, awards, certifications, disciplines and display
   actions. Ambiguous `action:` links are dispatched as DOM events, not
@@ -32,14 +32,14 @@ npm run preview  # serve dist/ locally
   every occurrence with the CSS Custom Highlight API.
 - **Tailored brief.** The page reconfigures itself for the reader: choose a
   lens (product, games, security, protocols, founding) and it composes a
-  one-page brief from the same data it renders — selected live deployments,
+  one-page brief from the same data it renders: selected live deployments,
   repositories, awards, stack, and an argument for that team. Copy it as
   Markdown, download `.md`, share it as `?brief=<lens>`, or print it: the
   print stylesheet strips the site and leaves the brief on white.
 - **Fit check.** Paste a role description and the page scores its own evidence
   against it: role coverage, matched signals, honest gaps, the closest lens,
   and five concrete pieces of proof drawn from deployments, repositories and
-  awards. It runs entirely in the browser — nothing is uploaded — and the
+  awards. It runs entirely in the browser, nothing is uploaded, and the
   result can be copied as a short fit note or used to open the matching brief.
 - **Hero specimen.** The opening screen carries the photogrammetry bust from
   the previous portfolio, but with a job: the point-field body of the
@@ -62,7 +62,7 @@ npm run preview  # serve dist/ locally
 - **Diagnostics (`D`).** A drawer that measures this page in the visitor's
   browser: TTFB, DOM ready, load, transfer weight, request count, viewport,
   DPR, connection, JS heap, scroll depth, an Addis Ababa clock and a live FPS
-  sparkline. The build line is real provenance — the git commit and timestamp
+  sparkline. The build line is real provenance: the git commit and timestamp
   baked into the HTML by `src/lib/build.ts` at build time.
 - **X-ray (`I`).** Renders the scaffolding: the 12-column shell, an 8px
   baseline, a dashed outline and id label for every region, and a strip of
@@ -96,7 +96,7 @@ src/
 │                     # Fit (role matcher), Site
 ├── data/             # English source of truth for deployments and prose
 ├── i18n/
-│   ├── en.ts         # chrome keys — the typed dictionary shape
+│   ├── en.ts         # chrome keys, the typed dictionary shape
 │   ├── am.ts         # Amharic chrome, typed against en
 │   ├── data.ts       # Amharic prose for src/data, keyed by English string
 │   └── index.ts      # makeT(), rich(), td(), locales
@@ -118,7 +118,7 @@ src/
 
 Components receive `t` as a prop; rendering is build-time, so there is no
 shared mutable i18n state. `td(t, text)` translates data-file prose and falls
-back to the English source string when a translation is missing — adding a
+back to the English source string when a translation is missing. Adding a
 repository never breaks a locale.
 
 Dictionary strings support the tiny markup rendered by `rich()`:

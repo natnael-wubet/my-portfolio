@@ -86,7 +86,7 @@ const xrayTokens = [
       rows.map(([label, id]) => (
         <div class="diag-row">
           <span class="diag-label">{t(label)}</span>
-          <b class="diag-value" data-diag={id}>{id === "build" ? buildLabel : "—"}</b>
+          <b class="diag-value" data-diag={id}>{id === "build" ? buildLabel : "n/a"}</b>
         </div>
       ))
     }
@@ -95,7 +95,7 @@ const xrayTokens = [
   <div class="diag-spark">
     <div class="diag-spark-head">
       <span class="diag-label">{t("diag.fps")}</span>
-      <b class="diag-value" data-diag="fps">—</b>
+      <b class="diag-value" data-diag="fps">n/a</b>
     </div>
     <canvas id="diag-spark" width="240" height="40" aria-hidden="true"></canvas>
   </div>
@@ -120,7 +120,7 @@ const xrayTokens = [
   const closeBtn = document.getElementById("diag-close") as HTMLButtonElement | null;
   const spark = document.getElementById("diag-spark") as HTMLCanvasElement | null;
   const locale = root.lang === "am" ? "am-ET" : "en-GB";
-  const DASH = "—";
+  const DASH = "n/a";
 
   let open = false;
   let raf = 0;
@@ -301,7 +301,7 @@ const xrayTokens = [
   // ── X-ray ────────────────────────────────────────────────
   //    Renders the scaffolding the design is built on: the 12-column shell,
   //    one outline per section, the id of each region, and the live colour
-  //    tokens. It is a debug instrument, not decoration — so it is off by
+  //    tokens. It is a debug instrument, not decoration, so it is off by
   //    default, remembered per tab, and driven by the same event bus.
   const xray = document.getElementById("xray") as HTMLElement | null;
   const xrayTokensEl = document.getElementById("xray-tokens") as HTMLElement | null;
@@ -320,7 +320,7 @@ const xrayTokens = [
         const label = document.createElement("span");
         label.textContent = name;
         const code = document.createElement("b");
-        code.textContent = value || "—";
+        code.textContent = value || "n/a";
         row.append(swatch, label, code);
         return row;
       })
@@ -334,7 +334,7 @@ const xrayTokens = [
     try {
       sessionStorage.setItem("cv:xray", xrayOn ? "1" : "0");
     } catch {
-      /* private mode — the toggle still works for this page */
+      /* private mode, the toggle still works for this page */
     }
     if (xrayOn) paintTokens();
     if (announce && xray) {
@@ -667,7 +667,7 @@ const xrayTokens = [
     content: "footer";
   }
 
-  /* Token strip: name, live value, swatch — read from the cascade. */
+  /* Token strip: name, live value, swatch, read from the cascade. */
   .xray-hud {
     position: absolute;
     right: 1rem;

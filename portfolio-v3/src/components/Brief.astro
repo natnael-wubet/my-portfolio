@@ -4,7 +4,7 @@
  *
  * The portfolio configures itself to the reader: pick a lens (product, games,
  * security, protocols, founding) and the page composes a one-page brief from
- * the same data it already renders — selected deployments, repositories,
+ * the same data it already renders, selected deployments, repositories,
  * awards, stack, and a short argument for that team. The brief can be copied
  * as Markdown, downloaded, linked to, or printed to PDF.
  *
@@ -192,7 +192,7 @@ const payload = {
   const markdown = (lens: Lens): string => {
     const c = payload.contact;
     const lines: string[] = [
-      `# ${c.name} — ${lens.title}`,
+      `# ${c.name} · ${lens.title}`,
       "",
       [c.location, c.email, bare(c.github), bare(c.telegram)].filter(Boolean).join(" · "),
       "",
@@ -206,7 +206,7 @@ const payload = {
 
     lens.work.forEach((w) => {
       lines.push(
-        `### ${w.name} — ${w.tagline}`,
+        `### ${w.name} · ${w.tagline}`,
         "",
         w.description,
         "",
@@ -220,7 +220,7 @@ const payload = {
     if (lens.awards.length) {
       lines.push(`## ${payload.labels.awards}`, "");
       lens.awards.forEach((a) => {
-        lines.push(`- **${a.title}** — ${a.detail} (${a.org}, ${a.year})`);
+        lines.push(`- **${a.title}**: ${a.detail} (${a.org}, ${a.year})`);
       });
       lines.push("");
     }
@@ -228,7 +228,7 @@ const payload = {
     if (lens.also.length) {
       lines.push(`## ${payload.labels.also}`, "");
       lens.also.forEach((r) => {
-        lines.push(`- **${r.name}** — ${r.description} (${r.url})`);
+        lines.push(`- **${r.name}**: ${r.description} (${r.url})`);
       });
       lines.push("");
     }
@@ -285,7 +285,7 @@ const payload = {
     });
     frag.append(skills);
 
-    // Selected work — only when this lens has live deployments.
+    // Selected work, only when this lens has live deployments.
     if (lens.work.length) {
       frag.append(heading(payload.labels.work));
       lens.work.forEach((w) => {
@@ -306,7 +306,7 @@ const payload = {
       frag.append(heading(payload.labels.awards));
       lens.awards.forEach((a) => {
         const award = el("p", "brief-award");
-        award.textContent = `${a.title} — ${a.detail} (${a.org}, ${a.year})`;
+        award.textContent = `${a.title}: ${a.detail} (${a.org}, ${a.year})`;
         frag.append(award);
       });
     }
@@ -319,7 +319,7 @@ const payload = {
         const li = el("li");
         const strong = el("strong");
         strong.textContent = r.name;
-        li.append(strong, " — ", r.description, " ", link(r.url));
+        li.append(strong, ": ", r.description, " ", link(r.url));
         ul.append(li);
       });
       frag.append(ul);

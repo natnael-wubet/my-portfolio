@@ -1,6 +1,6 @@
 /**
  * Live deployment registry.
- * Each entry is verified at BUILD TIME by hitting the URL — so the badges
+ * Each entry is verified at BUILD TIME by hitting the URL, so the badges
  * on the site reflect real reachability, not vibes.
  */
 
@@ -22,7 +22,7 @@ export interface Deployment {
   telegram?: boolean;
   /**
    * The hosting for this project is no longer up, but the work is real and
-   * documented. Archived entries are never probed and never shown as broken —
+   * documented. Archived entries are never probed and never shown as broken.
    * they link to source instead of a dead URL.
    */
   archived?: boolean;
@@ -106,7 +106,7 @@ export const deployments: Deployment[] = [
     name: "Day Flow",
     tagline: "Calendar, journal and todos",
     description:
-      "A focused daily planner fusing a month calendar, journalling and a task list into one surface — with optimistic writes, keyboard-first entry and undo on destructive actions.",
+      "A focused daily planner fusing a month calendar, journalling and a task list into one surface, with optimistic writes, keyboard-first entry and undo on destructive actions.",
     url: "https://day-flow-teal-nine.vercel.app",
     platform: "Vercel",
     year: "2026",
@@ -145,7 +145,7 @@ export const deployments: Deployment[] = [
     name: "BookReader",
     tagline: "Digital reading client",
     description:
-      "A focused reading application with a paginated reader, library management and persistent reading progress — shipped to Firebase Hosting.",
+      "A focused reading application with a paginated reader, library management and persistent reading progress. Shipped to Firebase Hosting.",
     url: "https://bookreader.web.app",
     platform: "Firebase",
     year: "2025",
@@ -158,7 +158,7 @@ export const deployments: Deployment[] = [
     name: "EliteConnectET",
     tagline: "Ethiopia's networking platform",
     description:
-      "Professional networking for Ethiopia — profiles, connection graphs, event discovery and an admin console, delivered as an installable Capacitor app across Android, iOS and web.",
+      "Professional networking for Ethiopia: profiles, connection graphs, event discovery and an admin console, delivered as an installable Capacitor app across Android, iOS and web.",
     url: "https://github.com/natnael-wubet/eliteconnectet",
     platform: "Firebase",
     year: "2026",
@@ -186,7 +186,7 @@ export const deployments: Deployment[] = [
     name: "Big XO Mini",
     tagline: "Telegram-native game client",
     description:
-      "The stripped, Telegram-first build of Big XO — haptic feedback, custom keyboard handling and safe-area aware layout for running inside a Mini App viewport.",
+      "The stripped, Telegram-first build of Big XO: haptic feedback, custom keyboard handling and safe-area aware layout for running inside a Mini App viewport.",
     url: "https://bigxo-mini-app.web.app",
     platform: "Firebase",
     year: "2026",
@@ -229,9 +229,9 @@ async function probeOnce(url: string): Promise<{ code: number; ms: number; title
  *
  * - Archived projects are never probed: their hosting is gone, so they get a
  *   neutral "archived" state and link to source instead of pretending.
- * - Failed probes are retried once — Firebase Hosting cold starts routinely
+ * - Failed probes are retried once, Firebase Hosting cold starts routinely
  *   blow past a single-shot timeout.
- * - Failures are swallowed — a dead host must never break the build.
+ * - Failures are swallowed, a dead host must never break the build.
  */
 export async function checkHealth(): Promise<Record<string, Health>> {
   const entries = await Promise.all(
@@ -243,7 +243,7 @@ export async function checkHealth(): Promise<Record<string, Health>> {
         try {
           result = await probeOnce(d.url);
         } catch {
-          // transient — fall through to the retry
+          // transient, fall through to the retry
         }
       }
 

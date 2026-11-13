@@ -24,21 +24,21 @@ export const repos: Repo[] = [
   { name: "exploit_over_tcp", description: "Deliver PowerShell over raw TCP", language: "PowerShell", url: "https://github.com/natnael-wubet/exploit_over_tcp", group: "Security", stars: 1 },
   { name: "web-credential-password-attack", description: "Credential attacks against web auth (routers, APs)", language: "PowerShell", url: "https://github.com/natnael-wubet/web-credential-password-attack", group: "Security", stars: 3 },
   { name: "ssh-password-attack", description: "SSH brute-force toolkit", language: "PowerShell", url: "https://github.com/natnael-wubet/ssh-password-attack", group: "Security", stars: 1 },
-  { name: "ftp-password-attack", description: "FTP credential cracker", language: "—", url: "https://github.com/natnael-wubet/ftp-password-attack", group: "Security", stars: 1 },
+  { name: "ftp-password-attack", description: "FTP credential cracker", language: "Other", url: "https://github.com/natnael-wubet/ftp-password-attack", group: "Security", stars: 1 },
   { name: "hash_cracker", description: "Hash cracking utility", language: "PowerShell", url: "https://github.com/natnael-wubet/hash_cracker", group: "Security", stars: 1 },
   { name: "file-locker", description: "Encrypt and lock any file with AES", language: "PowerShell", url: "https://github.com/natnael-wubet/file-locker", group: "Security", stars: 1 },
   { name: "Powershell_compiler", description: "Compile PowerShell into standalone executables", language: "PowerShell", url: "https://github.com/natnael-wubet/Powershell_compiler", group: "Security", stars: 1 },
   { name: "payloads", description: "Reusable payload script collection", language: "PowerShell", url: "https://github.com/natnael-wubet/payloads", group: "Security" },
-  { name: "windows-password-cracker", description: "Numeric + dictionary attack on locked Windows user accounts", language: "—", url: "https://github.com/natnael-wubet/windows-password-cracker", group: "Security", stars: 1 },
+  { name: "windows-password-cracker", description: "Numeric + dictionary attack on locked Windows user accounts", language: "Other", url: "https://github.com/natnael-wubet/windows-password-cracker", group: "Security", stars: 1 },
 
   // Tool
   { name: "ConAnim", description: "Console graphics engine with a Processing/p5 API", language: "Python", url: "https://github.com/natnael-wubet/ConAnim", group: "Tool", stars: 3 },
   { name: "Abyss-koffee", description: "Open-source studio for video editors, coders and artists", language: "JavaScript", url: "https://github.com/natnael-wubet/Abyss-koffee", group: "Tool" },
-  { name: "abyss-studio", description: "Web studio for simulating game and animation worlds", language: "—", url: "https://github.com/natnael-wubet/abyss-studio", group: "Tool" },
+  { name: "abyss-studio", description: "Web studio for simulating game and animation worlds", language: "Other", url: "https://github.com/natnael-wubet/abyss-studio", group: "Tool" },
   { name: "creative_manim", description: "Opinionated video-making pipeline with Manim", language: "HTML", url: "https://github.com/natnael-wubet/creative_manim", group: "Tool" },
   { name: "manimexperiment", description: "Animation experiments with Manim", language: "Python", url: "https://github.com/natnael-wubet/manimexperiment", group: "Tool" },
   { name: "image_processing_demos", description: "Image processing algorithms, implemented plainly", language: "Processing", url: "https://github.com/natnael-wubet/image_processing_demos", group: "Tool" },
-  { name: "imaging-processing", description: "Image processing scratchpad", language: "—", url: "https://github.com/natnael-wubet/imaging-processing", group: "Tool" },
+  { name: "imaging-processing", description: "Image processing scratchpad", language: "Other", url: "https://github.com/natnael-wubet/imaging-processing", group: "Tool" },
   { name: "cpu-scheduling-assignment", description: "CPU scheduling algorithm simulator", language: "Python", url: "https://github.com/natnael-wubet/cpu-scheduling-assignment", group: "Tool" },
   { name: "videsk", description: "Desktop video application", language: "TypeScript", url: "https://github.com/natnael-wubet/videsk", group: "Tool" },
   { name: "tauriApp", description: "Tauri experiment for native Android", language: "TypeScript", url: "https://github.com/natnael-wubet/tauriApp", group: "Tool" },
@@ -47,26 +47,26 @@ export const repos: Repo[] = [
   { name: "ticketye_app", description: "Nationwide Ethiopian bus e-ticket system", language: "JavaScript", url: "https://github.com/natnael-wubet/ticketye_app", group: "Web" },
   { name: "academia-iq-web", description: "Academic intelligence platform", language: "Python", url: "https://github.com/natnael-wubet/academia-iq-web", group: "Web" },
   { name: "BookReader", description: "Digital book reading client", language: "TypeScript", url: "https://github.com/natnael-wubet/BookReader", group: "Web" },
-  { name: "amecoassets", description: "Asset management platform", language: "—", url: "https://github.com/natnael-wubet/amecoassets", group: "Web" },
-  { name: "hallo_reminder", description: "Reminder app, 2nd place at SolveIT", language: "—", url: "https://github.com/natnael-wubet/hallo_reminder", group: "Web" },
-  { name: "pubbet", description: "Betting platform", language: "—", url: "https://github.com/natnael-wubet/pubbet", group: "Web" },
+  { name: "amecoassets", description: "Asset management platform", language: "Other", url: "https://github.com/natnael-wubet/amecoassets", group: "Web" },
+  { name: "hallo_reminder", description: "Reminder app, 2nd place at SolveIT", language: "Other", url: "https://github.com/natnael-wubet/hallo_reminder", group: "Web" },
+  { name: "pubbet", description: "Betting platform", language: "Other", url: "https://github.com/natnael-wubet/pubbet", group: "Web" },
   { name: "shama", description: "Web application", language: "JavaScript", url: "https://github.com/natnael-wubet/shama", group: "Web" },
-  { name: "ubaj", description: "Web project", language: "—", url: "https://github.com/natnael-wubet/ubaj", group: "Web" },
+  { name: "ubaj", description: "Web project", language: "Other", url: "https://github.com/natnael-wubet/ubaj", group: "Web" },
   { name: "naty-wubet", description: "This portfolio", language: "JavaScript", url: "https://github.com/natnael-wubet/naty-wubet", group: "Web" },
   { name: "scribble-diffusion", description: "Turn a rough sketch into a refined image using AI", language: "JavaScript", url: "https://github.com/natnael-wubet/scribble-diffusion", group: "Web", fork: true },
 
   // Config
   { name: "natis_neovim_config", description: "Personal Neovim configuration", language: "Lua", url: "https://github.com/natnael-wubet/natis_neovim_config", group: "Config" },
-  { name: "my-dooit-config", description: "Dooit configuration", language: "—", url: "https://github.com/natnael-wubet/my-dooit-config", group: "Config" },
+  { name: "my-dooit-config", description: "Dooit configuration", language: "Other", url: "https://github.com/natnael-wubet/my-dooit-config", group: "Config" },
   { name: "myAwesomewm", description: "AwesomeWM configuration", language: "Lua", url: "https://github.com/natnael-wubet/myAwesomewm", group: "Config" },
   { name: "myneovim", description: "Neovim configuration", language: "Lua", url: "https://github.com/natnael-wubet/myneovim", group: "Config" },
-  { name: "myomarchylocal", description: "Omarchy local configuration", language: "—", url: "https://github.com/natnael-wubet/myomarchylocal", group: "Config" },
+  { name: "myomarchylocal", description: "Omarchy local configuration", language: "Other", url: "https://github.com/natnael-wubet/myomarchylocal", group: "Config" },
   { name: "zenbrowserconfig", description: "Zen Browser configuration", language: "CSS", url: "https://github.com/natnael-wubet/zenbrowserconfig", group: "Config" },
   { name: "css_basic", description: "CSS fundamentals", language: "HTML", url: "https://github.com/natnael-wubet/css_basic", group: "Config" },
-  { name: "public_p", description: "Public scratch projects", language: "—", url: "https://github.com/natnael-wubet/public_p", group: "Config" },
-  { name: "AstroNvim", description: "Aesthetic, feature-rich Neovim distribution", language: "—", url: "https://github.com/natnael-wubet/AstroNvim", group: "Config", fork: true },
-  { name: "kickstart.nvim", description: "Launch point for a personal Neovim configuration", language: "—", url: "https://github.com/natnael-wubet/kickstart.nvim", group: "Config", fork: true },
-  { name: "zeninternet", description: "Website theming for the Zen browser", language: "—", url: "https://github.com/natnael-wubet/zeninternet", group: "Config", fork: true },
+  { name: "public_p", description: "Public scratch projects", language: "Other", url: "https://github.com/natnael-wubet/public_p", group: "Config" },
+  { name: "AstroNvim", description: "Aesthetic, feature-rich Neovim distribution", language: "Other", url: "https://github.com/natnael-wubet/AstroNvim", group: "Config", fork: true },
+  { name: "kickstart.nvim", description: "Launch point for a personal Neovim configuration", language: "Other", url: "https://github.com/natnael-wubet/kickstart.nvim", group: "Config", fork: true },
+  { name: "zeninternet", description: "Website theming for the Zen browser", language: "Other", url: "https://github.com/natnael-wubet/zeninternet", group: "Config", fork: true },
 ];
 
 export interface Award {
@@ -143,7 +143,7 @@ export const certifications: Certification[] = [
     file: "/assets/ccna.pdf",
   },
   {
-    name: "CCNA ITN — Updated Course Completion",
+    name: "CCNA ITN: Updated Course Completion",
     issuer: "Cisco Networking Academy",
     detail: "Refreshed curriculum completion certificate.",
     file: "/assets/ccna-itn.pdf",
@@ -220,25 +220,25 @@ export const originIntro =
 export const originBody: { lead?: string; text: string }[] = [
   {
     lead: "2013",
-    text: "I wrote my first batch code. A calculator, then a manager that copied and moved files in bulk — small things, but they taught me that a machine will do exactly what you tell it, and nothing more.",
+    text: "I wrote my first batch code. A calculator, then a manager that copied and moved files in bulk. Small things, but they taught me that a machine will do exactly what you tell it, and nothing more.",
   },
   {
     lead: "The hook",
-    text: "What pulled me in was cryptography. I read The Da Vinci Code and could not let go of the idea that a string of characters could hold a secret. So I started writing my own encryption algorithms, moved into .NET, and then fell for Processing — enough that I rebuilt the whole thing for the terminal. That rebuild became ConAnim.",
+    text: "What pulled me in was cryptography. I read The Da Vinci Code and could not let go of the idea that a string of characters could hold a secret. So I started writing my own encryption algorithms, moved into .NET, and then fell for Processing, enough that I rebuilt the whole thing for the terminal. That rebuild became ConAnim.",
   },
   {
     lead: "2019–2020",
-    text: "Linux, C, Python. Then JavaScript stole my heart and never gave it back — Node for servers, Tauri with Rust for native, and three.js and p5.js for the experimental territory where code stops being utilitarian and starts being fun.",
+    text: "Linux, C, Python. Then JavaScript stole my heart and never gave it back. Node for servers, Tauri with Rust for native, and three.js and p5.js for the experimental territory where code stops being utilitarian and starts being fun.",
   },
   {
     lead: "2024 →",
-    text: "The AI wave fascinates me regardless of the hype: we can reach a pseudo-mind, make it dream, talk and reason. I have been deep in AI art since before it had a polite name — I believe it will sit beside photography the way photography sits beside painting.",
+    text: "The AI wave fascinates me regardless of the hype: we can reach a pseudo-mind, make it dream, talk and reason. I have been deep in AI art since before it had a polite name. I believe it will sit beside photography the way photography sits beside painting.",
   },
 ];
 
 export const heritage = {
   title: "Where I'm from",
-  text: "I grew up in Bahir Dar, in a family that valued hard work, community and respect for elders. Ethiopian cuisine, music and the coffee ceremony are not decoration on my life — they are the structure of it. My grandfather was a farmer and craftsman who told stories of ancestors who fought for independence, and every Enkutatesh the whole family still gathers for dance, music and food.",
+  text: "I grew up in Bahir Dar, in a family that valued hard work, community and respect for elders. Ethiopian cuisine, music and the coffee ceremony are not decoration on my life. They are the structure of it. My grandfather was a farmer and craftsman who told stories of ancestors who fought for independence, and every Enkutatesh the whole family still gathers for dance, music and food.",
 };
 
 export interface Milestone {
@@ -250,10 +250,10 @@ export interface Milestone {
 
 export const timeline: Milestone[] = [
   { year: "2013", title: "First batch code", detail: "A calculator, then a bulk copy-and-move manager. The first time software did something for me that I had asked it to do.", tag: "Origin" },
-  { year: "2016", title: "Fell for cryptography", detail: "The Da Vinci Code started it. Wrote my own encryption algorithms, moved into .NET, and became obsessed with Processing — later rebuilding it for the terminal as ConAnim.", tag: "Security" },
+  { year: "2016", title: "Fell for cryptography", detail: "The Da Vinci Code started it. Wrote my own encryption algorithms, moved into .NET, and became obsessed with Processing, later rebuilding it for the terminal as ConAnim.", tag: "Security" },
   { year: "2019", title: "Linux, C, Python", detail: "Left the comfortable path. Systems level, robotics with Lego Mindstorm in C++, and Processing/Java for anything visual.", tag: "Systems" },
   { year: "2020", title: "JavaScript stole my heart", detail: "Node for servers, Tauri with Rust for native apps, three.js and p5.js for the experimental kick. Still the language I reach for.", tag: "Web" },
-  { year: "2024", title: "The AI wave", detail: "Fascinated that we can access a pseudo-mind — make it dream, talk, reason. Deep in AI art long before it had a polite name.", tag: "AI" },
+  { year: "2024", title: "The AI wave", detail: "Fascinated that we can access a pseudo-mind: make it dream, talk, reason. Deep in AI art long before it had a polite name.", tag: "AI" },
   { year: "Now", title: "Physics, philosophy, and combining them", detail: "Self-studying philosophy, teaching physics on YouTube, and building the systems that tie all of it together. I see no reason to stop.", tag: "Mind" },
 ];
 
@@ -271,7 +271,7 @@ export const disciplines: Discipline[] = [
     key: "physics",
     name: "Physics",
     blurb:
-      "Relativity, emergence, simulation, quantum mechanics. Not as metaphor — I actually build the models. It started as self-study and turned into a channel I teach on.",
+      "Relativity, emergence, simulation, quantum mechanics. Not as metaphor. I actually build the models. It started as self-study and turned into a channel I teach on.",
     tags: ["Relativity", "Emergence", "Simulation", "Quantum"],
   },
   {
@@ -285,7 +285,7 @@ export const disciplines: Discipline[] = [
     key: "psychology",
     name: "Psychology",
     blurb:
-      "How minds actually work — attention, bias, motivation. The reason interfaces are hard and the reason games are fun are the same reason.",
+      "How minds actually work: attention, bias, motivation. The reason interfaces are hard and the reason games are fun are the same reason.",
     tags: ["Cognition", "Bias", "Motivation"],
   },
   {
@@ -299,7 +299,7 @@ export const disciplines: Discipline[] = [
     key: "humanism",
     name: "Humanism",
     blurb:
-      "People first, and the answer does not come from above. It is the reason I build anything at all — including the games that put real money on the line.",
+      "People first, and the answer does not come from above. It is the reason I build anything at all, including the games that put real money on the line.",
     tags: ["Secular", "Ethical", "Progress"],
   },
 ];

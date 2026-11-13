@@ -338,7 +338,7 @@ const stats = [
       camera.position.set(0, 0, 14);
 
       // Colors come from the CSS tokens, so the instrument follows the
-      // theme and accent live — repaint() re-reads them on opt change.
+      // theme and accent live, repaint() re-reads them on opt change.
       const cssColor = (name: string, fallback: string) => {
         const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
         return new THREE.Color(v || fallback);
@@ -355,7 +355,7 @@ const stats = [
 
       // ── Starfield ────────────────────────────────────────────
       // Points store a *role* (which palette entry) plus a brightness,
-      // not a baked colour — repaint() can then recolor the whole field
+      // not a baked colour, repaint() can then recolor the whole field
       // when the theme or accent changes without rebuilding geometry.
       const STARS = 2400;
       const sPos = new Float32Array(STARS * 3);
@@ -495,7 +495,7 @@ const stats = [
       ringC.rotation.set(0.5, 0.2, 1.1);
       gyro.add(ringA, ringB, ringC);
 
-      // Graduated collar — 48 ticks, every fourth one longer.
+      // Graduated collar, 48 ticks, every fourth one longer.
       const TICKS = 48;
       const tickPts: THREE.Vector3[] = [];
       for (let i = 0; i < TICKS; i++) {
@@ -894,7 +894,7 @@ const stats = [
       };
       animate();
     } catch {
-      // WebGL unavailable — the section still reads perfectly without it
+      // WebGL unavailable, the section still reads perfectly without it
       canvas.style.display = "none";
       for (const el of specimenUI) el.hidden = true;
     }
@@ -1056,7 +1056,7 @@ const stats = [
   }
 
   @media (max-width: 767px) {
-    /* On phones the body sits behind the headline — fade it right down. */
+    /* On phones the body sits behind the headline, fade it right down. */
     .hero-scrim {
       background: linear-gradient(to bottom, color-mix(in srgb, var(--color-ink) 55%, transparent), color-mix(in srgb, var(--color-ink) 88%, transparent));
     }

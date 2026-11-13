@@ -3,7 +3,7 @@
  *
  * The profile is self-describing: it points at this schema, so an agent (or a
  * human with a validator) can check the shape instead of guessing. Keep this
- * in step with src/lib/profile.ts — it is intentionally strict at the root.
+ * in step with src/lib/profile.ts, it is intentionally strict at the root.
  */
 import { SITE } from "./site";
 
@@ -14,7 +14,7 @@ const stringArray = { type: "array", items: { type: "string" } } as const;
 export const profileSchema = {
   $schema: "https://json-schema.org/draft/2020-12/schema",
   $id: `${SITE.url}/profile.schema.json`,
-  title: "Natnael Wubet — public profile",
+  title: "Natnael Wubet · public profile",
   description:
     "Canonical machine-readable profile, generated from the portfolio's source data at build time.",
   type: "object",

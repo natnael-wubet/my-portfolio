@@ -157,7 +157,7 @@ const cmds = {
       out!.textContent = cmds[cmd];
       return;
     }
-    out!.textContent = (cmds.unknown ?? "command not found: {cmd} — try 'help'").replace("{cmd}", cmd);
+    out!.textContent = (cmds.unknown ?? "command not found: {cmd}. Try 'help'").replace("{cmd}", cmd);
   };
 
   input?.addEventListener("keydown", (e) => {

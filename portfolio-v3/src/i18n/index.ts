@@ -2,7 +2,7 @@
  * i18n core.
  *
  * Two statically rendered locales: English at "/" and Amharic at "/am/".
- * There is no client-side dictionary swap — each page is pre-rendered in its
+ * There is no client-side dictionary swap, each page is pre-rendered in its
  * language, so the right script, the right <html lang> and the right font all
  * ship with the HTML. Components receive `t` as a prop (rendering is build
  * time, so there is no shared mutable state to worry about).

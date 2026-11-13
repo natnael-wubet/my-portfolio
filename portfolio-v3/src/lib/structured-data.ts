@@ -36,14 +36,14 @@ export const structuredData = () => {
         knowsAbout: [...new Set([...p.domains.map((d) => d.name), ...p.skills.flatMap((s) => s.keywords)])],
         knowsLanguage: p.languages.map((language) => language.code),
         award: p.awards.map(
-          (award) => `${award.title} — ${award.summary} (${award.awarder}, ${award.year})`
+          (award) => `${award.title}: ${award.summary} (${award.awarder}, ${award.year})`
         ),
       },
       {
         "@type": "WebSite",
         "@id": websiteId,
         url: `${SITE.url}/`,
-        name: `${SITE.name} — ${SITE.role}`,
+        name: `${SITE.name} · ${SITE.role}`,
         description: p.basics.summary,
         inLanguage: ["en", "am"],
         author: { "@id": personId },
@@ -52,7 +52,7 @@ export const structuredData = () => {
         "@type": "ProfilePage",
         "@id": `${SITE.url}/#profile`,
         url: `${SITE.url}/`,
-        name: `${SITE.name} — ${SITE.role}`,
+        name: `${SITE.name} · ${SITE.role}`,
         isPartOf: { "@id": websiteId },
         mainEntity: { "@id": personId },
         about: { "@id": personId },

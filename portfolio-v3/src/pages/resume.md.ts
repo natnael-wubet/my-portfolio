@@ -27,7 +27,7 @@ const text = () => {
 
   featured.forEach((project) => {
     lines.push(
-      `### ${project.name} — ${project.tagline}`,
+      `### ${project.name} · ${project.tagline}`,
       "",
       `${project.description}`,
       "",
@@ -40,7 +40,7 @@ const text = () => {
     lines.push("## Also shipped", "");
     rest.forEach((project) => {
       lines.push(
-        `- **${project.name}** — ${project.tagline}. ${project.description} (${project.url})`
+        `- **${project.name}**: ${project.tagline}. ${project.description} (${project.url})`
       );
     });
     lines.push("");
@@ -57,7 +57,7 @@ const text = () => {
   const highlights = p.openSource.filter((repo) => repo.group !== "Config" && !repo.fork);
   highlights.forEach((repo) => {
     lines.push(
-      `- **${repo.name}** (${repo.language}) — ${repo.description}. ${repo.url}`
+      `- **${repo.name}** (${repo.language}): ${repo.description}. ${repo.url}`
     );
   });
   lines.push("");
@@ -69,7 +69,7 @@ const text = () => {
   lines.push("## Recognition", "");
   p.awards.forEach((award) => {
     lines.push(
-      `- **${award.rank} — ${award.title}** (${award.year}, ${award.awarder}). ${award.summary}${
+      `- **${award.rank} · ${award.title}** (${award.year}, ${award.awarder}). ${award.summary}${
         award.prize ? ` Prize: ${award.prize}.` : ""
       }`
     );
@@ -77,11 +77,11 @@ const text = () => {
   lines.push("");
 
   lines.push("## Certifications", "");
-  p.certificates.forEach((cert) => lines.push(`- ${cert.name} — ${cert.issuer}`));
+  p.certificates.forEach((cert) => lines.push(`- ${cert.name} · ${cert.issuer}`));
   lines.push("");
 
   lines.push("## Languages", "");
-  p.languages.forEach((language) => lines.push(`- ${language.language} — ${language.fluency}`));
+  p.languages.forEach((language) => lines.push(`- ${language.language} · ${language.fluency}`));
   lines.push("");
 
   lines.push(

@@ -17,7 +17,7 @@ interface PaletteItem {
   keywords: string;
 }
 
-// Kinds are translated at build time — the payload is JSON, so the client
+// Kinds are translated at build time, the payload is JSON, so the client
 // only ever renders strings that already match the page's language.
 const KIND = {
   deploy: t("palette.kind.Deploy"),
@@ -73,7 +73,7 @@ const items: PaletteItem[] = [
   { label: t("palette.github"), meta: "@natnael-wubet", href: "https://github.com/natnael-wubet", kind: KIND.link, keywords: "github profile all repositories" },
   { label: t("palette.telegram"), meta: "@nnaty_w20", href: "https://t.me/nnaty_w20", kind: KIND.link, keywords: "telegram contact chat ቴሌግራም" },
   { label: t("palette.bigxo"), meta: t("palette.bigxoMeta"), href: "https://t.me/bigxoGameBot", kind: KIND.play, keywords: "bigxo game telegram mini app play xo" },
-  // The interior — so "physics" or "hegel" lands somewhere real.
+  // The interior, so "physics" or "hegel" lands somewhere real.
   ...disciplines.map((d) => ({
     label: td(t, d.name),
     meta: `${t("palette.interior")} · ${d.tags.slice(0, 3).map((tag) => td(t, tag)).join(" · ")}`,
@@ -81,7 +81,7 @@ const items: PaletteItem[] = [
     kind: KIND.mind,
     keywords: `${d.name} ${td(t, d.name)} ${d.blurb} ${td(t, d.blurb)} ${d.tags.join(" ")} ${d.tags.map((tag) => td(t, tag)).join(" ")}`,
   })),
-  // ── Display options — real actions, dispatched as events ──
+  // ── Display options, real actions, dispatched as events ──
   { label: t("palette.opt.toggleTheme"), meta: t("palette.opt.toggleThemeMeta"), href: "action:theme:toggle", kind: KIND.option, keywords: "theme dark light mode appearance toggle contrast" },
   { label: t("palette.opt.darkTheme"), meta: t("palette.opt.darkThemeMeta"), href: "action:theme:dark", kind: KIND.option, keywords: "theme dark night mode appearance" },
   { label: t("palette.opt.lightTheme"), meta: t("palette.opt.lightThemeMeta"), href: "action:theme:light", kind: KIND.option, keywords: "theme light day mode appearance" },
@@ -173,7 +173,7 @@ const items: PaletteItem[] = [
   let index: Chunk[] | null = null;
 
   // Tight fuzzy match: consecutive matched characters may not be more than a
-  // few apart. This runs against the label only — the keyword blob contains
+  // few apart. This runs against the label only, the keyword blob contains
   // whole project descriptions, where a loose subsequence matches anything
   // (searching "physics" used to return unrelated deployments).
   function fuzzy(hay: string, needle: string, maxGap = 4): boolean {

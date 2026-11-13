@@ -6,9 +6,9 @@
  * leaves the page; only the profile's own vocabulary is compared with it.
  *
  * The point is honesty, not a score to game. Terms are split into:
- *   tech      — counted in coverage; absence is a real gap
- *   domain    — counted when present, never shown as a gap
- *   practice  — shown when present, never punished for absence
+ *   tech     , counted in coverage; absence is a real gap
+ *   domain   , counted when present, never shown as a gap
+ *   practice , shown when present, never punished for absence
  */
 import type { LensDef } from "./lenses";
 
@@ -253,7 +253,7 @@ export const TERMS: FitTerm[] = [
   term("OpenAI", "AI", "tech", ["openai", "gpt"]),
   term("Computer vision", "AI", "tech", ["computer vision"]),
 
-  // Domains — counted when present, never listed as gaps
+  // Domains, counted when present, never listed as gaps
   term("Full-stack", "Domain", "domain", ["full-stack", "full stack", "fullstack"]),
   term("Frontend", "Domain", "domain", ["frontend", "front-end", "front end"]),
   term("Backend", "Domain", "domain", ["backend", "back-end", "back end"]),
@@ -269,7 +269,7 @@ export const TERMS: FitTerm[] = [
   term("Physics", "Domain", "domain", ["physics", "simulation"]),
   term("Product", "Domain", "domain", ["product", "product engineer"]),
 
-  // Practice — shown when present, never punished for absence
+  // Practice, shown when present, never punished for absence
   term("Leadership", "Practice", "practice", ["lead", "leadership", "mentor", "mentoring"]),
   term("Communication", "Practice", "practice", ["communication", "writing", "documentation"]),
   term("Open source", "Practice", "practice", ["open source", "open-source", "oss"]),
@@ -398,7 +398,7 @@ export const analyzeFit = (raw: string, data: FitData): FitResult => {
     .filter((row) => row.score > 0)
     .sort((a, b) => b.score - a.score || a.project.name.localeCompare(b.project.name));
 
-  // Repositories are evidence too — especially for security, where the work
+  // Repositories are evidence too, especially for security, where the work
   // lives in code rather than in a live deployment.
   const repoScores = data.repos
     .map((repo) => {

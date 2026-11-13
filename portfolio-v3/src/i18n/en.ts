@@ -1,5 +1,5 @@
 /**
- * English dictionary — every chrome string on the site.
+ * English dictionary, every chrome string on the site.
  *
  * Keys are flat and dotted: "nav.work", "sec.vault.title". `Dict` (typeof en)
  * is the contract: src/i18n/am.ts must supply every one of these keys or it
@@ -7,7 +7,7 @@
  *
  * Data prose (repo descriptions, deployment taglines…) deliberately lives in
  * src/data/*.ts as the English source and is passed as a fallback at the call
- * site — t(`repo.${name}`, r.description) — so nothing is ever duplicated.
+ * site, t(`repo.${name}`, r.description), so nothing is ever duplicated.
  *
  * Markup conventions honoured by rich():
  *   \n            → <br />
@@ -16,11 +16,11 @@
  */
 export const en = {
   // ── Document metadata ─────────────────────────────────────
-  "meta.title": "Natnael Wubet — Software Engineer",
+  "meta.title": "Natnael Wubet · Software Engineer",
   "meta.description":
-    "Natnael Wubet — software engineer and full-stack developer building games, platforms, protocols and security tooling from Bahir Dar, Ethiopia.",
+    "Natnael Wubet · software engineer in Bahir Dar, Ethiopia, building games, verifiable ledgers and security tools, and writing about physics and philosophy.",
   "meta.descriptionCounted":
-    "Games with real stakes, protocols that prove things, platforms that ship. {live} live deployments, {repos} public repositories, competition-winning work — and thirteen years of it — from Bahir Dar, Ethiopia.",
+    "{live} live deployments, {repos} public repositories, and competition-winning work from thirteen years of building software in Bahir Dar, Ethiopia.",
 
   // ── Nav ───────────────────────────────────────────────────
   "nav.role": "Software Engineer",
@@ -73,7 +73,7 @@ export const en = {
   "hero.utc": "EAT",
   "hero.liveCount": "{n} live deployments",
   "hero.lead":
-    "I build [[games with real stakes]], [[protocols that prove things]], and [[platforms that ship]] — from a Telegram bingo room taking real money, to a Bitcoin-anchored citation ledger, to the security tooling I started with. Off the clock I chase [[relativity and emergence]], and [[Kant and Hegel]].",
+    "I have been writing code since 2013, starting with batch scripts and a question I never dropped: how much can a machine be trusted to do? That question turned into real-money games, a Bitcoin-anchored citation ledger, and security tools. It also led me to [[physics and philosophy]], which I study and teach out loud.",
   "hero.ctaWork": "View work →",
   "hero.hint": "⌘K or / to search everything · ? for shortcuts",
   "hero.stat.deploy.k": "Live deployments",
@@ -158,7 +158,7 @@ export const en = {
   "sec.mind.eyebrow": "Section 03 · The interior",
   "sec.mind.title": "What I think about\nwhen I'm not building",
   "sec.mind.lead":
-    "The work is the visible half. These are the things underneath it — and they are not hobbies, they are the source code.",
+    "The work is the visible half. These are the things underneath it, and they are not hobbies, they are the source code.",
   "sec.mind.youtube": "YouTube · {handle}",
   "sec.mind.watch": "Watch",
 
@@ -186,30 +186,30 @@ export const en = {
   "sec.photos.eyebrow": "Off-screen · personal",
   "sec.photos.title": "The person,\nnot the profile",
   "sec.photos.lead":
-    "Personal photos, no retouching. They start in grayscale and come back to colour on hover — the same rule as everything else here: you only get the signal when you go looking for it.",
+    "Personal photos, no retouching. They start in grayscale and come back to colour on hover. The same rule as everything else here: you only get the signal when you go looking for it.",
   "sec.photos.caption": "Natnael Wubet",
-  "sec.photos.alt": "Natnael Wubet — personal photo {n}",
+  "sec.photos.alt": "Natnael Wubet · personal photo {n}",
 
   // ── Section 08 · Contact ──────────────────────────────────
   "sec.connect.eyebrow": "Section 06 · Contact",
   "sec.connect.title": "Let's build\nsomething\n{{that ships.}}",
-  "sec.connect.termTitle": "naty — contact",
+  "sec.connect.termTitle": "naty · contact",
   "sec.connect.whoami": "whoami",
-  "sec.connect.whoamiOut": "natnael wubet — software engineer",
+  "sec.connect.whoamiOut": "natnael wubet · software engineer",
   "sec.connect.location": "location",
   "sec.connect.locationOut": "bahir dar, ethiopia · UTC+3",
   "sec.connect.status": "status",
   "sec.connect.open": "open to work",
   "sec.connect.termPlaceholder": "type 'hire' or 'help'…",
   "sec.connect.copyHint": "Click an answer to copy it",
-  "sec.connect.cmd.hire": "email natyw4122@gmail.com — usually replies within a day.",
+  "sec.connect.cmd.hire": "email natyw4122@gmail.com, usually replies within a day.",
   "sec.connect.cmd.help": "commands: hire · work · stack · github · tg · copy · clear",
   "sec.connect.cmd.work": "{live} live deployments · {repos} repos · {awards} competition placements",
   "sec.connect.cmd.stack": "react · typescript · ionic · capacitor · next · vue · python · three.js · firebase · supabase",
   "sec.connect.cmd.github": "→ github.com/natnael-wubet",
   "sec.connect.cmd.tg": "→ t.me/nnaty_w20",
   "sec.connect.cmd.hi": "hello. type 'help'.",
-  "sec.connect.cmd.unknown": "command not found: {cmd} — try 'help'",
+  "sec.connect.cmd.unknown": "command not found: {cmd}. Try 'help'",
   "sec.connect.copy": "Copy",
   "sec.connect.copied": "Copied ✓",
 
@@ -285,7 +285,7 @@ export const en = {
   "palette.opt.brief": "Tailored brief",
   "palette.opt.briefMeta": "Compose a brief for a team",
   "palette.opt.fit": "Check a role fit",
-  "palette.opt.fitMeta": "Paste a job description — local match",
+  "palette.opt.fitMeta": "Paste a job description, local match",
   "palette.opt.langAm": "Switch to Amharic",
   "palette.opt.langAmMeta": "ድር ጣቢያውን በአማርኛ አሳይ",
   "palette.opt.langEn": "Switch to English",
@@ -349,7 +349,7 @@ export const en = {
   "brief.lens.productBlurb":
     "I take products from a rough idea to a paying user: schema, auth, payments, admin, and the interface that ties them together. The work below is live, not a case study.",
   "brief.lens.productWhy":
-    "You need one person who can own the whole path — database to deploy, checkout to support console — and keep shipping after launch.",
+    "You need one person who can own the whole path: database to deploy, checkout to support console, and keep shipping after launch.",
   "brief.lens.games": "Game engineer",
   "brief.lens.gamesBlurb":
     "Games with real stakes: a 3D tic-tac-toe with an AI opponent, a real-money bingo room, and a Telegram-native client. Mechanics, game loops, and the unglamorous parts that keep them honest.",
@@ -364,7 +364,7 @@ export const en = {
   "brief.lens.protocolsBlurb":
     "Verifiable attribution for scientific work: content hashed to IPFS, anchored on Bitcoin with OpenTimestamps, contributions settled in audited contracts on Base L2, linked to ORCID. Also physics and philosophy, self-taught and in public.",
   "brief.lens.protocolsWhy":
-    "You need someone comfortable with cryptography, incentive design and the long tail of edge cases — and who can explain all three to people who are not cryptographers.",
+    "You need someone comfortable with cryptography, incentive design and the long tail of edge cases, and who can explain all three to people who are not cryptographers.",
   "brief.lens.founding": "Founding engineer",
   "brief.lens.foundingBlurb":
     "I have been the engineer, the ops, the person on the phone with a payment provider, and the one answering support at 2am. Real-money bingo, a nationwide bus ticketing system, a car marketplace.",
@@ -376,7 +376,7 @@ export const en = {
   "fit.eyebrow": "Fit check",
   "fit.title": "Does this role fit?",
   "fit.sub":
-    "Paste a role description. The match is measured against the public record on this page — in your browser, with nothing uploaded.",
+    "Paste a role description. The match is measured against the public record on this page, in your browser, with nothing uploaded.",
   "fit.inputLabel": "Role description",
   "fit.placeholder": "Paste the job description here…",
   "fit.samples": "Try a sample",
@@ -398,7 +398,7 @@ export const en = {
   "fit.emptyTitle": "Paste a role description to start.",
   "fit.emptyBody":
     "Recognised terms are compared with the projects, repositories and skills on this page. The result is honest about gaps.",
-  "fit.tooShort": "Add a little more detail — a sentence or two is enough.",
+  "fit.tooShort": "Add a little more detail. A sentence or two is enough.",
   "fit.noTerms": "No recognised terms yet. Name a language, framework, tool or domain.",
   "fit.coverage": "coverage",
   "fit.coverageOf": "{matched} of {total} named signals match",
@@ -409,14 +409,14 @@ export const en = {
   "fit.noGaps": "No technical gaps in what this description names.",
   "fit.evidence": "Evidence to lead with",
   "fit.lens": "Best lens",
-  "fit.noLens": "No clear lens yet — add more specifics.",
+  "fit.noLens": "No clear lens yet. Add more specifics.",
   "fit.openBrief": "Open the {lens} brief",
   "fit.project": "Project",
   "fit.repo": "Repository",
   "fit.hits": "{count} hits",
   "fit.copy": "Copy fit note",
   "fit.copied": "Fit note copied",
-  "fit.copyFailed": "Clipboard unavailable — select and copy the note",
+  "fit.copyFailed": "Clipboard unavailable. Select and copy the note",
   "fit.clear": "Clear",
   "fit.cleared": "Fit check cleared",
   "fit.privacy": "Local only · nothing uploaded · kept in this tab until you clear it",
@@ -434,7 +434,7 @@ export const en = {
   "machine.eyebrow": "Machine-readable",
   "machine.title": "The same record, for your tools.",
   "machine.sub":
-    "A canonical JSON profile, an LLM index and a Markdown CV — generated from this page's data at build time, never written twice.",
+    "A canonical JSON profile, an LLM index and a Markdown CV, generated from this page's data at build time, never written twice.",
   "machine.facts": "{projects} projects · {repos} repositories · {awards} awards",
   "machine.profile": "profile.json",
   "machine.profileMeta": "Canonical · with schema",
@@ -445,12 +445,12 @@ export const en = {
   "machine.copy": "Copy profile",
   "machine.copyMeta": "JSON to clipboard",
   "machine.copied": "Profile JSON copied",
-  "machine.copyFailed": "Clipboard unavailable — open profile.json",
+  "machine.copyFailed": "Clipboard unavailable. Open profile.json",
   "machine.privacy": "Static HTML · no cookies · no trackers",
   "machine.agentHint": "Agents: start at llms.txt",
   "machine.build": "build",
   "palette.opt.profile": "Copy machine profile",
-  "palette.opt.profileMeta": "profile.json — canonical, agent-readable",
+  "palette.opt.profileMeta": "profile.json · canonical, agent-readable",
   "palette.opt.llms": "Open llms.txt",
   "palette.opt.llmsMeta": "Index for LLM crawlers",
   "palette.jump.machine": "Machine-readable record",

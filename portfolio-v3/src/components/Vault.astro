@@ -53,7 +53,7 @@ const { t } = Astro.props;
   const section = document.getElementById("vault") as HTMLElement | null;
   const counter = document.getElementById("vault-counter") as HTMLElement | null;
 
-  // Page list rides on the canvas as JSON — avoids define:vars, which would
+  // Page list rides on the canvas as JSON, avoids define:vars, which would
   // downgrade this to a classic script and break the `import` above.
   const pageList: string[] = canvas?.dataset.pages ? JSON.parse(canvas.dataset.pages) : [];
 
@@ -209,7 +209,7 @@ const { t } = Astro.props;
     floorRing.position.y = -MAX_H / 2 - 0.44;
     scene.add(floorRing);
 
-    // Follow theme/accent switches — the stage re-tints in place.
+    // Follow theme/accent switches, the stage re-tints in place.
     const retint = () => {
       key.color.copy(cssColor("--color-signal", "#d4ff3f"));
       rim.color.copy(cssColor("--color-cyan", "#34d3e0"));
@@ -299,7 +299,7 @@ const { t } = Astro.props;
       currentRotation += (targetRotation - currentRotation) * 0.075;
       group.rotation.y = currentRotation;
 
-      // Face the camera-ish and dim only the far side — the near panel stays
+      // Face the camera-ish and dim only the far side, the near panel stays
       // fully lit, and side panels keep enough presence to read as a ring.
       panels.forEach((panel) => {
         const world = new THREE.Vector3();

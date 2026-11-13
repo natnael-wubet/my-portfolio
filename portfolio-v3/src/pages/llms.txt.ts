@@ -3,7 +3,7 @@ import { profile } from "../lib/profile";
 import { SITE } from "../lib/site";
 
 /**
- * llms.txt — a concise, linked index for LLM crawlers and agents.
+ * llms.txt, a concise, linked index for LLM crawlers and agents.
  * The convention: summary first, then curated links with one-line context.
  * Full prose lives in /llms-full.txt; structure lives in /profile.json.
  */
@@ -13,12 +13,12 @@ const text = () => {
   const archived = p.projects.filter((project) => project.status === "archived");
 
   const lines: string[] = [
-    `# ${p.basics.name} — ${p.basics.label}`,
+    `# ${p.basics.name} · ${p.basics.label}`,
     "",
     `> ${p.basics.summary}`,
     "",
     `Location: ${p.basics.location.city}, ${p.basics.location.country} (${SITE.timezone}, UTC${SITE.utcOffset}).`,
-    `Availability: ${p.availability.status} — ${p.availability.arrangement}.`,
+    `Availability: ${p.availability.status} · ${p.availability.arrangement}.`,
     `Languages: ${p.languages.map((l) => `${l.language} (${l.fluency})`).join(", ")}.`,
     "",
     "## Canonical machine files",
@@ -34,7 +34,7 @@ const text = () => {
     "",
     ...live.map(
       (project) =>
-        `- [${project.name}](${project.url}) — ${project.tagline}. ${project.description} Stack: ${project.keywords.join(", ")}. (${project.year}, ${project.category})`
+        `- [${project.name}](${project.url}): ${project.tagline}. ${project.description} Stack: ${project.keywords.join(", ")}. (${project.year}, ${project.category})`
     ),
     "",
     ...(archived.length
@@ -52,7 +52,7 @@ const text = () => {
     "## Recognition",
     "",
     ...p.awards.map(
-      (award) => `- ${award.rank} — ${award.title}: ${award.summary} (${award.awarder}, ${award.year}).`
+      (award) => `- ${award.rank} · ${award.title}: ${award.summary} (${award.awarder}, ${award.year}).`
     ),
     "",
     "## Contact",

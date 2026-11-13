@@ -126,7 +126,7 @@ const links = [
   const langSwitch = document.querySelector<HTMLAnchorElement>("a[data-lang-switch]");
 
   // ── Language switching ────────────────────────────────────
-  // Both locales are static pages, so switching is a navigation — but the
+  // Both locales are static pages, so switching is a navigation, but the
   // current section should survive it, hence the hash carry.
   const goToLocale = (href: string) => {
     location.href = href + location.hash;
@@ -175,7 +175,7 @@ const links = [
       });
     };
 
-    // A thin band across the top of the viewport decides the active section —
+    // A thin band across the top of the viewport decides the active section,
     // stable against long sections and short ones alike.
     const io = new IntersectionObserver(
       (entries) => {

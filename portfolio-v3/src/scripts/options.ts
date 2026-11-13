@@ -2,7 +2,7 @@
  * Display options: theme (dark / light / system) + accent colour.
  *
  * State lives in localStorage and is re-applied before first paint by the
- * inline script in Base.astro (kept in sync manually — see that file).
+ * inline script in Base.astro (kept in sync manually, see that file).
  * Everything else talks to this module through document events, so the nav
  * panel, the command palette and the keyboard can all drive it without
  * importing each other:
@@ -43,7 +43,7 @@ const write = (key: string, value: string) => {
   try {
     localStorage.setItem(key, value);
   } catch {
-    /* private mode — the session still works, it just won't remember */
+    /* private mode, the session still works, it just won't remember */
   }
 };
 
@@ -112,7 +112,7 @@ export const initOptions = () => {
     if (isTheme(themeParam)) write(THEME_KEY, themeParam);
     if (isAccent(accentParam)) write(ACCENT_KEY, accentParam);
   } catch {
-    /* malformed URL — keep whatever is stored */
+    /* malformed URL, keep whatever is stored */
   }
 
   apply();

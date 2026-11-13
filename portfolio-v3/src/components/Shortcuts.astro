@@ -2,7 +2,7 @@
 /**
  * Keyboard layer: every global binding on the site, plus the `?` overlay
  * that documents them. The palette owns its own keys (⌘K, /, arrows, Esc)
- * and the display panel owns its popover — this file only handles the
+ * and the display panel owns its popover, this file only handles the
  * single-key commands and the help dialog.
  */
 import type { T } from "../i18n";
@@ -117,7 +117,7 @@ const groups = [
     }
     if (e.metaKey || e.ctrlKey || e.altKey || typing()) return;
 
-    // "?" — the sheet. Requires shift, so it can't collide with typing.
+    // "?", the sheet. Requires shift, so it can't collide with typing.
     if (e.key === "?") {
       e.preventDefault();
       isOpen() ? close() : open();

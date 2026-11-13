@@ -15,11 +15,11 @@ import type { Dict } from "./en";
 
 export const am: Dict & Record<string, string> = {
   // ── Document metadata ─────────────────────────────────────
-  "meta.title": "ናትናኤል ውቤት — ሶፍትዌር ኢንጂነር",
+  "meta.title": "ናትናኤል ውቤት · ሶፍትዌር ኢንጂነር",
   "meta.description":
-    "ናትናኤል ውቤት — ከኢትዮጵያ ባህር ዳር ጨዋታዎች፣ መድረኮች፣ ፕሮቶኮሎችና የደህንነት መሣሪያዎች የሚሠራ ሶፍትዌር ኢንጂነር እና ፊል-ስታክ ወይዘር።",
+    "ናትናኤል ውቤት · በኢትዮጵያ ባህር ዳር የሚኖር ሶፍትዌር ኢንጂነር፣ ጨዋታዎችን፣ የሚረጋገጡ መዝገቦችንና የደህንነት መሣሪያዎችን የሚሠራ፣ ስለ ፊዚክስና ፍልስፍናም የሚጽፍ።",
   "meta.descriptionCounted":
-    "ከተለይተው አደጋ ያላቸው ጨዋታዎች፣ ምስክር የሚያደርጉ ፕሮቶኮሎች፣ የሚሸጡ መድረኮች። {live} ቀጥታ የሚሰሩ ማስተላለፊያዎች፣ {repos} የግል ማከማቻዎች፣ የተወዳደሩ ሽጥራዎች — እና ከባህር ዳር፣ ኢትዮጵያ የአስራ ሦስት ዓመት ሥራ።",
+    "{live} ቀጥታ የሚሰሩ ማስተላላፊያዎች፣ {repos} የግል ማከማቻዎች፣ እና በባህር ዳር፣ ኢትዮጵያ ከአስራ ሦስት ዓመት ሶፍትዌር ግንባታ የተገኘ የተወዳደረ ሥራ።",
 
   // ── Nav ───────────────────────────────────────────────────
   "nav.role": "ሶፍትዌር ኢንጂነር",
@@ -72,7 +72,7 @@ export const am: Dict & Record<string, string> = {
   "hero.utc": "EAT",
   "hero.liveCount": "{n} ቀጥታ ማስተላለፊያ",
   "hero.lead":
-    "የአደጋ ጋር የሚጫወቱ [[ጨዋታዎች]]፣ [[ምስክር የሚያደርጉ ፕሮቶኮሎች]] እና [[የሚሸጡ መድረኮች]] እየሠራሁ ነው — ከጥሬ ገንዘብ የሚቀበል የቴሌግራም ቢንጎ ክፍል፣ እስከ ባዊትኮይን ተመስርቶ የተጠቀሰ ማስመዝግቢያ መዝገብ፣ እስከ ከመጀመሪያውኔ የጀመርኩት የደህንነት መሣሪያዎች ድረስ። ከሥራ በኋላ [[አንፃራዊነትንና የመገለጥነትን]]፣ እንዲሁም [[ካንትንና ሄገል]] እየተከታከሁ ነው።",
+    "ከ2013 ጀምሮ ኮድ እጽፋለሁ። የጀመርኩት በbatch ስክሪፕቶችና በጭራሽ ያልተውኩት ጥያቄ ነው፦ ማሽን ምን ድረስ ልትታመን ትችላለች? ያ ጥያቄ በእውነተኛ ገንዘብ የሚጫወቱ ጨዋታዎች፣ በባዊትኮይን የተመሠረተ የጥቅስ መዝገብና የደህንነት መሣሪያዎች ሆነ። ወደ [[ፊዚክስና ፍልስፍና]]ም መራኝ፣ እነሱንም አጠናለሁ፣ በድምፅ አስተምራለሁ።",
   "hero.ctaWork": "ሥራውን አሳይ →",
   "hero.hint": "⌘K ወይም / ሁሉንም ፈልግ · ? ለቁልፍ አቁሮች",
   "hero.stat.deploy.k": "ቀጥታ ማስተላለፊያ",
@@ -93,7 +93,7 @@ export const am: Dict & Record<string, string> = {
   "sec.deployments.eyebrow": "ክፍል 01 · ማስተላለፊያዎች",
   "sec.deployments.title": "የተላከ\nና የሚደረስ",
   "sec.deployments.lead":
-    "ከዚህ በታች ያሉት ሁሉም ድረ-ገጾች ይህ ገጽ በሚሠራበት ጊዜ ጠይቀዋል። የሚያዩት ሁኔታ ትውስታ አይደለም — የተገነባ የ HTTP መልስ ነው።",
+    "ከዚህ በታች ያሉት ሁሉም ድረ-ገጾች ይህ ገጽ በሚሠራበት ጊዜ ጠይቀዋል። የሚያዩት ሁኔታ ትውስታ አይደለም። የተገነባ የ HTTP መልስ ነው።",
   "sec.deployments.responding": "{{live}} / {total} የሚመልሱ",
   "sec.deployments.archived": "· <<{n}>> የተቀመጡ",
   "sec.deployments.probe": "በبناء ጊዜ የተመረመረ",
@@ -157,7 +157,7 @@ export const am: Dict & Record<string, string> = {
   "sec.mind.eyebrow": "ክፍል 03 · ውስጣዊው",
   "sec.mind.title": "ስላልሠራሁ\nየሚያሰብኩበት ነገር",
   "sec.mind.lead":
-    "ሥራው የሚታየው ግማሽ ብቻ ነው። ከእነካቸው በታች ያሉት እነዚህ ናቸው — እና አትክልት አይደሉም፣ የሥራው ምንጭ ናቸው።",
+    "ሥራው የሚታየው ግማሽ ብቻ ነው። ከእነካቸው በታች ያሉት እነዚህ ናቸው፣ እና አትክልት አይደሉም፣ የሥራው ምንጭ ናቸው።",
   "sec.mind.youtube": "ዩቲዩብ · {handle}",
   "sec.mind.watch": "አሳይ",
 
@@ -165,7 +165,7 @@ export const am: Dict & Record<string, string> = {
   "sec.vault.eyebrow": "ክፍል 04 · ቤተመዛግብት",
   "sec.vault.title": "እያንዳንዱ ገጽ፣\nበሦስት አቅጣጫ",
   "sec.vault.lead":
-    "እነዚህ አጋዣዎች ባውታሪው [[cv.pdf]] የተቀረጹ ቀጥታ ገጾች ናቸው — ከእጅጉ ሰነድ ተውጣ በአካባቢ ማሰሪያ ዙር ላይ ተለጥፈዋል። ለማዞር ጎትት።",
+    "እነዚህ አጋዣዎች ባውታሪው [[cv.pdf]] የተቀረጹ ቀጥታ ገጾች ናቸው። ከእጅጉ ሰነድ ተውጣ በአካባቢ ማሰሪያ ዙር ላይ ተለጥፈዋል። ለማዞር ጎትት።",
   "sec.vault.download": "PDF አውርድ",
   "sec.vault.drag": "ጎትት",
   "sec.vault.advance": "ለቀጣይ ተንቀሳቅስ",
@@ -185,30 +185,30 @@ export const am: Dict & Record<string, string> = {
   "sec.photos.eyebrow": "ከመያያው ውጭ · የግል",
   "sec.photos.title": "ሰውዎ ነው፣\nመገለጫው አይደለም",
   "sec.photos.lead":
-    "የግል ፎቶዎች፣ ምንም ማስተካከል የለም። በመጀመሪያ ግርጌ ይጀምራሉ፤ በማይዝ ግን ወደ ቀለም ይመለሳሉ — እዚህ ያሉት ሌሎች ሁሉም ደንብ እንደዚህ ነው: ስፈልግ ብቻ ምልክቱን ታገኛለህ።",
+    "የግል ፎቶዎች፣ ምንም ማስተካከል የለም። በመጀመሪያ ግርጌ ይጀምራሉ፤ በማይዝ ግን ወደ ቀለም ይመለሳሉ። እዚህ ያሉት ሌሎች ሁሉም ደንብ እንደዚህ ነው: ስፈልግ ብቻ ምልክቱን ታገኛለህ።",
   "sec.photos.caption": "ናትናኤል ውቤት",
-  "sec.photos.alt": "ናትናኤል ውቤት — የግል ፎቶ {n}",
+  "sec.photos.alt": "ናትናኤል ውቤት · የግል ፎቶ {n}",
 
   // ── Section 08 · Contact ──────────────────────────────────
   "sec.connect.eyebrow": "ክፍል 06 · አግኙኝ",
   "sec.connect.title": "እንሥራ\nማንኛውንም\n{{የሚላክ።}}",
-  "sec.connect.termTitle": "ናቲ — አግኙኝ",
+  "sec.connect.termTitle": "ናቲ · አግኙኝ",
   "sec.connect.whoami": "ማንነቴ",
-  "sec.connect.whoamiOut": "ናትናኤል ውቤት — ሶፍትዌር ኢንጂነር",
+  "sec.connect.whoamiOut": "ናትናኤል ውቤት · ሶፍትዌር ኢንጂነር",
   "sec.connect.location": "አካባቢ",
   "sec.connect.locationOut": "ባህር ዳር፣ ኢትዮጵያ <<· UTC+3>>",
   "sec.connect.status": "ሁኔታ",
   "sec.connect.open": "ለሥራ ክፍት",
   "sec.connect.termPlaceholder": "'hire' ወይም 'help' ይጻፉ…",
   "sec.connect.copyHint": "ለመቅዳት መልሱን ይጫኑ",
-  "sec.connect.cmd.hire": "natyw4122@gmail.com ይላኩ — ብዙ ጊዜ በቀን ውስጥ ይመልሳል።",
+  "sec.connect.cmd.hire": "natyw4122@gmail.com ይላኩ፣ ብዙ ጊዜ በቀን ውስጥ ይመልሳል።",
   "sec.connect.cmd.help": "ትዕዛዞች: hire · work · stack · github · tg · copy · clear",
   "sec.connect.cmd.work": "{live} ቀጥታ ማስተላለፊያ · {repos} ማከማቻ · {awards} የውድድር ቦታ",
   "sec.connect.cmd.stack": "react · typescript · ionic · capacitor · next · vue · python · three.js · firebase · supabase",
   "sec.connect.cmd.github": "→ github.com/natnael-wubet",
   "sec.connect.cmd.tg": "→ t.me/nnaty_w20",
   "sec.connect.cmd.hi": "ሰላም። 'help' ይጻፉ።",
-  "sec.connect.cmd.unknown": "ትዕዛዝ አልተገኘም: {cmd} — 'help' ይሞክሩ",
+  "sec.connect.cmd.unknown": "ትዕዛዝ አልተገኘም: {cmd}። 'help' ይሞክሩ",
   "sec.connect.copy": "ቅዳ",
   "sec.connect.copied": "ተቀድቷል ✓",
 
@@ -284,7 +284,7 @@ export const am: Dict & Record<string, string> = {
   "palette.opt.brief": "የተዘጋጀ መግለጫ",
   "palette.opt.briefMeta": "ለቡድን መግለጫ ያዘጋጁ",
   "palette.opt.fit": "የሚና ተስማሚነት ፍተሻ",
-  "palette.opt.fitMeta": "የስራ መግለጫ ይለጥፉ — በአካባቢ የሚለካ",
+  "palette.opt.fitMeta": "የስራ መግለጫ ይለጥፉ፣ በአካባቢ የሚለካ",
   "palette.opt.langAm": "ወደ አማርኛ ቀይር",
   "palette.opt.langAmMeta": "ድር ጣቢያውን በአማርኛ አሳይ",
   "palette.opt.langEn": "ወደ እንግሊዝኛ ቀይር",
@@ -375,7 +375,7 @@ export const am: Dict & Record<string, string> = {
   "fit.eyebrow": "የተስማሚነት ፍተሻ",
   "fit.title": "ይህ ሚና ይስማማል?",
   "fit.sub":
-    "የሚና መግለጫ ይለጥፉ። ተስማሚነቱ በዚህ ገጽ ላይ ካለው ይፋዊ መዝገብ ጋር ይለካል — በአሳሽዎ ውስጥ፣ ምንም ሳይላክ።",
+    "የሚና መግለጫ ይለጥፉ። ተስማሚነቱ በዚህ ገጽ ላይ ካለው ይፋዊ መዝገብ ጋር ይለካል፣ በአሳሽዎ ውስጥ፣ ምንም ሳይላክ።",
   "fit.inputLabel": "የሚና መግለጫ",
   "fit.placeholder": "የስራ መግለጫውን እዚህ ይለጥፉ…",
   "fit.samples": "ናሙና ይሞክሩ",
@@ -397,7 +397,7 @@ export const am: Dict & Record<string, string> = {
   "fit.emptyTitle": "ለመጀመር የሚና መግለጫ ይለጥፉ።",
   "fit.emptyBody":
     "የተለዩ ቃላት በዚህ ገጽ ላይ ካሉ ፕሮጀክቶች፣ ማከማቻዎችና ክህሎቶች ጋር ይነጻጸራሉ። ውጤቱ ስለ ክፍተቶች ቀና ነው።",
-  "fit.tooShort": "ትንሽ ተጨማሪ ዝርዝር ይጨምሩ — አንድ ወይም ሁለት ዓረፍተ ነገር በቂ ነው።",
+  "fit.tooShort": "ትንሽ ተጨማሪ ዝርዝር ይጨምሩ። አንድ ወይም ሁለት ዓረፍተ ነገር በቂ ነው።",
   "fit.noTerms": "እስካሁን የታወቀ ቃል የለም። ቋንቋ፣ ፍሬምወርክ፣ መሳሪያ ወይም መስክ ይጥቀሱ።",
   "fit.coverage": "ሽፋን",
   "fit.coverageOf": "{matched} ከ{total} ከተጠቀሱት ምልክቶች ይስማማሉ",
@@ -408,14 +408,14 @@ export const am: Dict & Record<string, string> = {
   "fit.noGaps": "በዚህ መግለጫ በተጠቀሱት ውስጥ የቴክኒክ ክፍተት የለም።",
   "fit.evidence": "በቅድሚያ የሚቀርብ ማስረጃ",
   "fit.lens": "ምርጥ እይታ",
-  "fit.noLens": "ግልጽ እይታ ገና የለም — ተጨማሪ ዝርዝር ይጨምሩ።",
+  "fit.noLens": "ግልጽ እይታ ገና የለም። ተጨማሪ ዝርዝር ይጨምሩ።",
   "fit.openBrief": "የ{lens} ማጠቃለያ ክፈት",
   "fit.project": "ፕሮጀክት",
   "fit.repo": "ማከማቻ",
   "fit.hits": "{count} ግጥሚያዎች",
   "fit.copy": "የተስማሚነት ማስታወሻ ቅዳ",
   "fit.copied": "የተስማሚነት ማስታወሻ ተቀድቷል",
-  "fit.copyFailed": "ቅንጥብ ሰሌዳ አይገኝም — ማስታወሻውን መርጠው ይቅዱ",
+  "fit.copyFailed": "ቅንጥብ ሰሌዳ አይገኝም። ማስታወሻውን መርጠው ይቅዱ",
   "fit.clear": "አጽዳ",
   "fit.cleared": "የተስማሚነት ፍተሻ ጸድቷል",
   "fit.privacy": "በአካባቢ ብቻ · ምንም አልተላከም · እስኪያጸዱ ድረስ በዚህ ትር ውስጥ ይቆያል",
@@ -433,7 +433,7 @@ export const am: Dict & Record<string, string> = {
   "machine.eyebrow": "ለማሽን የሚነበብ",
   "machine.title": "ተመሳሳይ መዝገብ፣ ለመሣሪያዎችዎ።",
   "machine.sub":
-    "ቀኖናዊ የJSON መገለጫ፣ የLLM መረጃ ጠቋሚና የMarkdown ሲቪ — በግንባታ ጊዜ ከዚህ ገጽ ውሂብ የተፈጠሩ፣ በእጥፍ ያልተጻፉ።",
+    "ቀኖናዊ የJSON መገለጫ፣ የLLM መረጃ ጠቋሚና የMarkdown ሲቪ፣ በግንባታ ጊዜ ከዚህ ገጽ ውሂብ የተፈጠሩ፣ በእጥፍ ያልተጻፉ።",
   "machine.facts": "{projects} ፕሮጀክቶች · {repos} ማከማቻዎች · {awards} ሽልማቶች",
   "machine.profile": "profile.json",
   "machine.profileMeta": "ቀኖናዊ · ከስኪማ ጋር",
@@ -444,12 +444,12 @@ export const am: Dict & Record<string, string> = {
   "machine.copy": "መገለጫ ቅዳ",
   "machine.copyMeta": "JSON ወደ ቅንጥብ ሰሌዳ",
   "machine.copied": "የመገለጫ JSON ተቀድቷል",
-  "machine.copyFailed": "ቅንጥብ ሰሌዳ አይገኝም — profile.json ይክፈቱ",
+  "machine.copyFailed": "ቅንጥብ ሰሌዳ አይገኝም። profile.json ይክፈቱ",
   "machine.privacy": "ስታቲክ HTML · ኩኪ የለም · መከታተያ የለም",
   "machine.agentHint": "ኤጀንቶች፡ ከllms.txt ይጀምሩ",
   "machine.build": "ግንባታ",
   "palette.opt.profile": "የማሽን መገለጫ ቅዳ",
-  "palette.opt.profileMeta": "profile.json — ቀኖናዊ፣ ለኤጀንት የሚነበብ",
+  "palette.opt.profileMeta": "profile.json · ቀኖናዊ፣ ለኤጀንት የሚነበብ",
   "palette.opt.llms": "llms.txt ክፈት",
   "palette.opt.llmsMeta": "ለLLM መረጃ ጠቋሚ",
   "palette.jump.machine": "ለማሽን የሚነበብ መዝገብ",

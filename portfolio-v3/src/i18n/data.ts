@@ -4,7 +4,7 @@
  * The English data file stays the single source of truth: entries are keyed by
  * their exact English string, and `td()` falls back to English when a key is
  * missing. That keeps the data files readable and means adding a repo or a
- * deployment never breaks a build — it just renders in English until someone
+ * deployment never breaks a build, it just renders in English until someone
  * adds a line here.
  *
  * Keys therefore must match the data strings byte for byte, including curly
@@ -78,8 +78,8 @@ export const amData: Record<string, string> = {
   "Cross-platform car marketplace for the Ethiopian market. Rich listing detail, geo-based discovery, seller dashboards and Firebase-backed realtime data for vehicle inventory.":
     "ለኢትዮጵያ ገበያ የተዘጋጀ በሁሉም መድረኮች የሚሠራ የመኪና ገበያ። የበለጸገ የማስታወቂያ ዝርዝር፣ በአካባቢ ላይ የተመሠረተ ፍለጋ፣ የሻጭ ዳሽቦርዶችና በFirebase የተደገፈ ቀጥታ የመኪና ክምችት መረጃ።",
   "Calendar, journal and todos": "የቀን መቁጠሪያ፣ ማስታወሻ መጽሐፍና ተግባራት",
-  "A focused daily planner fusing a month calendar, journalling and a task list into one surface — with optimistic writes, keyboard-first entry and undo on destructive actions.":
-    "የወር የቀን መቁጠሪያ፣ ማስታወሻ መጻፍና የተግባር ዝርዝርን በአንድ ገጽ ላይ የሚያዋህድ ያተኮረ የዕለት እቅድ አዘጋጅ — በብሩህ ተስፋ የሚጻፉ ማስቀመጦች፣ በቁልፍ ሰሌዳ ቀዳሚ ግቤትና አጥፊ ተግባራት ላይ መመለሻ።",
+  "A focused daily planner fusing a month calendar, journalling and a task list into one surface, with optimistic writes, keyboard-first entry and undo on destructive actions.":
+    "የወር የቀን መቁጠሪያ፣ ማስታወሻ መጻፍና የተግባር ዝርዝርን በአንድ ገጽ ላይ የሚያዋህድ ያተኮረ የዕለት እቅድ አዘጋጅ፣ በብሩህ ተስፋ የሚጻፉ ማስቀመጦች፣ በቁልፍ ሰሌዳ ቀዳሚ ግቤትና አጥፊ ተግባራት ላይ መመለሻ።",
   "Sketch to refined image": "ከስዕል ወደ የተጣራ ምስል",
   "Draw a rough scribble on any canvas and an AI model refines it into a finished piece. A compact demo of the sketch-conditioning diffusion pipeline end to end.":
     "በማንኛውም ሸራ ላይ ሻካራ ስዕል ይሳሉ፤ የAI ሞዴል ወደ የተጠናቀቀ ሥራ ያጣራዋል። የስዕል-ሁኔታ ማመንጨት (diffusion) መስመርን ከመጀመሪያ እስከ መጨረሻ የሚያሳይ አነስተኛ ማሳያ።",
@@ -87,17 +87,17 @@ export const amData: Record<string, string> = {
   "Objective journaling built on Aurelia with a rangy rich-text editor, drag-and-drop goal manipulation via interact.js, and a deliberate offline-tolerant architecture.":
     "በAurelia ላይ የተገነባ የግብ ማስታወሻ መጽሐፍ፣ ከrangy ሀብታም-ጽሑፍ አርታኢ፣ በinteract.js የጎትትና-ጣል የግብ አያያዝ፣ እና ከመስመር ውጭም የሚሠራ ሆን ተብሎ የተነደፈ አርክቴክቸር ጋር።",
   "Digital reading client": "ዲጂታል አንባቢ",
-  "A focused reading application with a paginated reader, library management and persistent reading progress — shipped to Firebase Hosting.":
-    "በገጽ የተከፋፈለ አንባቢ፣ የቤተ-መጽሐፍት አስተዳደርና የሚቀጥል የንባብ ሂደት ያለው ያተኮረ የንባብ መተግበሪያ — ወደ Firebase Hosting የተላከ።",
+  "A focused reading application with a paginated reader, library management and persistent reading progress. Shipped to Firebase Hosting.":
+    "በገጽ የተከፋፈለ አንባቢ፣ የቤተ-መጽሐፍት አስተዳደርና የሚቀጥል የንባብ ሂደት ያለው ያተኮረ የንባብ መተግበሪያ፣ ወደ Firebase Hosting የተላከ።",
   "Ethiopia's networking platform": "የኢትዮጵያ የመረብ መድረክ",
-  "Professional networking for Ethiopia — profiles, connection graphs, event discovery and an admin console, delivered as an installable Capacitor app across Android, iOS and web.":
-    "ለኢትዮጵያ ሙያዊ መረብ — መገለጫዎች፣ የግንኙነት ግራፎች፣ የዝግጅት ፍለጋና የአስተዳዳሪ ኮንሶል፣ በAndroid፣ iOS እና ድረ ላይ እንደሚጫን የCapacitor መተግበሪያ ቀርቧል።",
+  "Professional networking for Ethiopia: profiles, connection graphs, event discovery and an admin console, delivered as an installable Capacitor app across Android, iOS and web.":
+    "ለኢትዮጵያ ሙያዊ መረብ፣ መገለጫዎች፣ የግንኙነት ግራፎች፣ የዝግጅት ፍለጋና የአስተዳዳሪ ኮንሶል፣ በAndroid፣ iOS እና ድረ ላይ እንደሚጫን የCapacitor መተግበሪያ ቀርቧል።",
   "Desktop creative studio": "የዴስክቶፕ የፈጠራ ስቱዲዮ",
   "A general-purpose creative studio built as a Vue 3 + Electron desktop app with Three.js/TroisJS 3D scene composition, scroll-driven animation via ScrollMagic and Firebase backend.":
     "በVue 3 + Electron የዴስክቶፕ መተግበሪያ ሆኖ የተገነባ አጠቃላይ የፈጠራ ስቱዲዮ፣ ከThree.js/TroisJS ባለ ሶስት አቅጣጫ ትእይንት ውህደት፣ በScrollMagic የሚመራ አኒሜሽንና የFirebase የኋላ ጫፍ ጋር።",
   "Telegram-native game client": "ለTelegram የተዘጋጀ የጨዋታ ደንበኛ",
-  "The stripped, Telegram-first build of Big XO — haptic feedback, custom keyboard handling and safe-area aware layout for running inside a Mini App viewport.":
-    "የBig XO ቀጭን፣ Telegram-ቀዳሚ ግንባታ — የመዳሰሻ ግብረ-መልስ፣ ብጁ የቁልፍ ሰሌዳ አያያዝና በMini App እይታ ውስጥ ለመሮጥ የቦታ-ደህንነት ንቁ አቀማመጥ።",
+  "The stripped, Telegram-first build of Big XO: haptic feedback, custom keyboard handling and safe-area aware layout for running inside a Mini App viewport.":
+    "የBig XO ቀጭን፣ Telegram-ቀዳሚ ግንባታ፣ የመዳሰሻ ግብረ-መልስ፣ ብጁ የቁልፍ ሰሌዳ አያያዝና በMini App እይታ ውስጥ ለመሮጥ የቦታ-ደህንነት ንቁ አቀማመጥ።",
 
   /* ─── Awards ─────────────────────────────────────────────── */
   "1st": "1ኛ",
@@ -141,17 +141,17 @@ export const amData: Record<string, string> = {
   /* ─── Origin ─────────────────────────────────────────────── */
   "Thirteen years of code, one straight line from a novel about symbols to writing the symbols myself.":
     "የአስራ ሦስት ዓመት ኮድ፣ ከምልክቶች ስለሚናገር ልብወለድ ወደ ምልክቶችን ራሴ መጻፍ የሚወስድ አንድ ቀጥተኛ መስመር።",
-  "I wrote my first batch code. A calculator, then a manager that copied and moved files in bulk — small things, but they taught me that a machine will do exactly what you tell it, and nothing more.":
-    "የመጀመሪያዬን batch ኮድ ጻፍኩ። ካልኩሌተር፣ ከዚያ ፋይሎችን በጅምላ የሚቀዳና የሚያንቀሳቅስ አስተዳዳሪ — ትንንሽ ነገሮች፣ ግን ማሽን የምትነግራትን በትክክል እንደምትሠራና ከዚያ በላይ እንደማትሠራ አስተማሩኝ።",
+  "I wrote my first batch code. A calculator, then a manager that copied and moved files in bulk. Small things, but they taught me that a machine will do exactly what you tell it, and nothing more.":
+    "የመጀመሪያዬን batch ኮድ ጻፍኩ። ካልኩሌተር፣ ከዚያ ፋይሎችን በጅምላ የሚቀዳና የሚያንቀሳቅስ አስተዳዳሪ፣ ትንንሽ ነገሮች፣ ግን ማሽን የምትነግራትን በትክክል እንደምትሠራና ከዚያ በላይ እንደማትሠራ አስተማሩኝ።",
   "The hook": "መስህቡ",
-  "What pulled me in was cryptography. I read The Da Vinci Code and could not let go of the idea that a string of characters could hold a secret. So I started writing my own encryption algorithms, moved into .NET, and then fell for Processing — enough that I rebuilt the whole thing for the terminal. That rebuild became ConAnim.":
-    "ወደ ውስጥ የሳበኝ ምስጢራዊ ጽሑፍ (cryptography) ነበር። The Da Vinci Code አንብቤ የቁምፊዎች ሕብረት ምስጢር ሊይዝ ይችላል የሚለውን ሐሳብ ልተው አልቻልኩም። ስለዚህ የራሴን የምስጠራ አልጎሪዝሞች መጻፍ ጀመርኩ፣ ወደ .NET ተዛወርኩ፣ ከዚያ በProcessing ተደሰትኩ — በቂ ስለነበር ሙሉውን ነገር ለተርሚናል እንደገና ገነባሁት። ያ ግንባታ ConAnim ሆነ።",
-  "Linux, C, Python. Then JavaScript stole my heart and never gave it back — Node for servers, Tauri with Rust for native, and three.js and p5.js for the experimental territory where code stops being utilitarian and starts being fun.":
-    "Linux፣ C፣ Python። ከዚያ JavaScript ልቤን ሰረቀችና አልመለሰችም — Node ለአገልጋዮች፣ Tauri ከRust ጋር ለኔቲቭ፣ three.js እና p5.js ደግሞ ኮድ ከጥቅም ማለፍ ወደ ደስታ ለሚቀየርበት የሙከራ ግዛት።",
-  "The AI wave fascinates me regardless of the hype: we can reach a pseudo-mind, make it dream, talk and reason. I have been deep in AI art since before it had a polite name — I believe it will sit beside photography the way photography sits beside painting.":
-    "የAI ማዕበል ከጩኸቱ ውጪ ያስደንቀኛል፡ ሐሰተኛ-አእምሮ ልንደርስ፣ እንዲያልም፣ እንዲናገርና እንዲያስብ ማድረግ እንችላለን። ጥሩ ስም ከመኖሩ በፊት ጀምሮ በAI ጥበብ ውስጥ ጠልቄ ነበር — ፎቶግራፊ ከሥዕል ጎን እንደምትቀመጥ ሁሉ እሱም ከፎቶግራፊ ጎን እንደሚቀመጥ አምናለሁ።",
-  "I grew up in Bahir Dar, in a family that valued hard work, community and respect for elders. Ethiopian cuisine, music and the coffee ceremony are not decoration on my life — they are the structure of it. My grandfather was a farmer and craftsman who told stories of ancestors who fought for independence, and every Enkutatesh the whole family still gathers for dance, music and food.":
-    "በባህር ዳር አደግሁ፣ ጠንካራ ሥራን፣ ማህበረሰብንና ለአዛውንት አክብሮትን በሚያከብር ቤተሰብ ውስጥ። የኢትዮጵያ ምግብ፣ ሙዚቃና የቡና ሥነ ሥርዓት በሕይወቴ ላይ ጌጥ አይደሉም — የሕይወቴ መዋቅር ናቸው። አያቴ ለነጻነት ስለተጋደሉ ቅድመ አያቶች ተረት የሚናገር ገበሬና የእጅ ባለሙያ ነበር፣ በየእንቁጣጣሹም መላው ቤተሰብ ለዳንስ፣ ሙዚቃና ምግብ አብሮ ይሰበሰባል።",
+  "What pulled me in was cryptography. I read The Da Vinci Code and could not let go of the idea that a string of characters could hold a secret. So I started writing my own encryption algorithms, moved into .NET, and then fell for Processing, enough that I rebuilt the whole thing for the terminal. That rebuild became ConAnim.":
+    "ወደ ውስጥ የሳበኝ ምስጢራዊ ጽሑፍ (cryptography) ነበር። The Da Vinci Code አንብቤ የቁምፊዎች ሕብረት ምስጢር ሊይዝ ይችላል የሚለውን ሐሳብ ልተው አልቻልኩም። ስለዚህ የራሴን የምስጠራ አልጎሪዝሞች መጻፍ ጀመርኩ፣ ወደ .NET ተዛወርኩ፣ ከዚያ በProcessing ተደሰትኩ፣ በቂ ስለነበር ሙሉውን ነገር ለተርሚናል እንደገና ገነባሁት። ያ ግንባታ ConAnim ሆነ።",
+  "Linux, C, Python. Then JavaScript stole my heart and never gave it back. Node for servers, Tauri with Rust for native, and three.js and p5.js for the experimental territory where code stops being utilitarian and starts being fun.":
+    "Linux፣ C፣ Python። ከዚያ JavaScript ልቤን ሰረቀችና አልመለሰችም፣ Node ለአገልጋዮች፣ Tauri ከRust ጋር ለኔቲቭ፣ three.js እና p5.js ደግሞ ኮድ ከጥቅም ማለፍ ወደ ደስታ ለሚቀየርበት የሙከራ ግዛት።",
+  "The AI wave fascinates me regardless of the hype: we can reach a pseudo-mind, make it dream, talk and reason. I have been deep in AI art since before it had a polite name. I believe it will sit beside photography the way photography sits beside painting.":
+    "የAI ማዕበል ከጩኸቱ ውጪ ያስደንቀኛል፡ ሐሰተኛ-አእምሮ ልንደርስ፣ እንዲያልም፣ እንዲናገርና እንዲያስብ ማድረግ እንችላለን። ጥሩ ስም ከመኖሩ በፊት ጀምሮ በAI ጥበብ ውስጥ ጠልቄ ነበር፣ ፎቶግራፊ ከሥዕል ጎን እንደምትቀመጥ ሁሉ እሱም ከፎቶግራፊ ጎን እንደሚቀመጥ አምናለሁ።",
+  "I grew up in Bahir Dar, in a family that valued hard work, community and respect for elders. Ethiopian cuisine, music and the coffee ceremony are not decoration on my life. They are the structure of it. My grandfather was a farmer and craftsman who told stories of ancestors who fought for independence, and every Enkutatesh the whole family still gathers for dance, music and food.":
+    "በባህር ዳር አደግሁ፣ ጠንካራ ሥራን፣ ማህበረሰብንና ለአዛውንት አክብሮትን በሚያከብር ቤተሰብ ውስጥ። የኢትዮጵያ ምግብ፣ ሙዚቃና የቡና ሥነ ሥርዓት በሕይወቴ ላይ ጌጥ አይደሉም፣ የሕይወቴ መዋቅር ናቸው። አያቴ ለነጻነት ስለተጋደሉ ቅድመ አያቶች ተረት የሚናገር ገበሬና የእጅ ባለሙያ ነበር፣ በየእንቁጣጣሹም መላው ቤተሰብ ለዳንስ፣ ሙዚቃና ምግብ አብሮ ይሰበሰባል።",
 
   /* ─── Timeline ───────────────────────────────────────────── */
   "First batch code": "የመጀመሪያ ባች ኮድ",
@@ -159,8 +159,8 @@ export const amData: Record<string, string> = {
     "ካልኩሌተር፣ ከዚያ ፋይሎችን በጅምላ የሚቀዳና የሚያንቀሳቅስ አስተዳዳሪ። ሶፍትዌር የጠየቅኩትን ለመጀመሪያ ጊዜ ያደረገልኝ ጊዜ።",
   Origin: "መነሻ",
   "Fell for cryptography": "በምስጢራዊ ጽሑፍ ተደሰትኩ",
-  "The Da Vinci Code started it. Wrote my own encryption algorithms, moved into .NET, and became obsessed with Processing — later rebuilding it for the terminal as ConAnim.":
-    "The Da Vinci Code ጀመረው። የራሴን የምስጠራ አልጎሪዝሞች ጻፍኩ፣ ወደ .NET ተዛወርኩ፣ በProcessingም ተማረክሁ — በኋላም ለተርሚናል እንደ ConAnim ገነባሁት።",
+  "The Da Vinci Code started it. Wrote my own encryption algorithms, moved into .NET, and became obsessed with Processing, later rebuilding it for the terminal as ConAnim.":
+    "The Da Vinci Code ጀመረው። የራሴን የምስጠራ አልጎሪዝሞች ጻፍኩ፣ ወደ .NET ተዛወርኩ፣ በProcessingም ተማረክሁ፣ በኋላም ለተርሚናል እንደ ConAnim ገነባሁት።",
   Security: "ደህንነት",
   "Left the comfortable path. Systems level, robotics with Lego Mindstorm in C++, and Processing/Java for anything visual.":
     "ምቹ መንገዱን ተውኩ። የሥርዓት ደረጃ፣ ከLego Mindstorm ጋር በC++ ሮቦቲክስ፣ እና ለማንኛውም የሚታይ ነገር Processing/Java።",
@@ -170,8 +170,8 @@ export const amData: Record<string, string> = {
     "Node ለአገልጋዮች፣ Tauri ከRust ጋር ለኔቲቭ መተግበሪያዎች፣ three.js እና p5.js ለሙከራ ስሜት። አሁንም የምመርጠው ቋንቋ እሱ ነው።",
   Web: "ድረገጽ",
   "The AI wave": "የAI ማዕበል",
-  "Fascinated that we can access a pseudo-mind — make it dream, talk, reason. Deep in AI art long before it had a polite name.":
-    "ሐሰተኛ-አእምሮ መድረስ ስንችል አስደንቆኛል — እንዲያልም፣ እንዲናገር፣ እንዲያስብ። ጥሩ ስም ከመኖሩ በፊት በAI ጥበብ ውስጥ ጠልቄ ነበር።",
+  "Fascinated that we can access a pseudo-mind: make it dream, talk, reason. Deep in AI art long before it had a polite name.":
+    "ሐሰተኛ-አእምሮ መድረስ ስንችል አስደንቆኛል፣ እንዲያልም፣ እንዲናገር፣ እንዲያስብ። ጥሩ ስም ከመኖሩ በፊት በAI ጥበብ ውስጥ ጠልቄ ነበር።",
   AI: "AI",
   "Physics, philosophy, and combining them": "ፊዚክስ፣ ፍልስፍናና ሁለቱን ማዋሃድ",
   "Self-studying philosophy, teaching physics on YouTube, and building the systems that tie all of it together. I see no reason to stop.":
@@ -181,8 +181,8 @@ export const amData: Record<string, string> = {
 
   /* ─── Disciplines ────────────────────────────────────────── */
   Physics: "ፊዚክስ",
-  "Relativity, emergence, simulation, quantum mechanics. Not as metaphor — I actually build the models. It started as self-study and turned into a channel I teach on.":
-    "አንፃራዊነት፣ መገለጥ፣ ማስመሰል፣ የኳንተም ሜካኒክስ። እንደ ምሳሌ አይደለም — ሞዴሎቹን በእውነት እገነባለሁ። በራስ ጥናት ተጀምሮ ወደምሰራበት ቻናል ተቀየረ።",
+  "Relativity, emergence, simulation, quantum mechanics. Not as metaphor. I actually build the models. It started as self-study and turned into a channel I teach on.":
+    "አንፃራዊነት፣ መገለጥ፣ ማስመሰል፣ የኳንተም ሜካኒክስ። እንደ ምሳሌ አይደለም፣ ሞዴሎቹን በእውነት እገነባለሁ። በራስ ጥናት ተጀምሮ ወደምሰራበት ቻናል ተቀየረ።",
   Relativity: "አንፃራዊነት",
   Emergence: "መገለጥ",
   Simulation: "ማስመሰል",
@@ -195,8 +195,8 @@ export const amData: Record<string, string> = {
   "German idealism": "የጀርመን ኢዲያሊዝም",
   Dialectics: "ዲያሌክቲክስ",
   Psychology: "ሳይኮሎጂ",
-  "How minds actually work — attention, bias, motivation. The reason interfaces are hard and the reason games are fun are the same reason.":
-    "አእምሮ በእውነት እንዴት እንደሚሠራ — ትኩረት፣ አድልዎ፣ ተነሳሽነት። በይነገጾች አስቸጋሪ የሆኑበት ምክንያትና ጨዋታዎች አስደሳች የሆኑበት ምክንያት አንድ ነው።",
+  "How minds actually work: attention, bias, motivation. The reason interfaces are hard and the reason games are fun are the same reason.":
+    "አእምሮ በእውነት እንዴት እንደሚሠራ፣ ትኩረት፣ አድልዎ፣ ተነሳሽነት። በይነገጾች አስቸጋሪ የሆኑበት ምክንያትና ጨዋታዎች አስደሳች የሆኑበት ምክንያት አንድ ነው።",
   Cognition: "ዕውቀት",
   Bias: "አድልዎ",
   Motivation: "ተነሳሽነት",
@@ -206,37 +206,37 @@ export const amData: Record<string, string> = {
   Feedback: "ግብረ-መልስ",
   Interdependence: "መደጋገፍ",
   Humanism: "ሂዩማኒዝም",
-  "People first, and the answer does not come from above. It is the reason I build anything at all — including the games that put real money on the line.":
-    "ሰዎች ቀዳሚ፣ መልሱም ከላይ አይመጣም። በእውነት የምገነባው ነገር ሁሉ ምክንያት እሱ ነው — በእውነተኛ ገንዘብ የሚወረውሩ ጨዋታዎችን ጨምሮ።",
+  "People first, and the answer does not come from above. It is the reason I build anything at all, including the games that put real money on the line.":
+    "ሰዎች ቀዳሚ፣ መልሱም ከላይ አይመጣም። በእውነት የምገነባው ነገር ሁሉ ምክንያት እሱ ነው፣ በእውነተኛ ገንዘብ የሚወረውሩ ጨዋታዎችን ጨምሮ።",
   Secular: "ዓለማዊ",
   Ethical: "ሥነ ምግባራዊ",
   Progress: "ዕድገት",
 
   /* ─── Repository dossiers ─────────────────────────────────── */
-  "ConAnim is a p5-style drawing API that renders into a terminal framebuffer. You call size(), point(), line(), rect() and display(); it resolves those calls into a character grid and prints the frame. The repository is the sketchbook around that idea — waveform plots, Lissajous line art, a snake, pong, a recursive tree, gravity — each one a single Script class.":
-    "ConAnim በp5 መልክ የተሠራ የስዕል API ነው፣ ወደ ተርሚናል ፍሬምባፈር የሚያቀርብ። size()፣ point()፣ line()፣ rect() እና display() ትጠራለህ፤ እሱም ጥሪዎቹን ወደ ቁምፊ ሰንጠረዥ ቀይሮ ፍሬሙን ያትማል። ማከማቻው በዚያ ሐሳብ ዙሪያ ያለ የስዕል ደብተር ነው — የሞገድ ግራፎች፣ የLissajous መስመር ጥበብ፣ እባብ፣ ፖንግ፣ ተደጋጋሚ ዛፍ፣ ስበት — እያንዳንዱ አንድ Script ክላስ።",
+  "ConAnim is a p5-style drawing API that renders into a terminal framebuffer. You call size(), point(), line(), rect() and display(); it resolves those calls into a character grid and prints the frame. Around that idea sits a sketchbook of waveform plots, Lissajous line art, a snake, pong, a recursive tree and gravity, each one a single Script class.":
+    "ConAnim በp5 መልክ የተሠራ የስዕል API ነው፣ ወደ ተርሚናል ፍሬምባፈር የሚያቀርብ። size()፣ point()፣ line()፣ rect() እና display() ትጠራለህ፤ እሱም ጥሪዎቹን ወደ ቁምፊ ሰንጠረዥ ቀይሮ ፍሬሙን ያትማል። ማከማቻው በዚያ ሐሳብ ዙሪያ ያለ የስዕል ደብተር ነው፣ የሞገድ ግራፎች፣ የLissajous መስመር ጥበብ፣ እባብ፣ ፖንግ፣ ተደጋጋሚ ዛፍ፣ ስበት፣ እያንዳንዱ አንድ Script ክላስ።",
   "A small P5py class holds a two-dimensional array of characters. point() writes one cell, line() samples every cell between two coordinates, rect() fills a range, and display() prints the grid. A sketch subclasses a Script object, sets a canvas size in cells, and draws inside the engine's loop.":
     "ትንሽ P5py ክላስ ባለ ሁለት አቅጣጫ የቁምፊ ድርድር ይይዛል። point() አንድ ሕዋስ ይጽፋል፣ line() በሁለት መጋጠሚያዎች መካከል ያሉትን ሕዋሶች ይነሳል፣ rect() ክልል ይሞላል፣ display() ደግሞ ሰንጠረዡን ያትማል። ስዕል የScript ነገርን ይወርሳል፣ የሸራ መጠን በሕዋሶች ያዘጋጃል፣ ከዚያ በኤንጂኑ ዑደት ውስጥ ይስላል።",
-  "It is the Processing instinct applied to the one surface that never needs a GPU: the terminal. The constraint is the point. At 200 by 30 cells you cannot hide behind resolution, so motion has to be legible as characters, and the frame budget is whatever clear and print cost.":
+  "It is the Processing instinct applied to the one surface that never needs a GPU: the terminal. The constraint does the work. At 200 by 30 cells you cannot hide behind resolution, so motion has to read as characters, and the frame budget is whatever clear and print cost.":
     "የProcessing ውስጣዊ ስሜት በጭራሽ GPU የማይፈልገው ገጽ ላይ ተተግብሯል፦ ተርሚናል። ገደቡ ራሱ ዓላማው ነው። በ200 በ30 ሕዋሶች በጥራት መደበቅ አትችልም፤ ስለዚህ እንቅስቃሴ በቁምፊዎች መነበብ አለበት፣ የፍሬም በጀቱም clear እና print የሚያስከፍሉት ነው።",
-  "The README is 174 bytes and a video, the repository commits __pycache__, and several files are workbench leftovers (runner.py hard-codes one demo, drawtest.py.save contains an unrelated Colorama example). The engine is real and readable; the packaging is still a workbench.":
+  "The README is 174 bytes and a video. The repository commits __pycache__, and several files are leftovers from the workbench: runner.py hard-codes one demo, and drawtest.py.save contains an unrelated Colorama example. The engine is real and readable; the packaging has not caught up.":
     "READMEው 174 ባይትና አንድ ቪዲዮ ነው፣ ማከማቻው __pycache__ ያካትታል፣ አንዳንድ ፋይሎችም የሥራ ጠረጴዛ ቅሪቶች ናቸው (runner.py አንድ ማሳያ ብቻ ይጽፋል፣ drawtest.py.save የማይገናኝ የColorama ምሳሌ ይዟል)። ኤንጂኑ እውነተኛና ሊነበብ የሚችል ነው፤ ማሸጊያው ግን አሁንም የሥራ ጠረጴዛ ነው።",
-  "A Windows GUI that repackages a .ps1 payload as .hta, .bat or .js, and can serve the result over HTTP — a delivery-format switcher for red-team style scripts.":
-    "የWindows GUI .ps1 ጭነትን እንደ .hta፣ .bat ወይም .js እንደገና የሚያሸግብ እና ውጤቱን በHTTP የሚያቀርብ — ለቀይ ቡድን መሰል ስክሪፕቶች የማድረሻ ቅርጽ ቀያይሪ።",
-  "The README is a five-line note with an email address, but the premise is clear: one payload, several execution surfaces. The engineering worth reading is in the wrappers and the HTTP delivery, not the interface.":
+  "A Windows GUI that repackages a .ps1 payload as .hta, .bat or .js, and can serve the result over HTTP. It is a delivery-format switcher for red-team style scripts.":
+    "የWindows GUI .ps1 ጭነትን እንደ .hta፣ .bat ወይም .js እንደገና የሚያሸግብ እና ውጤቱን በHTTP የሚያቀርብ፣ ለቀይ ቡድን መሰል ስክሪፕቶች የማድረሻ ቅርጽ ቀያይሪ።",
+  "The README is a five-line note with an email address. The premise is clear: one payload, several execution surfaces. The wrappers and the HTTP delivery carry the engineering; the interface is a shell around them.":
     "READMEው አምስት መስመር ማስታወሻና ኢሜይል ነው፣ ግን ሐሳቡ ግልጽ ነው፦ አንድ ጭነት፣ ብዙ የማስፈጸሚያ ገጾች። ሊነበብ የሚገባው ምህንድስና በመጠቅለያዎቹና በHTTP ማድረስ ውስጥ ነው፣ በገጹ አይደለም።",
   "A nationwide Ethiopian bus e-ticket system: search intercity routes, choose a seat, book it.":
     "በአገር አቀፍ ደረጃ የኢትዮጵያ አውቶቡስ ኢ-ቲኬት ሥርዓት፦ የከተማ መካከል መስመሮችን ፈልግ፣ መቀመጫ ምረጥ፣ ያዝ።",
-  "The README is a title and a Heroku link, so the repository has to speak for itself. Intercity bus inventory and seat allocation are harder than a CRUD demo, and that is the part worth judging.":
+  "The README is a title and a Heroku link, so the repository has to speak for itself. Intercity bus inventory and seat allocation are harder than a CRUD demo, and they are the part to judge.":
     "READMEው አርዕስትና የHeroku አገናኝ ነው፣ ስለዚህ ማከማቻው ራሱ መናገር አለበት። የከተማ መካከል አውቶቡስ ክምችትና የመቀመጫ ድልድል ከCRUD ማሳያ የበለጠ ከባድ ነው፣ ሊመዘን የሚገባውም ያ ክፍል ነው።",
-  "A research intelligence platform over OpenAlex, Semantic Scholar, Crossref and ORCID, with hybrid search and free-tier infrastructure end to end.":
+  "A research intelligence platform over OpenAlex, Semantic Scholar, Crossref and ORCID, with hybrid search and a free-tier stack from ingestion to deployment.":
     "በOpenAlex፣ Semantic Scholar፣ Crossref እና ORCID ላይ የተመሠረተ የምርምር ኢንተለጀንስ መድረክ፣ በድብልቅ ፍለጋና ከመጀመሪያ እስከ መጨረሻ በነጻ ደረጃ መሠረተ ልማት።",
-  "This is the most system-shaped repository in the list, and its README is an architecture document: folder map, ingestion packages, and a retrieval pipeline that fuses BM25 with vector search before reranking. It states the whole machine, not just the idea.":
+  "The most system-shaped repository in the list. Its README works as an architecture document: folder map, ingestion packages, and a retrieval pipeline that fuses BM25 with vector search before reranking. It describes the machine, not only the idea.":
     "ይህ በዝርዝሩ ውስጥ በጣም ሥርዓታዊ ቅርጽ ያለው ማከማቻ ነው፣ READMEውም የሥነ ሕንፃ ሰነድ ነው፦ የአቃፊ ካርታ፣ የመረጃ መግቢያ ጥቅሎች፣ እና BM25ን ከቬክተር ፍለጋ ጋር አዋህዶ ከዚያ ደግሞ የሚደረድር የመረጃ ቱቦ። ሐሳቡን ብቻ ሳይሆን መላውን ማሽን ይናገራል።",
-  "Four CPU schedulers — FCFS, SJF, SRTF and Round Robin — plus Banker's deadlock-avoidance algorithm, each in its own Python file.":
-    "አራት የCPU መርሐግብሮች — FCFS፣ SJF፣ SRTF እና Round Robin — እንዲሁም የBanker የመጨናነቅ መከላከያ ስልተ ቀመር፣ እያንዳንዱ በራሱ የPython ፋይል።",
-  "The best-documented repository here: a table of algorithms, inputs, outputs and exact run commands. It is coursework, and it reads like coursework done properly — small programs named after the mechanism, with the metrics printed.":
-    "በዚህ ዝርዝር ውስጥ በተሻለ የተሰነደው ማከማቻ፦ የስልተ ቀመሮች ሰንጠረዥ፣ ግብዓቶች፣ ውጤቶችና ትክክለኛ የሩጫ ትዕዛዞች። የትምህርት ሥራ ነው፣ እናም በአግባቡ የተሠራ የትምህርት ሥራ ይመስላል — በስልቱ የተሰየሙ ትንሽ ፕሮግራሞች፣ መለኪያዎቹም ታትመዋል።",
+  "Four CPU schedulers (FCFS, SJF, SRTF and Round Robin) plus Banker's deadlock-avoidance algorithm, each in its own Python file.":
+    "አራት የCPU መርሐግብሮች፣ FCFS፣ SJF፣ SRTF እና Round Robin፣ እንዲሁም የBanker የመጨናነቅ መከላከያ ስልተ ቀመር፣ እያንዳንዱ በራሱ የPython ፋይል።",
+  "The best-documented repository here: a table of algorithms, inputs, outputs and exact run commands. It is coursework, and it reads like coursework done properly. Each program is named after its mechanism and prints its metrics.":
+    "በዚህ ዝርዝር ውስጥ በተሻለ የተሰነደው ማከማቻ፦ የስልተ ቀመሮች ሰንጠረዥ፣ ግብዓቶች፣ ውጤቶችና ትክክለኛ የሩጫ ትዕዛዞች። የትምህርት ሥራ ነው፣ እናም በአግባቡ የተሠራ የትምህርት ሥራ ይመስላል፣ በስልቱ የተሰየሙ ትንሽ ፕሮግራሞች፣ መለኪያዎቹም ታትመዋል።",
 
   /* ─── YouTube ────────────────────────────────────────────── */
   "Physics, taught out loud. Relativity, simulation and emergence, explained the way I wish someone had explained them to me.":

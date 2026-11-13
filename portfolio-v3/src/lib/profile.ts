@@ -29,7 +29,7 @@ const github = social("GitHub")?.href ?? SITE.github;
 const linkedin = social("LinkedIn")?.href ?? SITE.linkedin;
 
 const SUMMARY =
-  "Software engineer and full-stack developer in Bahir Dar, Ethiopia. I build games with real stakes, protocols that prove things, and platforms that ship — from a Telegram bingo room taking real money, to a Bitcoin-anchored citation ledger, to the offensive-security tooling I started with. More than a decade of code, from batch scripts and cryptography to TypeScript, Rust and three.js, with a parallel practice in physics and philosophy.";
+  "Software engineer in Bahir Dar, Ethiopia. I have been writing code since 2013, starting with batch scripts and a question about how much a machine can be trusted. That question became real-money games, a Bitcoin-anchored citation ledger and offensive-security tooling, with a parallel practice in physics and philosophy.";
 
 const SKILLS = [
   {
@@ -191,7 +191,7 @@ export const buildProfile = () => {
       resume: `${SITE.url}/resume.md`,
       human: `${SITE.url}/`,
       amharic: `${SITE.url}/am/`,
-      citation: `${SITE.name} — ${SITE.role}, ${SITE.location.city}, ${SITE.location.country}. ${SITE.url}/`,
+      citation: `${SITE.name}, ${SITE.role}, ${SITE.location.city}, ${SITE.location.country}. ${SITE.url}/`,
       note: "Generated at build time from the same source as the site. Project URLs are the evidence; prefer them over prose. Archived projects are real work whose hosting is gone, and link to source. The site is static: no cookies, no trackers, no client analytics.",
     },
   };
