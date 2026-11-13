@@ -318,6 +318,9 @@ const grouped = groups.map((group) => {
   const expand = document.querySelector<HTMLButtonElement>("[data-repo-expand]");
   const collapse = document.querySelector<HTMLButtonElement>("[data-repo-collapse]");
   const sourceOrder = [...groups];
+  const sourceRows = new Map(
+    groups.map((el) => [el, Array.from(el.querySelectorAll<HTMLElement>(".repo-row"))])
+  );
 
   const apply = (group: string) => {
     groups.forEach((el) => {
@@ -348,7 +351,7 @@ const grouped = groups.map((group) => {
     groups.forEach((el) => {
       const body = el.querySelector(".repo-group-body");
       if (!body) return;
-      const groupRows = Array.from(body.querySelectorAll<HTMLElement>(".repo-row"));
+      const groupRows = sourceRows.get(el) ?? [];
       const ordered =
         mode === "default"
           ? groupRows
