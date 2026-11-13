@@ -1,0 +1,727 @@
+---
+/**
+ * The hero carousel.
+ *
+ * The strongest projects take turns in one large block instead of competing for
+ * attention. Every slide keeps the same anatomy: mark, name, outcome, a real
+ * capture, and two exits. Navigation is explicit (arrows, named tabs, swipe),
+ * never autoplaying, so nothing moves under a reader who is reading.
+ */
+import ProjectLogo from "./ProjectLogo.astro";
+import { td, type T } from "../i18n";
+import type { WorkRow } from "../lib/work";
+
+interface Props {
+  t: T;
+  projects: WorkRow[];
+}
+const { t, projects } = Astro.props;
+
+const slides = projects.map((d) => {
+  const preferred = d.shots.desktop ? "desktop" : d.shots.tablet ? "tablet" : d.shots.phone ? "phone" : null;
+  return {
+    ...d,
+    shot: preferred ? `/shots/${d.slug}-${preferred}.webp` : null,
+    phoneShot: d.shots.phone && preferred !== "phone" ? `/shots/${d.slug}-phone.webp` : null,
+    hasMetric: Boolean(d.metric && !d.metric.startsWith("TODO(")),
+  };
+});
+---
+
+<section id="work" class="relative border-t border-[var(--color-line)]">
+  <div class="shell py-20 lg:py-24">
+    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--color-line)] pb-4">
+      <span class="eyebrow">{t("sec.heroProject.eyebrow")}</span>
+      <div class="hero-carousel-controls">
+        <span class="hero-carousel-counter" data-carousel-counter>01 / {String(slides.length).padStart(2, "0")}</span>
+        <button
+          class="hero-carousel-arrow hero-carousel-play"
+          type="button"
+          data-carousel-play
+          aria-pressed="false"
+          aria-label={t("sec.heroProject.pause")}
+          title={t("sec.heroProject.pause")}
+          data-pause={t("sec.heroProject.pause")}
+          data-play={t("sec.heroProject.play")}
+        >
+          <span data-play-icon aria-hidden="true">❚❚</span>
+        </button>
+        <button class="hero-carousel-arrow" type="button" data-carousel-prev aria-label={t("sec.deployments.dialog.prev")}>←</button>
+        <button class="hero-carousel-arrow" type="button" data-carousel-next aria-label={t("sec.deployments.dialog.next")}>→</button>
+      </div>
+    </div>
+
+    <div class="hero-carousel" data-carousel style={`--hp-accent:${slides[0].accent}`}>
+      <div class="hero-slides">
+        {
+          slides.map((d, i) => (
+            <article
+              class:list={["hero-slide", { "is-active": i === 0 }]}
+              id={`hero-slide-${d.slug}`}
+              role="tabpanel"
+              aria-labelledby={`hero-tab-${d.slug}`}
+              data-slide
+              data-accent={d.accent}
+              inert={i !== 0}
+            >
+              <div class="hero-project">
+                <div class="hero-project-copy">
+                  <div class="flex items-center gap-4">
+                    <span class="hero-project-mark">
+                      <ProjectLogo slug={d.slug} accent={d.accent} />
+                    </span>
+                    <div class="flex flex-col gap-1">
+                      <span class="font-mono text-[0.5625rem] tracking-[0.2em] text-[var(--color-fog)] uppercase">
+                        {td(t, d.category)} · {d.platform}{d.year ? ` · ${d.year}` : ""}
+                      </span>
+                      <h2 class="hero-project-title">{d.name}</h2>
+                    </div>
+                  </div>
+
+                  <p class="hero-project-outcome">{d.outcomeText}</p>
+                  <p class="hero-project-desc">{d.descriptionText}</p>
+
+                  <div class="hero-project-facts">
+                    {d.hasMetric && (
+                      <div class="hero-project-metric">
+                        <span class="hero-project-metric-label">{t("sec.work.metric")}</span>
+                        <span class="hero-project-metric-value">{d.metric}</span>
+                      </div>
+                    )}
+                    <ul class="hero-project-stack">
+                      {d.stack.map((s) => <li>{s}</li>)}
+                    </ul>
+                  </div>
+
+                  <div class="hero-project-actions">
+                    <button class="btn btn-primary" type="button" data-project={d.slug} aria-haspopup="dialog">
+                      {t("sec.deployments.inspect")}
+                      <span aria-hidden="true">→</span>
+                    </button>
+                    <a class="btn" href={d.url} target="_blank" rel="noopener">
+                      {d.archived ? t("sec.deployments.dialog.source") : t("sec.work.openLive")}
+                      <span aria-hidden="true">↗</span>
+                    </a>
+                  </div>
+                </div>
+
+                <div class="hero-project-stage">
+                  {d.shot ? (
+                    <div class="hero-project-frame">
+                      <div class="hero-project-browser" aria-hidden="true">
+                        <span class="hero-project-dots"><i></i><i></i><i></i></span>
+                        <span class="hero-project-url">{d.host}</span>
+                      </div>
+                      <img
+                        src={d.shot}
+                        alt=""
+                        width="1600"
+                        height="1000"
+                        loading={i === 0 ? "eager" : "lazy"}
+                        fetchpriority={i === 0 ? "high" : "low"}
+                        decoding="async"
+                      />
+                      <button
+                        class="hero-project-hit"
+                        type="button"
+                        data-project={d.slug}
+                        aria-haspopup="dialog"
+                        aria-label={`${d.name}: ${t("sec.deployments.inspect")}`}
+                      />
+                      <span class="hero-project-hint" aria-hidden="true">
+                        {t("sec.work.capturesHint", { n: d.captures })}
+                      </span>
+                      {d.phoneShot && (
+                        <img class="hero-project-phone" src={d.phoneShot} alt="" loading="lazy" decoding="async" />
+                      )}
+                    </div>
+                  ) : (
+                    <div class="hero-project-frame is-empty">
+                      <span class="hero-project-mark is-large">
+                        <ProjectLogo slug={d.slug} accent={d.accent} />
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="hero-tabs" role="tablist" aria-label={t("sec.heroProject.eyebrow")}>
+        {
+          slides.map((d, i) => (
+            <button
+              class="hero-tab"
+              id={`hero-tab-${d.slug}`}
+              type="button"
+              role="tab"
+              aria-selected={i === 0 ? "true" : "false"}
+              aria-controls={`hero-slide-${d.slug}`}
+              tabindex={i === 0 ? 0 : -1}
+              data-tab={i}
+              style={`--tab-accent:${d.accent}`}
+            >
+              <span class="hero-tab-num">{String(i + 1).padStart(2, "0")}</span>
+              <span class="hero-tab-name">{d.name}</span>
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="hero-progress" aria-hidden="true">
+        <span class="hero-progress-bar" data-progress></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-carousel]");
+  if (root) {
+    const slides = Array.from(root.querySelectorAll<HTMLElement>("[data-slide]"));
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-tab]"));
+    const counter = root.querySelector<HTMLElement>("[data-carousel-counter]");
+    const stage = root.querySelector<HTMLElement>(".hero-slides");
+    const progress = root.querySelector<HTMLElement>("[data-progress]");
+    const play = root.querySelector<HTMLButtonElement>("[data-carousel-play]");
+    const playIcon = root.querySelector<HTMLElement>("[data-play-icon]");
+    const pad = (n: number) => String(n).padStart(2, "0");
+
+    // Rotate on its own, but only for readers who accept motion, and only
+    // while the section is on screen, the tab is visible and nobody is
+    // hovering or focused inside it.
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const DWELL = 6500;
+    let current = 0;
+    let playing = !reduced;
+    let hovering = false;
+    let onScreen = true;
+    let timer = 0;
+
+    const arm = () => {
+      window.clearTimeout(timer);
+      if (progress) {
+        progress.style.transition = "none";
+        progress.style.width = "0%";
+      }
+      if (!playing || reduced || hovering || !onScreen || document.hidden) {
+        if (progress) progress.style.width = playing ? "0%" : "100%";
+        return;
+      }
+      // Restart the dwell bar, then advance.
+      requestAnimationFrame(() => {
+        if (progress) {
+          progress.style.transition = `width ${DWELL}ms linear`;
+          progress.style.width = "100%";
+        }
+      });
+      timer = window.setTimeout(() => select(current + 1), DWELL);
+    };
+
+    const select = (next: number, focusTab = false) => {
+      const at = (next + slides.length) % slides.length;
+      const step = at > current ? 1 : -1;
+      current = at;
+      slides.forEach((slide, i) => {
+        const active = i === at;
+        slide.classList.toggle("is-active", active);
+        slide.dataset.enter = active ? (step > 0 ? "right" : "left") : "";
+        slide.toggleAttribute("inert", !active);
+      });
+      tabs.forEach((tab, i) => {
+        const active = i === at;
+        tab.setAttribute("aria-selected", active ? "true" : "false");
+        tab.tabIndex = active ? 0 : -1;
+      });
+      root.style.setProperty("--hp-accent", slides[at].dataset.accent ?? "");
+      if (counter) counter.textContent = `${pad(at + 1)} / ${pad(slides.length)}`;
+      if (focusTab) tabs[at]?.focus();
+      arm();
+    };
+
+    const setPlaying = (next: boolean) => {
+      playing = next;
+      const label = next ? (play?.dataset.pause ?? "") : (play?.dataset.play ?? "");
+      if (play) {
+        play.setAttribute("aria-pressed", next ? "false" : "true");
+        play.setAttribute("aria-label", label);
+        play.title = label;
+      }
+      if (playIcon) playIcon.textContent = next ? "❚❚" : "▶";
+      arm();
+    };
+
+    root.querySelector("[data-carousel-prev]")?.addEventListener("click", () => select(current - 1));
+    root.querySelector("[data-carousel-next]")?.addEventListener("click", () => select(current + 1));
+    play?.addEventListener("click", () => setPlaying(!playing));
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener("click", () => select(i));
+      tab.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft" && event.key !== "Home" && event.key !== "End") return;
+        event.preventDefault();
+        if (event.key === "Home") select(0, true);
+        else if (event.key === "End") select(tabs.length - 1, true);
+        else select(current + (event.key === "ArrowRight" ? 1 : -1), true);
+      });
+    });
+
+    root.addEventListener("pointerenter", () => {
+      hovering = true;
+      arm();
+    });
+    root.addEventListener("pointerleave", () => {
+      hovering = false;
+      arm();
+    });
+    root.addEventListener("focusin", () => {
+      hovering = true;
+      arm();
+    });
+    root.addEventListener("focusout", () => {
+      hovering = false;
+      arm();
+    });
+    document.addEventListener("visibilitychange", arm);
+
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(
+        ([entry]) => {
+          onScreen = entry.isIntersecting;
+          arm();
+        },
+        { threshold: 0.25 }
+      ).observe(root);
+    }
+
+    // Swipe on the stage. Pointer events cover touch, pen and mouse drag.
+    let startX: number | null = null;
+    stage?.addEventListener("pointerdown", (event) => {
+      if (event.pointerType === "mouse") return;
+      startX = event.clientX;
+    });
+    stage?.addEventListener("pointerup", (event) => {
+      if (startX == null) return;
+      const delta = event.clientX - startX;
+      startX = null;
+      if (Math.abs(delta) < 42) return;
+      select(current + (delta < 0 ? 1 : -1));
+    });
+
+    select(0);
+  }
+</script>
+
+<style>
+  .hero-carousel-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .hero-carousel-counter {
+    margin-right: 0.35rem;
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.18em;
+  }
+
+  .hero-carousel-arrow {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--color-line-2);
+    background: transparent;
+    color: var(--color-fog-2);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .hero-carousel-arrow:hover,
+  .hero-carousel-arrow:focus-visible {
+    border-color: var(--color-chalk);
+    background: var(--color-chalk);
+    color: var(--color-ink);
+  }
+
+  .hero-slides {
+    display: grid;
+    margin-top: 2rem;
+  }
+
+  .hero-slide {
+    grid-area: 1 / 1;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(46px);
+    transition: opacity 0.45s ease, transform 0.62s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.45s;
+  }
+
+  .hero-slide[data-enter="left"] {
+    transform: translateX(-46px);
+  }
+
+  .hero-slide.is-active {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  .hero-project {
+    display: grid;
+    gap: 2rem;
+  }
+
+  @media (min-width: 1000px) {
+    .hero-project {
+      grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+      align-items: center;
+      gap: 3rem;
+    }
+  }
+
+  .hero-project-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    min-width: 0;
+  }
+
+  .hero-project-mark {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    flex: none;
+    border: 1px solid color-mix(in srgb, var(--hp-accent) 34%, var(--color-line-2));
+    background: color-mix(in srgb, var(--hp-accent) 8%, var(--color-ink-2));
+  }
+
+  .hero-project-mark :global(.project-logo-img) {
+    max-width: 40px;
+    max-height: 40px;
+  }
+
+  .hero-project-mark :global(.project-logo-mark) {
+    width: 40px;
+    height: 40px;
+  }
+
+  .hero-project-mark :global(.project-logo-word) {
+    font-size: 0.7rem;
+  }
+
+  .hero-project-mark.is-large {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--hp-accent) 24%, transparent), transparent 70%);
+  }
+
+  .hero-project-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 4.4vw, 3.4rem);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+  }
+
+  .hero-project-outcome {
+    margin: 0;
+    max-width: 36ch;
+    font-size: clamp(1.02rem, 1.5vw, 1.2rem);
+    line-height: 1.5;
+    color: var(--color-chalk);
+  }
+
+  .hero-project-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+    max-width: 52ch;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--color-fog-2);
+  }
+
+  .hero-project-facts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.5rem;
+    padding-top: 0.25rem;
+  }
+
+  .hero-project-metric {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding-left: 0.75rem;
+    border-left: 2px solid var(--hp-accent);
+  }
+
+  .hero-project-metric-label {
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .hero-project-metric-value {
+    color: var(--color-chalk);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-project-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .hero-project-stack li {
+    padding: 0.28rem 0.45rem;
+    border: 1px solid var(--color-line);
+    color: var(--color-fog-2);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.08em;
+  }
+
+  .hero-project-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding-top: 0.5rem;
+  }
+
+  .hero-project-stage {
+    min-width: 0;
+  }
+
+  .hero-project-frame {
+    position: relative;
+    padding: 0.5rem 0.5rem 0;
+    border: 1px solid var(--color-line-2);
+    border-radius: 10px 10px 3px 3px;
+    background: linear-gradient(180deg, var(--color-ink-3), var(--color-ink));
+    box-shadow: 0 32px 60px -34px color-mix(in srgb, var(--hp-accent) 45%, transparent);
+  }
+
+  .hero-project-frame::after {
+    content: "";
+    display: block;
+    height: 9px;
+    margin: 0 -14px;
+    border-radius: 0 0 12px 12px;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--color-line-2) 75%, transparent), var(--color-ink));
+  }
+
+  .hero-project-browser {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 0.35rem 0.45rem;
+  }
+
+  .hero-project-dots {
+    display: inline-flex;
+    gap: 3px;
+  }
+
+  .hero-project-dots i {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-line-2);
+  }
+
+  .hero-project-url {
+    flex: 1;
+    overflow: hidden;
+    padding: 2px 6px;
+    border: 1px solid var(--color-line);
+    border-radius: 3px;
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.06em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .hero-project-frame img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 2px;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  .hero-project-frame .hero-project-phone {
+    position: absolute;
+    right: -0.5rem;
+    bottom: -1.1rem;
+    width: 19%;
+    min-width: 64px;
+    border: 3px solid var(--color-ink-3);
+    border-radius: 12px;
+    box-shadow: 0 18px 36px -18px var(--color-ink);
+    object-position: top center;
+  }
+
+  .hero-project-hit {
+    position: absolute;
+    inset: 0 0 9px;
+    z-index: 2;
+    border: 0;
+    background: transparent;
+    cursor: zoom-in;
+  }
+
+  .hero-project-hit:focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: -2px;
+  }
+
+  .hero-project-hint {
+    position: absolute;
+    z-index: 3;
+    left: 0.9rem;
+    bottom: 1.1rem;
+    padding: 0.3rem 0.5rem;
+    border: 1px solid color-mix(in srgb, var(--hp-accent) 45%, var(--color-line-2));
+    background: color-mix(in srgb, var(--color-ink) 74%, transparent);
+    color: var(--color-fog-2);
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    backdrop-filter: blur(6px);
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .hero-project-frame:hover .hero-project-hint {
+    color: var(--color-chalk);
+    border-color: var(--hp-accent);
+  }
+
+  .hero-project-frame.is-empty {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 16 / 10;
+  }
+
+  .hero-progress {
+    height: 1px;
+    margin-top: 0.75rem;
+    background: var(--color-line);
+    overflow: hidden;
+  }
+
+  .hero-progress-bar {
+    display: block;
+    width: 0;
+    height: 100%;
+    background: var(--hp-accent);
+  }
+
+  /* ── Named tabs ─────────────────────────────────────────── */
+  .hero-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    margin-top: 2rem;
+    border: 1px solid var(--color-line);
+    background: var(--color-line);
+  }
+
+  @media (min-width: 760px) {
+    .hero-tabs {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .hero-tab {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.8rem 0.9rem;
+    border: 0;
+    background: var(--color-ink);
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+    text-align: left;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    box-shadow: inset 0 -2px 0 transparent;
+  }
+
+  .hero-tab:hover {
+    color: var(--color-chalk);
+    background: var(--color-ink-2);
+  }
+
+  .hero-tab:focus-visible {
+    outline: 1px solid var(--color-signal);
+    outline-offset: -3px;
+  }
+
+  .hero-tab[aria-selected="true"] {
+    color: var(--color-chalk);
+    background: color-mix(in srgb, var(--tab-accent) 10%, var(--color-ink));
+    box-shadow: inset 0 -2px 0 var(--tab-accent);
+  }
+
+  .hero-tab-num {
+    color: var(--color-line-2);
+    font-size: 0.5rem;
+  }
+
+  .hero-tab[aria-selected="true"] .hero-tab-num {
+    color: var(--tab-accent);
+  }
+
+  .hero-tab-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 999px) {
+    .hero-project-frame .hero-project-phone {
+      width: 16%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-slide,
+    .hero-tab,
+    .hero-carousel-arrow,
+    .hero-project-hint {
+      transition: none;
+    }
+
+    .hero-slide {
+      transform: none;
+    }
+  }
+</style>

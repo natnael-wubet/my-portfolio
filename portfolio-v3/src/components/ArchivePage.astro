@@ -1,0 +1,57 @@
+---
+/**
+ * The archive route, shared by both locales.
+ *
+ * A record rather than a sales page: every project, its status, and the same
+ * case-study dialog used on the homepage.
+ */
+import Base from "../layouts/Base.astro";
+import Nav from "./Nav.astro";
+import Footer from "./Footer.astro";
+import ArchiveTable from "./ArchiveTable.astro";
+import ProjectDialog from "./ProjectDialog.astro";
+import { makeT, rich, type Lang } from "../i18n";
+import { getWorkRows, toProjectRecords } from "../lib/work";
+import { validateDeployments } from "../lib/content-checks";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = makeT(lang);
+
+validateDeployments();
+const rows = await getWorkRows(t);
+const live = rows.filter((row) => !row.archived && row.health.status === "live").length;
+const homeHref = lang === "en" ? "/" : "/am/";
+---
+
+<Base lang={lang} title={t("archive.meta.title")} description={t("archive.meta.description")}>
+  <Nav t={t} lang={lang} home={false} search={false} />
+
+  <main class="relative z-10">
+    <section class="shell pb-24 pt-28 lg:pt-36">
+      <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between" data-reveal>
+        <div class="flex flex-col gap-5">
+          <span class="eyebrow">{t("archive.eyebrow")}</span>
+          <h1 class="display display-lg" set:html={rich(t("archive.title"))} />
+          <p class="max-w-xl text-[var(--color-fog-2)]">{t("archive.lead")}</p>
+        </div>
+        <div class="flex flex-col items-start gap-3 md:items-end">
+          <span
+            class="font-mono text-[0.6875rem] tracking-[0.18em] text-[var(--color-fog)] uppercase"
+            set:html={rich(t("archive.count", { total: rows.length, live }))}
+          />
+          <a class="btn btn-sm" href={homeHref}>← {t("archive.back")}</a>
+        </div>
+      </div>
+
+      <div class="mt-12">
+        <ArchiveTable t={t} rows={rows} />
+      </div>
+    </section>
+  </main>
+
+  <Footer t={t} home={false} lang={lang} />
+  <ProjectDialog t={t} projects={toProjectRecords(rows)} />
+</Base>

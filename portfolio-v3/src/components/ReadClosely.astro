@@ -1,0 +1,176 @@
+---
+/**
+ * Two repository assessments, early on the page.
+ *
+ * This section is the argument: read the gap first, then the verdict. The full
+ * shelf stays further down, so the best writing is not buried under it.
+ */
+import { conanim, fieldNotes } from "../data/featured";
+import { repos } from "../data/content";
+import { rich, td, type T } from "../i18n";
+
+interface Props {
+  t: T;
+}
+const { t } = Astro.props;
+
+// ConAnim leads: a CPU-only graphics engine whose line and ellipse routines
+// avoid conditionals entirely, using arithmetic sign tricks instead.
+const picks = [
+  {
+    name: conanim.name,
+    url: conanim.url,
+    language: "Python",
+    readmeBytes: conanim.readmeBytes,
+    summary: conanim.lead,
+    quote: conanim.why,
+    assessment: conanim.honest,
+    tag: t("sec.readClosely.branchless"),
+  },
+  ...([fieldNotes[0], fieldNotes[2]].map((repo) => ({ ...repo, tag: undefined }))),
+];
+---
+
+<section id="read-closely" class="relative border-t border-[var(--color-line)]">
+  <div class="shell py-20 lg:py-24">
+    <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between" data-reveal>
+      <div class="flex flex-col gap-5">
+        <span class="eyebrow">{t("sec.readClosely.eyebrow")}</span>
+        <h2 class="display display-lg" set:html={rich(t("sec.readClosely.title"))} />
+        <p class="max-w-xl text-[var(--color-fog-2)]">{t("sec.readClosely.lead")}</p>
+      </div>
+      <a class="btn btn-sm" href="#repos">{t("sec.readClosely.all", { n: repos.length })} <span aria-hidden="true">→</span></a>
+    </div>
+
+    <div class="reading-grid mt-12">
+      {
+        picks.map((repo, i) => (
+          <article class="reading-card" data-reveal style={`--d:${i * 90}ms`}>
+            <header class="reading-head">
+              <a class="reading-name" href={repo.url} target="_blank" rel="noopener">
+                {repo.name}
+                <span aria-hidden="true">↗</span>
+              </a>
+              <span class="reading-meta">
+                {repo.language} · {t("sec.readClosely.readme", { n: repo.readmeBytes })}
+              </span>
+            </header>
+
+            {repo.tag && <span class="reading-tag">{repo.tag}</span>}
+            <p class="reading-summary">{td(t, repo.summary)}</p>
+            <blockquote class="reading-quote">{td(t, repo.quote)}</blockquote>
+            <p class="reading-verdict">{td(t, repo.assessment)}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .reading-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1px;
+    background: var(--color-line);
+    border: 1px solid var(--color-line);
+  }
+
+  @media (min-width: 900px) {
+    .reading-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1180px) {
+    .reading-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .reading-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: var(--color-ink);
+  }
+
+  @media (min-width: 1180px) {
+    .reading-card {
+      padding: 1.9rem;
+    }
+  }
+
+  .reading-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .reading-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--color-chalk);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .reading-name:hover,
+  .reading-name:focus-visible {
+    color: var(--color-signal);
+  }
+
+  .reading-meta {
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .reading-tag {
+    align-self: flex-start;
+    padding: 0.25rem 0.45rem;
+    border: 1px solid color-mix(in srgb, var(--color-signal) 45%, var(--color-line));
+    color: var(--color-signal);
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .reading-summary {
+    margin: 0;
+    color: var(--color-fog-2);
+    font-size: 0.8125rem;
+    line-height: 1.7;
+  }
+
+  .reading-quote {
+    margin: 0;
+    padding-left: 1rem;
+    border-left: 2px solid color-mix(in srgb, var(--color-signal) 55%, var(--color-line));
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1.8;
+    white-space: pre-line;
+  }
+
+  .reading-verdict {
+    margin: 0;
+    color: var(--color-chalk);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+</style>

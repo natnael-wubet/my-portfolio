@@ -2,17 +2,24 @@
 /**
  * The whole single-page site, parameterised by language. Both routes render
  * this component: "/" passes "en", "/am/" passes "am".
+ *
+ * The page reads as an argument, in order: who I am, the one project that
+ * deserves a full block, three featured projects, the repository assessments,
+ * then the record and the long tail.
  */
 import Base from "../layouts/Base.astro";
 import Nav from "./Nav.astro";
 import Hero from "./Hero.astro";
-import Deployments from "./Deployments.astro";
+import HeroProject from "./HeroProject.astro";
+import FeaturedWork from "./FeaturedWork.astro";
+import ReadClosely from "./ReadClosely.astro";
 import Repos from "./Repos.astro";
 import Origin from "./Origin.astro";
 import Vault from "./Vault.astro";
 import Mind from "./Mind.astro";
 import Awards from "./Awards.astro";
 import Photos from "./Photos.astro";
+import LiveDeployments from "./LiveDeployments.astro";
 import Connect from "./Connect.astro";
 import Footer from "./Footer.astro";
 import CommandPalette from "./CommandPalette.astro";
@@ -20,9 +27,13 @@ import Shortcuts from "./Shortcuts.astro";
 import Instrument from "./Instrument.astro";
 import Brief from "./Brief.astro";
 import Fit from "./Fit.astro";
+import ProjectDialog from "./ProjectDialog.astro";
+import ArchiveDialog from "./ArchiveDialog.astro";
 import { makeT, type Lang } from "../i18n";
 import { repos } from "../data/content";
 import { deployments } from "../data/deployments";
+import { getWorkRows, toProjectRecords } from "../lib/work";
+import { validateDeployments } from "../lib/content-checks";
 import { buildInfo } from "../lib/build";
 
 interface Props {
@@ -32,7 +43,18 @@ const { lang } = Astro.props;
 const t = makeT(lang);
 const build = buildInfo();
 
-const live = deployments.filter((d) => !d.archived).length;
+// Fail the build on a hero/featured entry that is missing its card copy.
+validateDeployments();
+
+const rows = await getWorkRows(t);
+const hero = rows.find((row) => row.tier === "hero");
+if (!hero) throw new Error("No tier: \"hero\" deployment is defined.");
+
+const featured = rows.filter((row) => row.tier === "featured");
+const longTail = rows.filter((row) => (row.tier ?? "standard") === "standard" && !row.archived);
+const probed = rows.filter((row) => !row.archived);
+const live = probed.filter((row) => row.health.status === "live").length;
+
 const description = t("meta.descriptionCounted", { live, repos: repos.length });
 ---
 
@@ -40,13 +62,16 @@ const description = t("meta.descriptionCounted", { live, repos: repos.length });
   <Nav t={t} lang={lang} />
   <main class="relative z-10">
     <Hero t={t} />
-    <Deployments t={t} />
-    <Repos t={t} />
+    <HeroProject t={t} projects={[...featured, hero]} />
+    <FeaturedWork t={t} projects={featured} count={rows.length} />
+    <ReadClosely t={t} />
     <Origin t={t} />
     <Mind t={t} />
     <Vault t={t} />
     <Awards t={t} />
     <Photos t={t} />
+    <LiveDeployments t={t} projects={longTail} live={live} probed={probed.length} count={rows.length} />
+    <Repos t={t} />
     <Connect t={t} />
   </main>
   <Footer t={t} />
@@ -55,4 +80,6 @@ const description = t("meta.descriptionCounted", { live, repos: repos.length });
   <Instrument t={t} build={build} />
   <Brief t={t} lang={lang} build={build} />
   <Fit t={t} lang={lang} />
+  <ArchiveDialog t={t} rows={rows} />
+  <ProjectDialog t={t} projects={toProjectRecords(rows)} />
 </Base>

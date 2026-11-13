@@ -3,8 +3,11 @@ import { rich, type T } from "../i18n";
 
 interface Props {
   t: T;
+  home?: boolean;
+  lang?: "en" | "am";
 }
-const { t } = Astro.props;
+const { t, home = true, lang = "en" } = Astro.props;
+const prefix = home ? "" : lang === "en" ? "/" : "/am/";
 
 const year = new Date().getFullYear();
 
@@ -38,7 +41,7 @@ const sections: [string, string][] = [
         <span class="section-label mb-1">{t("footer.sections")}</span>
         {
           sections.map(([href, label]) => (
-            <a href={href} class="font-mono text-[0.75rem] tracking-[0.1em] text-[var(--color-fog-2)] uppercase no-underline transition-colors hover:text-[var(--color-signal)]">
+            <a href={`${prefix}${href}`} class="font-mono text-[0.75rem] tracking-[0.1em] text-[var(--color-fog-2)] uppercase no-underline transition-colors hover:text-[var(--color-signal)]">
               {label}
             </a>
           ))

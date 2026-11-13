@@ -1,0 +1,468 @@
+---
+import { td, type T } from "../i18n";
+import type { WorkRow } from "../lib/work";
+import ProjectLogo from "./ProjectLogo.astro";
+
+/**
+ * The archive: every project, including the ones whose hosting is gone.
+ *
+ * Filtering is client-side over the rendered rows, and each row opens the same
+ * case-study dialog the homepage uses, so the archive is a full record rather
+ * than a list of outbound links.
+ */
+interface Props {
+  t: T;
+  rows: WorkRow[];
+}
+const { t, rows } = Astro.props;
+
+const categories = ["Product", "Platform", "Tool", "Game", "Protocol"] as const;
+const counts = Object.fromEntries(
+  categories.map((category) => [category, rows.filter((row) => row.category === category).length])
+) as Record<(typeof categories)[number], number>;
+
+const captures = (row: WorkRow) => Object.values(row.shots).filter(Boolean).length;
+---
+
+<div class="archive-tools" data-reveal>
+  <div class="archive-filter-wrap">
+    <span class="archive-tools-label" id="archive-filter-label">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+        <path d="M2 3.5h12L9.5 8.5v4l-3 1.5v-5.5z" />
+      </svg>
+      {t("sec.deployments.filters.title")}
+    </span>
+    <div class="archive-filters" role="group" aria-labelledby="archive-filter-label">
+      <button class="archive-chip" type="button" data-filter="all" aria-pressed="true">
+        {t("archive.all")}
+        <span class="archive-chip-count">{rows.length}</span>
+      </button>
+      {
+        categories.map((category) => (
+          <button class="archive-chip" type="button" data-filter={category} aria-pressed="false">
+            {td(t, category)}
+            <span class="archive-chip-count">{counts[category]}</span>
+          </button>
+        ))
+      }
+    </div>
+  </div>
+  <span class="archive-showing" data-showing data-template={t("archive.filters.showing")} aria-live="polite">
+    {t("archive.filters.showing", { n: rows.length, total: rows.length })}
+  </span>
+</div>
+
+<div class="archive-table-wrap mt-6" data-reveal style="--d:80ms">
+  <table class="archive-table">
+    <caption class="sr-only">{t("archive.title")}</caption>
+    <thead>
+      <tr>
+        <th scope="col">{t("archive.colProject")}</th>
+        <th scope="col" class="col-platform">{t("archive.colPlatform")}</th>
+        <th scope="col" class="col-year">{t("archive.colYear")}</th>
+        <th scope="col" class="col-category">{t("archive.colCategory")}</th>
+        <th scope="col">{t("archive.colStatus")}</th>
+        <th scope="col" class="col-link"><span class="sr-only">{t("archive.colLink")}</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((d) => (
+          <tr class="archive-row" data-category={d.category} style={`--row-accent:${d.accent}`}>
+            <th scope="row">
+              <button class="row-name" type="button" data-project={d.slug} aria-haspopup="dialog">
+                <span class="row-logo">
+                  <ProjectLogo slug={d.slug} accent={d.accent} />
+                </span>
+                <span class="row-copy">
+                  <span class="row-title">{d.name}</span>
+                  <span class="row-tagline">{d.taglineText}</span>
+                </span>
+              </button>
+            </th>
+            <td class="col-platform">{d.platform}</td>
+            <td class="col-year">{d.year ?? "—"}</td>
+            <td class="col-category">{d.categoryText}</td>
+            <td>
+              <span class="row-status status" data-state={d.health.status}>
+                <span class="status-dot" />
+                {d.statusLabel}
+                {d.health.ms ? ` · ${d.health.ms}ms` : ""}
+              </span>
+            </td>
+            <td class="col-link">
+              <span class="row-links">
+                <button class="row-case" type="button" data-project={d.slug} aria-haspopup="dialog">
+                  {t("sec.deployments.inspect")}
+                  <span aria-hidden="true">→</span>
+                </button>
+                <a
+                  class="row-open"
+                  href={d.url}
+                  target="_blank"
+                  rel="noopener"
+                  aria-label={`${d.name}: ${d.archived ? t("sec.deployments.dialog.source") : t("sec.work.openLive")}`}
+                >
+                  {d.archived ? t("sec.deployments.source") : t("sec.work.openLive")}
+                  <span aria-hidden="true">↗</span>
+                </a>
+                {captures(d) > 0 ? <span class="row-captures">{t("sec.deployments.captures", { n: captures(d) })}</span> : null}
+              </span>
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+  <p class="archive-empty" id="archive-empty" hidden>{t("archive.empty")}</p>
+</div>
+
+<p class="mt-5 font-mono text-[0.5625rem] tracking-[0.14em] text-[var(--color-line-2)] uppercase">{t("archive.note")}</p>
+
+<script>
+  const chips = Array.from(document.querySelectorAll<HTMLButtonElement>(".archive-chip"));
+  const rows = Array.from(document.querySelectorAll<HTMLElement>(".archive-row"));
+  const showing = document.querySelector<HTMLElement>("[data-showing]");
+  const template = showing?.dataset.template ?? "{n} / {total}";
+  const empty = document.getElementById("archive-empty");
+
+  const setFilter = (value: string) => {
+    let visible = 0;
+    rows.forEach((row) => {
+      const match = value === "all" || row.dataset.category === value;
+      row.hidden = !match;
+      if (match) visible += 1;
+    });
+    chips.forEach((chip) => {
+      chip.setAttribute("aria-pressed", String(chip.dataset.filter === value));
+    });
+    if (showing) {
+      showing.textContent = template
+        .replace("{n}", String(visible))
+        .replace("{total}", String(rows.length));
+    }
+    if (empty) empty.hidden = visible > 0;
+  };
+
+  chips.forEach((chip) => {
+    chip.addEventListener("click", () => setFilter(chip.dataset.filter ?? "all"));
+  });
+</script>
+
+<style>
+  .archive-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.85rem 1.25rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .archive-filter-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+  }
+
+  .archive-tools-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .archive-tools-label svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .archive-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .archive-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.42rem 0.65rem;
+    border: 1px solid var(--color-line);
+    background: transparent;
+    color: var(--color-fog-2);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .archive-chip:hover {
+    border-color: var(--color-line-2);
+    color: var(--color-chalk);
+  }
+
+  .archive-chip:focus-visible {
+    outline: 1px solid var(--color-signal);
+    outline-offset: 2px;
+  }
+
+  .archive-chip[aria-pressed="true"] {
+    border-color: var(--color-signal);
+    background: color-mix(in srgb, var(--color-signal) 10%, transparent);
+    color: var(--color-chalk);
+  }
+
+  .archive-chip-count {
+    color: var(--color-fog);
+    font-size: 0.5rem;
+    letter-spacing: 0.06em;
+  }
+
+  .archive-chip[aria-pressed="true"] .archive-chip-count {
+    color: var(--color-signal);
+  }
+
+  .archive-showing {
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .archive-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--color-line);
+  }
+
+  .archive-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+
+  .archive-table thead th {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--color-line);
+    background: var(--color-ink-2);
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .archive-row {
+    border-bottom: 1px solid var(--color-line);
+    transition: background-color 0.18s ease;
+  }
+
+  .archive-row[hidden] {
+    display: none;
+  }
+
+  .archive-row:last-child {
+    border-bottom: 0;
+  }
+
+  .archive-row:hover {
+    background: var(--color-ink-2);
+  }
+
+  .archive-table tbody th,
+  .archive-table tbody td {
+    padding: 0.7rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--color-fog-2);
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  .row-name {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-chalk);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .row-logo {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    flex: none;
+    border: 1px solid color-mix(in srgb, var(--row-accent) 30%, var(--color-line));
+    background: color-mix(in srgb, var(--row-accent) 8%, var(--color-ink-2));
+    overflow: hidden;
+  }
+
+  .row-logo :global(.project-logo-img) {
+    max-width: 22px;
+    max-height: 22px;
+  }
+
+  .row-logo :global(.project-logo-mark) {
+    width: 22px;
+    height: 22px;
+  }
+
+  .row-logo :global(.project-logo-word) {
+    font-size: 0.5rem;
+  }
+
+  .row-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+  }
+
+  .row-title {
+    font-family: var(--font-display);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    transition: color 0.18s ease;
+  }
+
+  .row-name:hover .row-title,
+  .row-name:focus-visible .row-title {
+    color: var(--color-signal);
+  }
+
+  .row-name:focus-visible {
+    outline: 1px solid var(--color-signal);
+    outline-offset: 3px;
+  }
+
+  .row-tagline {
+    color: var(--color-fog);
+    font-size: 0.5rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .row-status {
+    font-size: 0.5rem;
+  }
+
+  .row-links {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.9rem;
+  }
+
+  .row-case,
+  .row-open {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.18s ease;
+  }
+
+  .row-case:hover,
+  .row-case:focus-visible,
+  .row-open:hover,
+  .row-open:focus-visible {
+    color: var(--color-signal);
+  }
+
+  .row-captures {
+    color: var(--color-line-2);
+    font-size: 0.5rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .col-link {
+    text-align: right;
+  }
+
+  .archive-empty {
+    padding: 2rem 1rem;
+    margin: 0;
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 860px) {
+    .archive-filters {
+      flex-wrap: nowrap;
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 0.3rem;
+      scrollbar-width: none;
+      mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 2.2rem), transparent 100%);
+    }
+
+    .archive-filters::-webkit-scrollbar {
+      display: none;
+    }
+
+    .archive-chip {
+      flex: 0 0 auto;
+    }
+
+    .col-platform,
+    .col-year,
+    .col-category,
+    .row-tagline,
+    .row-captures {
+      display: none;
+    }
+
+    .archive-table thead th,
+    .archive-table tbody th,
+    .archive-table tbody td {
+      padding: 0.7rem 0.75rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .archive-chip,
+    .archive-row,
+    .row-title,
+    .row-case,
+    .row-open {
+      transition: none;
+    }
+  }
+</style>

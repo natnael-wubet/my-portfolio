@@ -1,0 +1,320 @@
+---
+/**
+ * The long tail as a table: name, status, response time, year, link.
+ * Compact by design, but every row still opens the case study and the live
+ * site is one click away.
+ */
+import { rich, type T } from "../i18n";
+import type { WorkRow } from "../lib/work";
+
+interface Props {
+  t: T;
+  projects: WorkRow[];
+  live: number;
+  probed: number;
+  count: number;
+}
+const { t, projects, live, probed, count } = Astro.props;
+
+const speed = (ms?: number) =>
+  ms == null ? "unknown" : ms < 300 ? "fast" : ms < 800 ? "mid" : "slow";
+---
+
+<section id="deployments" class="relative border-t border-[var(--color-line)]">
+  <div class="shell py-20 lg:py-24">
+    <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between" data-reveal>
+      <div class="flex flex-col gap-5">
+        <span class="eyebrow">{t("sec.work.liveEyebrow")}</span>
+        <h2 class="display display-lg" set:html={rich(t("sec.work.liveTitle"))} />
+        <p class="max-w-xl text-[var(--color-fog-2)]">{t("sec.work.liveLead")}</p>
+      </div>
+      <div class="flex flex-col items-start gap-2 md:items-end">
+        <span
+          class="font-mono text-[0.6875rem] tracking-[0.18em] text-[var(--color-fog)] uppercase"
+          set:html={rich(t("sec.work.liveCount", { live, total: probed }))}
+        />
+        <span class="live-note" title={t("sec.work.measured")}>
+          <span class="live-note-dot" aria-hidden="true"></span>
+          {t("sec.work.liveStatus")}
+          <span class="live-note-help" aria-hidden="true">?</span>
+        </span>
+        <button class="btn btn-sm mt-2" type="button" data-archive-open aria-haspopup="dialog">
+          {t("sec.work.archiveCount", { n: count })} <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="deploy-table-wrap mt-10" data-reveal style="--d:120ms">
+      <table class="deploy-table">
+        <caption class="sr-only">{t("sec.work.liveTitle")}</caption>
+        <thead>
+          <tr>
+            <th scope="col">{t("sec.work.colProject")}</th>
+            <th scope="col" class="col-platform">{t("sec.work.colPlatform")}</th>
+            <th scope="col" class="col-year">{t("sec.work.colYear")}</th>
+            <th scope="col">{t("sec.work.colStatus")}</th>
+            <th scope="col" class="col-link"><span class="sr-only">{t("sec.work.colLink")}</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            projects.map((d) => (
+              <tr class="deploy-row" style={`--row-accent:${d.accent}`}>
+                <th scope="row">
+                  <button class="row-name" type="button" data-project={d.slug} aria-haspopup="dialog">
+                    <span class="row-mark" aria-hidden="true" style={`background:${d.accent}`} />
+                    <span class="row-title">{d.name}</span>
+                    <span class="row-kind">{d.categoryText}</span>
+                  </button>
+                </th>
+                <td class="col-platform">{d.platform}</td>
+                <td class="col-year">{d.year ?? "—"}</td>
+                <td>
+                  <span class="row-status">
+                    <span class="row-dot" data-speed={speed(d.health.ms)} data-state={d.health.status} />
+                    <span class="row-state">{d.statusLabel}</span>
+                    {d.health.ms ? <span class="row-ms">{t("sec.work.response", { ms: d.health.ms })}</span> : null}
+                  </span>
+                </td>
+                <td class="col-link">
+                  <a
+                    class="row-open"
+                    href={d.url}
+                    target="_blank"
+                    rel="noopener"
+                    aria-label={`${d.name}: ${d.archived ? t("sec.deployments.dialog.source") : t("sec.work.openLive")}`}
+                  >
+                    {d.archived ? t("sec.deployments.source") : t("sec.work.openLive")}
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <p class="mt-6 font-mono text-[0.5625rem] tracking-[0.14em] text-[var(--color-line-2)] uppercase">
+      {t("sec.work.measured")}
+    </p>
+  </div>
+</section>
+
+<style>
+  .live-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--color-fog-2);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: help;
+  }
+
+  .live-note-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-signal);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-signal) 16%, transparent);
+  }
+
+  .live-note-help {
+    display: grid;
+    place-items: center;
+    width: 12px;
+    height: 12px;
+    border: 1px solid var(--color-line-2);
+    border-radius: 50%;
+    color: var(--color-fog);
+    font-size: 0.4375rem;
+    letter-spacing: 0;
+  }
+
+  .deploy-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--color-line);
+  }
+
+  .deploy-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+
+  .deploy-table thead th {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--color-line);
+    background: var(--color-ink-2);
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .deploy-table tbody tr {
+    border-bottom: 1px solid var(--color-line);
+    transition: background-color 0.18s ease;
+  }
+
+  .deploy-table tbody tr:last-child {
+    border-bottom: 0;
+  }
+
+  .deploy-table tbody tr:hover {
+    background: var(--color-ink-2);
+  }
+
+  .deploy-table tbody th,
+  .deploy-table tbody td {
+    padding: 0.6rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--color-fog-2);
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  .row-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-chalk);
+    font: inherit;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .row-name:hover .row-title,
+  .row-name:focus-visible .row-title {
+    color: var(--color-signal);
+  }
+
+  .row-name:focus-visible {
+    outline: 1px solid var(--color-signal);
+    outline-offset: 3px;
+  }
+
+  .row-title {
+    font-family: var(--font-display);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    transition: color 0.18s ease;
+  }
+
+  .row-mark {
+    width: 6px;
+    height: 6px;
+    flex: none;
+    border-radius: 1px;
+  }
+
+  .row-kind {
+    color: var(--color-fog);
+    font-size: 0.5rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .row-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .row-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-line-2);
+  }
+
+  .row-dot[data-state="live"][data-speed="fast"] {
+    background: var(--color-signal);
+  }
+
+  .row-dot[data-state="live"][data-speed="mid"] {
+    background: var(--color-amber);
+  }
+
+  .row-dot[data-state="live"][data-speed="slow"] {
+    background: var(--color-rose);
+  }
+
+  .row-dot[data-state="down"] {
+    background: var(--color-rose);
+  }
+
+  .row-state {
+    font-size: 0.5rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .row-ms {
+    color: var(--color-fog);
+    font-size: 0.5625rem;
+    letter-spacing: 0.06em;
+  }
+
+  .row-open {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--color-fog);
+    font-size: 0.5625rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: color 0.18s ease;
+  }
+
+  .row-open:hover,
+  .row-open:focus-visible {
+    color: var(--color-signal);
+  }
+
+  .col-link {
+    text-align: right;
+  }
+
+  @media (max-width: 720px) {
+    .deploy-table thead th.col-platform,
+    .deploy-table thead th.col-year,
+    .deploy-table tbody td.col-platform,
+    .deploy-table tbody td.col-year,
+    .deploy-table .row-kind {
+      display: none;
+    }
+
+    .deploy-table tbody th,
+    .deploy-table tbody td {
+      padding: 0.7rem 0.75rem;
+    }
+
+    .row-ms {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .deploy-table tbody tr,
+    .row-title,
+    .row-open {
+      transition: none;
+    }
+  }
+</style>

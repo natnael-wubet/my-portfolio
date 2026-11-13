@@ -304,10 +304,13 @@ const devices = [
     const closeDialog = () => dialog.close();
 
     dialog.addEventListener("close", () => {
-      document.documentElement.classList.remove("pd-open");
-      (window as any).lenis?.start?.();
       lastTrigger?.focus();
       lastTrigger = null;
+      document.documentElement.classList.remove("pd-open");
+      // The archive dialog can sit under this one; only the last close
+      // releases the page scroll.
+      if (document.querySelector("dialog[open]")) return;
+      (window as any).lenis?.start?.();
     });
 
     dialog.addEventListener("click", (event) => {

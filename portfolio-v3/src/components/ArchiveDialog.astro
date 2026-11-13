@@ -1,0 +1,497 @@
+---
+/**
+ * The archive as a dialog.
+ *
+ * The archive button opens every project at once, in the same logo-card style
+ * the homepage used to use, with the category filter inside. The full-page
+ * /archive route stays as the linkable record.
+ */
+import ProjectCard, { type CardProject } from "./ProjectCard.astro";
+import { rich, td, type T } from "../i18n";
+import type { WorkRow } from "../lib/work";
+
+interface Props {
+  t: T;
+  rows: WorkRow[];
+}
+const { t, rows } = Astro.props;
+
+const cards: CardProject[] = rows.map((d) => ({
+  slug: d.slug,
+  name: d.name,
+  tagline: d.taglineText,
+  outcome: d.outcomeText || d.descriptionText,
+  metric: d.metric,
+  category: d.category,
+  accent: d.accent,
+  stack: d.stack,
+  telegram: d.telegram,
+  archived: d.archived,
+  host: d.host,
+  captures: d.captures,
+  status: d.health.status,
+  statusLabel: d.statusLabel,
+  ms: d.health.ms,
+}));
+
+const categories = ["Product", "Platform", "Tool", "Game", "Protocol"] as const;
+const counts = Object.fromEntries(
+  categories.map((category) => [category, rows.filter((row) => row.category === category).length])
+) as Record<(typeof categories)[number], number>;
+---
+
+<dialog id="archive-dialog" class="ad" aria-labelledby="ad-title">
+  <div class="ad-shell">
+    <header class="ad-top">
+      <div class="ad-heading">
+        <span class="ad-kicker">{t("archive.eyebrow")}</span>
+        <h2 class="ad-title" id="ad-title" set:html={rich(t("archive.title"))} />
+        <p class="ad-lead">{t("archive.lead")}</p>
+      </div>
+      <div class="ad-top-right">
+        <span class="ad-count">
+          <span class="ad-count-num">{rows.length}</span>
+          <span class="ad-count-label">{t("archive.colProject")}</span>
+        </span>
+        <button class="ad-close" type="button" id="ad-close" aria-label={t("archive.dialog.close")}>
+          <span aria-hidden="true">✕</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="ad-tools">
+      <div class="ad-filter-wrap">
+        <span class="ad-tools-label" id="ad-filter-label">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+            <path d="M2 3.5h12L9.5 8.5v4l-3 1.5v-5.5z" />
+          </svg>
+          {t("sec.deployments.filters.title")}
+        </span>
+        <div class="ad-filters" role="group" aria-labelledby="ad-filter-label">
+          <button class="ad-chip" type="button" data-ad-filter="all" aria-pressed="true">
+            {t("archive.all")}
+            <span class="ad-chip-count">{rows.length}</span>
+          </button>
+          {
+            categories.map((category) => (
+              <button class="ad-chip" type="button" data-ad-filter={category} aria-pressed="false">
+                {td(t, category)}
+                <span class="ad-chip-count">{counts[category]}</span>
+              </button>
+            ))
+          }
+        </div>
+      </div>
+      <span class="ad-showing" data-ad-showing data-template={t("archive.filters.showing")} aria-live="polite">
+        {t("archive.filters.showing", { n: rows.length, total: rows.length })}
+      </span>
+    </div>
+
+    <div class="ad-body">
+      <div class="ad-grid">
+        {
+          cards.map((card, i) => (
+            <div class="ad-cell" data-ad-category={card.category}>
+              <ProjectCard t={t} project={card} index={i} total={cards.length} reveal={false} />
+            </div>
+          ))
+        }
+      </div>
+      <p class="ad-empty" data-ad-empty hidden>{t("archive.empty")}</p>
+      <p class="ad-note">{t("archive.note")}</p>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.getElementById("archive-dialog") as HTMLDialogElement | null;
+  if (dialog) {
+    const openers = Array.from(document.querySelectorAll<HTMLElement>("[data-archive-open]"));
+    const closeButton = document.getElementById("ad-close") as HTMLButtonElement | null;
+    const cells = Array.from(dialog.querySelectorAll<HTMLElement>("[data-ad-category]"));
+    const chips = Array.from(dialog.querySelectorAll<HTMLButtonElement>("[data-ad-filter]"));
+    const showing = dialog.querySelector<HTMLElement>("[data-ad-showing]");
+    const empty = dialog.querySelector<HTMLElement>("[data-ad-empty]");
+    const template = showing?.dataset.template ?? "{n} / {total}";
+    let lastTrigger: HTMLElement | null = null;
+
+    const open = (trigger: HTMLElement) => {
+      lastTrigger = trigger;
+      document.documentElement.classList.add("ad-open");
+      (window as unknown as { lenis?: { stop?: () => void } }).lenis?.stop?.();
+      dialog.showModal();
+      closeButton?.focus();
+    };
+
+    const close = () => dialog.close();
+
+    dialog.addEventListener("close", () => {
+      lastTrigger?.focus();
+      lastTrigger = null;
+      // The case-study dialog may still be open on top of this one.
+      if (document.querySelector("dialog[open]")) return;
+      document.documentElement.classList.remove("ad-open");
+      document.documentElement.classList.remove("pd-open");
+      (window as unknown as { lenis?: { start?: () => void } }).lenis?.start?.();
+    });
+
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) close();
+    });
+    closeButton?.addEventListener("click", close);
+    openers.forEach((opener) => opener.addEventListener("click", () => open(opener)));
+
+    const setFilter = (value: string) => {
+      let visible = 0;
+      cells.forEach((cell) => {
+        const match = value === "all" || cell.dataset.adCategory === value;
+        cell.hidden = !match;
+        if (match) visible += 1;
+      });
+      chips.forEach((chip) => chip.setAttribute("aria-pressed", String(chip.dataset.adFilter === value)));
+      if (showing) {
+        showing.textContent = template
+          .replace("{n}", String(visible))
+          .replace("{total}", String(cells.length));
+      }
+      if (empty) empty.hidden = visible > 0;
+    };
+
+    chips.forEach((chip) => chip.addEventListener("click", () => setFilter(chip.dataset.adFilter ?? "all")));
+  }
+</script>
+
+<style>
+  .ad {
+    width: min(1320px, calc(100vw - 2.5rem));
+    max-width: none;
+    max-height: min(92dvh, 980px);
+    margin: auto;
+    padding: 0;
+    border: 1px solid var(--color-line-2);
+    background: var(--color-ink);
+    color: var(--color-chalk);
+    overflow: hidden;
+  }
+
+  .ad::backdrop {
+    background: color-mix(in srgb, var(--color-ink) 76%, transparent);
+    backdrop-filter: blur(12px) saturate(0.9);
+  }
+
+  .ad[open] {
+    animation: ad-in 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes ad-in {
+    from {
+      opacity: 0;
+      transform: translateY(16px) scale(0.988);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .ad-shell {
+    display: flex;
+    flex-direction: column;
+    max-height: inherit;
+    background:
+      radial-gradient(90% 60% at 88% -10%, color-mix(in srgb, var(--color-signal) 10%, transparent), transparent 60%),
+      var(--color-ink);
+  }
+
+  .ad-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    padding: 1.4rem 1.5rem 1.2rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .ad-heading {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 0;
+  }
+
+  .ad-kicker {
+    color: var(--color-signal);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .ad-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.035em;
+  }
+
+  .ad-lead {
+    margin: 0;
+    max-width: 62ch;
+    color: var(--color-fog-2);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  .ad-top-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .ad-count {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+  }
+
+  .ad-count-num {
+    color: var(--color-chalk);
+    font-family: var(--font-display);
+    font-size: 1.9rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .ad-count-label {
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .ad-close {
+    display: grid;
+    place-items: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border: 1px solid var(--color-line);
+    background: transparent;
+    color: var(--color-fog-2);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .ad-close:hover,
+  .ad-close:focus-visible {
+    border-color: var(--color-chalk);
+    background: var(--color-chalk);
+    color: var(--color-ink);
+  }
+
+  .ad-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+    padding: 0.85rem 1.5rem;
+    border-bottom: 1px solid var(--color-line);
+    background: var(--color-ink-2);
+  }
+
+  .ad-filter-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+  }
+
+  .ad-tools-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .ad-tools-label svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .ad-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .ad-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.38rem 0.6rem;
+    border: 1px solid var(--color-line);
+    background: transparent;
+    color: var(--color-fog-2);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .ad-chip:hover {
+    border-color: var(--color-line-2);
+    color: var(--color-chalk);
+  }
+
+  .ad-chip:focus-visible {
+    outline: 1px solid var(--color-signal);
+    outline-offset: 2px;
+  }
+
+  .ad-chip[aria-pressed="true"] {
+    border-color: var(--color-signal);
+    background: color-mix(in srgb, var(--color-signal) 10%, transparent);
+    color: var(--color-chalk);
+  }
+
+  .ad-chip-count {
+    color: var(--color-fog);
+    font-size: 0.5rem;
+  }
+
+  .ad-chip[aria-pressed="true"] .ad-chip-count {
+    color: var(--color-signal);
+  }
+
+  .ad-showing {
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .ad-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 1.25rem 1.5rem 1.5rem;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+
+  .ad-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1px;
+    background: var(--color-line);
+    border: 1px solid var(--color-line);
+  }
+
+  @media (min-width: 720px) {
+    .ad-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1120px) {
+    .ad-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .ad-cell[hidden] {
+    display: none;
+  }
+
+  .ad-empty {
+    padding: 2.5rem 1rem;
+    margin: 0;
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .ad-note {
+    margin: 0.9rem 0 0;
+    color: var(--color-line-2);
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  :global(html.ad-open),
+  :global(html.ad-open body) {
+    overflow: hidden;
+  }
+
+  @media (max-width: 640px) {
+    .ad {
+      width: 100vw;
+      max-height: 100dvh;
+      height: 100dvh;
+      border: 0;
+    }
+
+    .ad-top {
+      padding: 1.1rem 1rem 0.9rem;
+    }
+
+    .ad-tools {
+      padding: 0.75rem 1rem;
+    }
+
+    .ad-filters {
+      flex-wrap: nowrap;
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 0.25rem;
+      scrollbar-width: none;
+      mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 2.2rem), transparent 100%);
+    }
+
+    .ad-filters::-webkit-scrollbar {
+      display: none;
+    }
+
+    .ad-chip {
+      flex: 0 0 auto;
+    }
+
+    .ad-body {
+      padding: 1rem;
+    }
+
+    .ad-count-num {
+      font-size: 1.5rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ad[open] {
+      animation: none;
+    }
+
+    .ad-chip,
+    .ad-close {
+      transition: none;
+    }
+  }
+</style>

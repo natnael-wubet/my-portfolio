@@ -1,0 +1,458 @@
+---
+/**
+ * A featured project card.
+ *
+ * The card is a logo plate, not a screenshot: the mark is what a reader
+ * recognises, and the captures belong in the case study behind the button.
+ * The whole card is one button, so the affordance is the surface itself.
+ */
+import ProjectLogo from "./ProjectLogo.astro";
+import { td, type T } from "../i18n";
+
+export interface CardProject {
+  slug: string;
+  name: string;
+  tagline: string;
+  outcome: string;
+  metric?: string;
+  category: string;
+  accent: string;
+  stack: string[];
+  telegram?: boolean;
+  archived?: boolean;
+  host: string;
+  captures: number;
+  status: string;
+  statusLabel: string;
+  ms?: number;
+}
+
+interface Props {
+  t: T;
+  project: CardProject;
+  index: number;
+  total: number;
+  /** Off inside dialogs, where the reveal observer has already run. */
+  reveal?: boolean;
+}
+const { t, project: d, index, total, reveal = true } = Astro.props;
+
+const hasMetric = Boolean(d.metric && !d.metric.startsWith("TODO("));
+---
+
+<article
+  class="deploy-card group relative flex flex-col bg-[var(--color-ink)]"
+  data-reveal={reveal ? "" : undefined}
+  style={`--d:${(index % 3) * 90}ms;--deploy-accent:${d.accent}`}
+>
+  <div class="deploy-media">
+    <span class="deploy-plate" aria-hidden="true">
+      <span class="deploy-plate-grid" />
+      <span class="deploy-plate-aura" />
+    </span>
+
+    <span class="deploy-media-bar">
+      <span class="deploy-kind">{td(t, d.category)}</span>
+      <span class="status" data-state={d.status}>
+        <span class="status-dot" />
+        {d.statusLabel}
+        {d.ms ? ` · ${d.ms}ms` : ""}
+      </span>
+    </span>
+
+    <span class="deploy-logo-wrap">
+      <ProjectLogo slug={d.slug} accent={d.accent} />
+    </span>
+
+    <span class="deploy-media-foot">
+      <span class="deploy-index">{String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}</span>
+      <span class="deploy-open-pill">
+        {t("sec.deployments.inspect")}
+        <span class="deploy-open-arrow" aria-hidden="true">→</span>
+      </span>
+    </span>
+
+    <span class="deploy-spot" aria-hidden="true" />
+    <span class="deploy-scan" aria-hidden="true" />
+  </div>
+
+  <div class="deploy-body">
+    <div class="flex items-center gap-2">
+      <h3 class="font-display text-2xl font-semibold tracking-tight text-[var(--color-chalk)] transition-colors group-hover:text-[var(--color-signal)]">
+        {d.name}
+      </h3>
+      {d.telegram && (
+        <span class="border border-[var(--color-line-2)] px-1.5 py-0.5 font-mono text-[0.5625rem] tracking-[0.14em] text-[var(--color-fog)] uppercase">
+          TG
+        </span>
+      )}
+    </div>
+    <span class="deploy-tagline font-mono text-[0.6875rem] tracking-[0.1em] uppercase">
+      {td(t, d.tagline)}
+    </span>
+
+    <p class="deploy-desc text-sm leading-relaxed text-[var(--color-fog-2)]">{d.outcome}</p>
+
+    {hasMetric && (
+      <span class="deploy-metric">
+        <span class="deploy-metric-label">{t("sec.work.metric")}</span>
+        <span class="deploy-metric-value">{d.metric}</span>
+      </span>
+    )}
+
+    <div class="mt-auto flex flex-wrap gap-1.5 pt-2">
+      {d.stack.slice(0, 4).map((s) => (
+        <span class="border border-[var(--color-line)] px-2 py-1 font-mono text-[0.5625rem] tracking-[0.1em] text-[var(--color-fog)] uppercase">
+          {s}
+        </span>
+      ))}
+    </div>
+
+    <div class="deploy-foot">
+      <span class="truncate font-mono text-[0.6875rem] text-[var(--color-fog)]">{d.host}</span>
+      {d.captures > 0 ? (
+        <span class="deploy-captures">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true">
+            <rect x="1.6" y="4.4" width="12.8" height="9.4" rx="1.6" />
+            <path d="M5.2 4.4 6.1 2.6h3.8l.9 1.8" />
+            <circle cx="8" cy="9" r="2.5" />
+          </svg>
+          {t("sec.deployments.captures", { n: d.captures })}
+        </span>
+      ) : (
+        <span class="deploy-captures">{t("sec.work.sourceOnly")}</span>
+      )}
+    </div>
+  </div>
+
+  <button
+    class="deploy-hit"
+    type="button"
+    data-project={d.slug}
+    aria-haspopup="dialog"
+    aria-label={`${d.name}: ${t("sec.deployments.inspect")}`}
+  />
+
+  <span
+    class="pointer-events-none absolute inset-x-0 bottom-0 z-[3] h-px origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100"
+    style={{ background: "var(--deploy-accent)" }}
+  />
+</article>
+
+<style>
+  .deploy-card {
+    transition: background-color 0.22s ease;
+  }
+
+  .deploy-card:has(.deploy-hit:hover) {
+    background: var(--color-ink-2);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--deploy-accent) 55%, transparent);
+  }
+
+  .deploy-card:has(.deploy-hit:focus-visible) {
+    outline: 2px solid var(--color-signal);
+    outline-offset: -2px;
+  }
+
+  .deploy-media {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    aspect-ratio: 16 / 9;
+    border-bottom: 1px solid var(--color-line);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--deploy-accent) 8%, transparent), transparent 45%),
+      var(--color-ink-2);
+  }
+
+  .deploy-plate,
+  .deploy-spot,
+  .deploy-scan {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .deploy-plate-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(color-mix(in srgb, var(--color-line) 72%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--color-line) 72%, transparent) 1px, transparent 1px);
+    background-size: 26px 26px;
+    opacity: 0.55;
+    mask-image: radial-gradient(82% 82% at 50% 46%, #000 20%, transparent 78%);
+  }
+
+  .deploy-plate-aura {
+    position: absolute;
+    top: 46%;
+    left: 50%;
+    width: 64%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--deploy-accent) 30%, transparent), transparent 68%);
+    filter: blur(8px);
+    opacity: 0.72;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .deploy-logo-wrap {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 2.3rem 1.25rem 2.9rem;
+    filter: drop-shadow(0 12px 26px color-mix(in srgb, var(--deploy-accent) 20%, transparent));
+    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
+  }
+
+  .deploy-media-bar {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.6rem 0.7rem;
+  }
+
+  .deploy-kind {
+    padding: 0.22rem 0.4rem;
+    border: 1px solid color-mix(in srgb, var(--deploy-accent) 32%, var(--color-line-2));
+    background: color-mix(in srgb, var(--color-ink) 68%, transparent);
+    color: var(--color-fog-2);
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    backdrop-filter: blur(4px);
+  }
+
+  .deploy-media-bar .status {
+    padding: 0.18rem 0.4rem;
+    background: color-mix(in srgb, var(--color-ink) 68%, transparent);
+    color: var(--color-fog-2);
+    font-size: 0.5625rem;
+    backdrop-filter: blur(4px);
+  }
+
+  .deploy-media-foot {
+    position: absolute;
+    inset: auto 0.7rem 0.65rem;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .deploy-index {
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.16em;
+  }
+
+  .deploy-open-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.38rem 0.6rem;
+    border: 1px solid color-mix(in srgb, var(--deploy-accent) 52%, var(--color-line-2));
+    background: color-mix(in srgb, var(--deploy-accent) 12%, color-mix(in srgb, var(--color-ink) 78%, transparent));
+    color: var(--color-chalk);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    backdrop-filter: blur(6px);
+    transition: background-color 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
+  }
+
+  .deploy-open-arrow {
+    color: var(--deploy-accent);
+    transition: transform 0.22s ease;
+  }
+
+  .deploy-card:has(.deploy-hit:hover) .deploy-open-pill,
+  .deploy-card:has(.deploy-hit:focus-visible) .deploy-open-pill {
+    border-color: var(--color-chalk);
+    background: var(--color-chalk);
+    color: var(--color-ink);
+    transform: translateY(-1px);
+  }
+
+  .deploy-card:has(.deploy-hit:hover) .deploy-open-arrow,
+  .deploy-card:has(.deploy-hit:focus-visible) .deploy-open-arrow {
+    color: var(--deploy-accent);
+    transform: translateX(2px);
+  }
+
+  .deploy-card:has(.deploy-hit:hover) .deploy-plate-aura {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.12);
+  }
+
+  .deploy-card:has(.deploy-hit:hover) .deploy-logo-wrap {
+    transform: translateY(-4px) scale(1.04);
+    filter: drop-shadow(0 16px 32px color-mix(in srgb, var(--deploy-accent) 32%, transparent));
+  }
+
+  .deploy-spot {
+    z-index: 1;
+    background: radial-gradient(
+      220px circle at var(--mx, 50%) var(--my, 42%),
+      color-mix(in srgb, var(--deploy-accent) 22%, transparent),
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .deploy-card:has(.deploy-hit:hover) .deploy-spot {
+    opacity: 1;
+  }
+
+  .deploy-scan {
+    z-index: 1;
+    top: 0;
+    bottom: auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--deploy-accent) 85%, white), transparent);
+    opacity: 0;
+  }
+
+  .deploy-card:has(.deploy-hit:hover) .deploy-scan {
+    animation: deploy-scan 1.7s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes deploy-scan {
+    0% {
+      top: 0;
+      opacity: 0;
+    }
+    18% {
+      opacity: 0.75;
+    }
+    100% {
+      top: 100%;
+      opacity: 0;
+    }
+  }
+
+  .deploy-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    flex: 1;
+    padding: 1.25rem;
+  }
+
+  @media (min-width: 1180px) {
+    .deploy-body {
+      padding: 1.5rem;
+    }
+  }
+
+  .deploy-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+  }
+
+  .deploy-metric {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.5rem 0.65rem;
+    border-left: 2px solid var(--deploy-accent);
+    background: color-mix(in srgb, var(--deploy-accent) 7%, transparent);
+  }
+
+  .deploy-metric-label {
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .deploy-metric-value {
+    color: var(--color-chalk);
+    font-family: var(--font-display);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .deploy-tagline {
+    color: color-mix(in srgb, var(--deploy-accent) 72%, var(--color-chalk));
+  }
+
+  .deploy-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    border-top: 1px solid var(--color-line);
+    padding-top: 0.9rem;
+  }
+
+  .deploy-captures {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .deploy-captures svg {
+    width: 11px;
+    height: 11px;
+  }
+
+  .deploy-hit {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .deploy-hit:focus-visible {
+    outline: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .deploy-card,
+    .deploy-logo-wrap,
+    .deploy-plate-aura,
+    .deploy-open-pill,
+    .deploy-open-arrow,
+    .deploy-spot {
+      transition: none;
+    }
+
+    .deploy-card:has(.deploy-hit:hover) .deploy-logo-wrap,
+    .deploy-card:has(.deploy-hit:hover) .deploy-plate-aura,
+    .deploy-card:has(.deploy-hit:hover) .deploy-open-pill,
+    .deploy-card:has(.deploy-hit:hover) .deploy-open-arrow {
+      transform: none;
+    }
+
+    .deploy-card:has(.deploy-hit:hover) .deploy-scan {
+      animation: none;
+    }
+  }
+</style>
