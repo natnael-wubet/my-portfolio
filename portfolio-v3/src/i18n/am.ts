@@ -26,10 +26,12 @@ export const am: Dict & Record<string, string> = {
   "nav.skip": "ወደ ዋናው ይዘት ዝለል",
   "nav.work": "ስራዎች",
   "nav.origin": "መነሻ",
+  "nav.about": "ስለ እኔ",
   "nav.mind": "ሕሳብ",
   "nav.vault": "ሲቪ",
   "nav.awards": "ሽጥራዎች",
   "nav.contact": "አግኙኝ",
+  "nav.archive": "መዝገብ",
   "nav.search": "ፈልግ",
   "nav.cv": "ሲቪ ↓",
   "nav.menu": "ዝርዝር",
@@ -72,8 +74,13 @@ export const am: Dict & Record<string, string> = {
   "hero.utc": "EAT",
   "hero.liveCount": "{n} ቀጥታ ማስተላለፊያ",
   "hero.lead":
-    "ከ2013 ጀምሮ ኮድ እጽፋለሁ። የጀመርኩት በbatch ስክሪፕቶችና በጭራሽ ያልተውኩት ጥያቄ ነው፦ ማሽን ምን ድረስ ልትታመን ትችላለች? ያ ጥያቄ በእውነተኛ ገንዘብ የሚጫወቱ ጨዋታዎች፣ በባዊትኮይን የተመሠረተ የጥቅስ መዝገብና የደህንነት መሣሪያዎች ሆነ። ወደ [[ፊዚክስና ፍልስፍና]]ም መራኝ፣ እነሱንም አጠናለሁ፣ በድምፅ አስተምራለሁ።",
-  "hero.ctaWork": "ሥራውን አሳይ →",
+    "ከ2013 ጀምሮ ኮድ እጽፋለሁ፤ አሁንም ያንን ጥያቄ እጠይቃለሁ፦ ማሽን ምን ድረስ ልትታመን ትችላለች? እስካሁን የመጡት መልሶች በእውነተኛ ገንዘብ የሚጫወቱ ጨዋታዎች፣ በባዊትኮይን የተመሠረተ የጥቅስ መዝገብ፣ የደህንነት መሣሪያዎችና ከባዶ የተገነቡ ሞተሮች ናቸው፦ ግራፊክስ፣ ጨዋታና ፊዚክስ።",
+  "hero.craft.engines": "ከባዶ የተገነቡ ሞተሮች",
+  "hero.craft.domains": "ግራፊክስ · ጨዋታ · ፊዚክስ",
+  "hero.craft.branchless": "ያለ if መንገዶች",
+  "hero.craft.cpu": "CPU ቅድሚያ",
+  "hero.ctaWork": "የተመረጡ ሥራዎችን አሳይ →",
+  "hero.ctaContact": "አግኙኝ →",
   "hero.hint": "⌘K ወይም / ሁሉንም ፈልግ · ? ለቁልፍ አቁሮች",
   "hero.stat.deploy.k": "ቀጥታ ማስተላለፊያ",
   "hero.stat.deploy.s": "በبناء ጊዜ ተረጋግጧል",
@@ -90,22 +97,22 @@ export const am: Dict & Record<string, string> = {
   "hero.relicCaption": "ከቀድሞው ገጽ የተቃኘ · አሁንም ይዞራል",
 
   // ── Section 01 · Deployments ──────────────────────────────
-  "sec.deployments.eyebrow": "ክፍል 01 · ማስተላለፊያዎች",
+  "sec.deployments.eyebrow": "ማስተላለፊያዎች",
   "sec.deployments.title": "የተላከ\nና የሚደረስ",
   "sec.deployments.lead":
     "ከዚህ በታች ያሉት ሁሉም ድረ-ገጾች ይህ ገጽ በሚሠራበት ጊዜ ጠይቀዋል። የሚያዩት ሁኔታ ትውስታ አይደለም። የተገነባ የ HTTP መልስ ነው።",
   "sec.deployments.responding": "{{live}} / {total} የሚመልሱ",
   "sec.deployments.archived": "· <<{n}>> የተቀመጡ",
-  "sec.deployments.probe": "በبناء ጊዜ የተመረመረ",
+  "sec.deployments.probe": "ቀጥታ ሁኔታ",
   "sec.deployments.archivedStatus": "የተቀመጠ · ምንጭ",
   "sec.deployments.source": "ምንጭ",
-  "sec.deployments.inspect": "መዝገቡን ክፈት",
+  "sec.deployments.inspect": "የጉዳይ ጥናቱን አንብብ",
   "sec.deployments.captures": "{n} ቅርጾች",
   "sec.deployments.filters.title": "አጣራ",
   "sec.deployments.filters.all": "ሁሉም",
   "sec.deployments.filters.showing": "ከ{total} ውስጥ {n} ይታያሉ",
-  "sec.deployments.dialog.label": "የፕሮጀክት መዝገብ",
-  "sec.deployments.dialog.close": "መዝገቡን ዝጋ",
+  "sec.deployments.dialog.label": "የጉዳይ ጥናት",
+  "sec.deployments.dialog.close": "የጉዳይ ጥናቱን ዝጋ",
   "sec.deployments.dialog.viewport": "እይታ",
   "sec.deployments.dialog.desktop": "ዴስክቶፕ",
   "sec.deployments.dialog.tablet": "ታብሌት",
@@ -121,6 +128,65 @@ export const am: Dict & Record<string, string> = {
   "sec.deployments.dialog.status": "ሁኔታ",
   "sec.deployments.dialog.noPreview": "ለዚህ ቅድመ እይታ አልተያዘም። ምንጩ መዝገቡ ነው።",
   "sec.deployments.dialog.hint": "ለእይታ ← → · ለመዝጋት Esc",
+
+  // ── የመነሻ ገጽ ቅደም ተከተል ───────────────────────────────────
+  "sec.heroProject.eyebrow": "የተመረጡ ፕሮጀክቶች",
+  "sec.featured.eyebrow": "የተመረጡ ሥራዎች",
+  "sec.heroProject.pause": "ማሳያውን አቁም",
+  "sec.heroProject.play": "ማሳያውን አስጀምር",
+  "sec.featured.title": "የተመረጠ\nሥራ",
+  "sec.featured.lead":
+    "ብዙ የሚያስረዱት ነገር ያላቸው ሦስት ፕሮጀክቶች፦ እውነተኛ ገንዘብ፣ የአገር መሠረተ ልማትና መመለሻ የሌለው ፕሮቶኮል። እያንዳንዱ በዴስክቶፕ፣ ታብሌትና ስልክ ስፋት የተያዙ ቅርጾች ይከፍታል።",
+  "sec.work.metric": "መለኪያ",
+  "sec.work.openLive": "ቀጥታ ጣቢያውን ክፈት",
+  "sec.work.sourceOnly": "ምንጭ ብቻ",
+  "sec.work.archive": "መዝገቡን አሳይ",
+  "sec.work.archiveCount": "መዝገብ · {n} ፕሮጀክቶች",
+  "sec.work.capturesHint": "{n} ቅርጾች · ለመክፈት ጠቅ አድርግ",
+  "sec.work.liveEyebrow": "ቀጥታ ሁኔታ",
+  "sec.work.liveTitle": "የቀረው ሁሉ፣\nአሁንም ይመልሳል",
+  "sec.work.liveLead":
+    "የተቀሩት ማስተላለፊያዎች፣ ይህ ገጽ በተሠራበት ጊዜ የተለካው የምላሽ ጊዜ ከጎናቸው። አረንጓዴ ከ300 ሚሴ በታች፣ ቢጫ ከ800 በታች፣ ቀይ ከዚያ በላይ ነው።",
+  "sec.work.liveCount": "{{live}} / {total} የሚመልሱ",
+  "sec.work.liveStatus": "ቀጥታ ሁኔታ",
+  "sec.work.measured":
+    "የምላሽ ጊዜዎች ገጹ በተሠራበት ጊዜ ይለካሉ። ከማሰማራት በኋላ ገጹን እንደገና ይጫኑ።",
+  "sec.work.response": "{ms} ሚሴ",
+  "sec.work.colProject": "ፕሮጀክት",
+  "sec.work.colPlatform": "አስተናጋጅ",
+  "sec.work.colYear": "ዓመት",
+  "sec.work.colStatus": "ሁኔታ",
+  "sec.work.colLink": "አገናኝ",
+  "sec.readClosely.eyebrow": "በጥልቀት አንብብ",
+  "sec.readClosely.title": "ማከማቻዎቹ፣\nበጥልቀት ተነበዋል",
+  "sec.readClosely.lead":
+    "ሦስት ማከማቻዎች በሚገባቸው መንገድ ተመዝነዋል፦ ኮዱ ምን እንደሚገባውና READMEው ምን እንደሚጎድለው። የመጀመሪያው በCPU ብቻ የሚሠራ የግራፊክስ ሞተር ነው፤ መስመሮችንና ኤሊፕሶችን ያለ ሁኔታዊ መግለጫ ይስላል።",
+  "sec.readClosely.all": "ሁሉም {n} ማከማቻዎች",
+  "sec.readClosely.readme": "{n} ባይት README",
+  "sec.readClosely.branchless": "ያለ if · ሁኔታዊ መግለጫ የለም",
+
+  // ── መዝገብ ──────────────────────────────────────────────────
+  "archive.meta.title": "መዝገብ · ናትናኤል ውቤት",
+  "archive.meta.description":
+    "ናትናኤል ውቤት ያስተላለፈው ሁሉ፣ ማስተናገጃቸው የጠፋ የተቀመጡ ሥራዎችን ጨምሮ።",
+  "archive.eyebrow": "መዝገብ",
+  "archive.title": "ያስተላለፍኩት\nሁሉ",
+  "archive.lead":
+    "ሙሉ ዝርዝሩ፣ በሥራ ላይ ያሉትና የጠፉትም። የተቀመጡ ፕሮጀክቶች ማስተናገጃ ስለሌላቸው ወደ ምንጭ ያገናኛሉ።",
+  "archive.back": "ወደ ፖርትፎሊዮ ተመለስ",
+  "archive.count": "{{total}} ፕሮጀክቶች · {live} በሥራ ላይ",
+  "archive.colProject": "ፕሮጀክት",
+  "archive.colPlatform": "አስተናጋጅ",
+  "archive.colYear": "ዓመት",
+  "archive.colCategory": "ምድብ",
+  "archive.colStatus": "ሁኔታ",
+  "archive.colLink": "አገናኝ",
+  "archive.all": "ሁሉም",
+  "archive.filters.showing": "ከ{total} ውስጥ {n} ይታያሉ",
+  "archive.empty": "በዚህ ምድብ ውስጥ ፕሮጀክት የለም።",
+  "archive.note": "የተቀመጡ ፕሮጀክቶች አይመረመሩም፤ ወደ ምንጭ ያገናኛሉ።",
+  "archive.open": "ፕሮጀክቱን ክፈት",
+  "archive.dialog.close": "መዝገቡን ዝጋ",
 
   // ── Status vocabulary ─────────────────────────────────────
   "status.live": "በሥራ ላይ",
@@ -219,7 +285,7 @@ export const am: Dict & Record<string, string> = {
   "sec.repos.group.Config": "ማዋቀር",
 
   // ── Section 03 · Origin ───────────────────────────────────
-  "sec.origin.eyebrow": "ክፍል 02 · መነሻ",
+  "sec.origin.eyebrow": "መነሻ",
   "sec.origin.heritageTitle": "የመኩረት ቦታዬ",
   "sec.origin.milestones": "ማስታወሻዎች",
   "sec.origin.entries": "{n} ማስታወሻዎች · 2013 → አሁን",
@@ -234,7 +300,7 @@ export const am: Dict & Record<string, string> = {
 
 
   // ── Section 04 · The interior ─────────────────────────────
-  "sec.mind.eyebrow": "ክፍል 03 · ውስጣዊው",
+  "sec.mind.eyebrow": "ውስጣዊው",
   "sec.mind.map": "አምስቱ መስኮች",
   "sec.mind.core": "መስኮች",
   "sec.mind.title": "ስላልሠራሁ\nየሚያሰብኩበት ነገር",
@@ -244,7 +310,7 @@ export const am: Dict & Record<string, string> = {
   "sec.mind.watch": "አሳይ",
 
   // ── Section 05 · The vault ────────────────────────────────
-  "sec.vault.eyebrow": "ክፍል 04 · ቤተመዛግብት",
+  "sec.vault.eyebrow": "ቤተመዛግብት",
   "sec.vault.title": "እያንዳንዱ ገጽ፣\nበሦስት አቅጣጫ",
   "sec.vault.lead":
     "እነዚህ አጋዣዎች ባውታሪው [[cv.pdf]] የተቀረጹ ቀጥታ ገጾች ናቸው። ከእጅጉ ሰነድ ተውጣ በአካባቢ ማሰሪያ ዙር ላይ ተለጥፈዋል። ለማዞር ጎትት።",
@@ -254,7 +320,7 @@ export const am: Dict & Record<string, string> = {
   "sec.vault.rotate": "አወርብ",
 
   // ── Section 06 · Awards ───────────────────────────────────
-  "sec.awards.eyebrow": "ክፍል 05 · መዝገብ",
+  "sec.awards.eyebrow": "መዝገብ",
   "sec.awards.based": "መኖሪያ ቦታ",
   "sec.awards.communityNote": "ከላይ ያሉት ማህበረሰቦች እዚህ ይገናኛሉ።",
   "sec.awards.lead": "ስድስት ውድድሮች፣ ሁለት የCisco ሰነዶች፣ ስድስት ማህበረሰቦች። ማስረጃዎቹ ከዚህ በታች ናቸው።",
@@ -297,7 +363,7 @@ export const am: Dict & Record<string, string> = {
   "sec.photos.archive": "የግል ማህደር",
 
   // ── Section 08 · Contact ──────────────────────────────────
-  "sec.connect.eyebrow": "ክፍል 06 · አግኙኝ",
+  "sec.connect.eyebrow": "አግኙኝ",
   "sec.connect.available": "ለሥራ ክፍት",
   "sec.connect.remote": "ባህር ዳር · ርቀት ላይ",
   "sec.connect.reply": "በቀን ውስጥ ምላሽ",
@@ -374,17 +440,17 @@ export const am: Dict & Record<string, string> = {
   "palette.bigxoMeta": "በቴሌግራም ውስጥ ያጫወቱ",
   "palette.interior": "ውስጣዊው",
   "palette.jump.work": "ማስተላለፊያዎች",
-  "palette.jump.workMeta": "ክፍል 01 · የተላከና የሚደረስ",
+  "palette.jump.workMeta": "የተላከና የሚደረስ",
   "palette.jump.origin": "መነሻ",
-  "palette.jump.originMeta": "ክፍል 02 · ታሪኩ",
+  "palette.jump.originMeta": "ታሪኩ",
   "palette.jump.vault": "የሲቪ ቤተመዛግብት",
-  "palette.jump.vaultMeta": "ክፍል 04 · እያንዳንዱ ገጽ በ 3D",
+  "palette.jump.vaultMeta": "እያንዳንዱ ገጽ በ 3D",
   "palette.jump.awards": "ሽጥራዎች",
-  "palette.jump.awardsMeta": "ክፍል 05 · መዝገብ",
+  "palette.jump.awardsMeta": "መዝገብ",
   "palette.jump.photos": "ፎቶዎች",
   "palette.jump.photosMeta": "ከመያያው ውጭ · የግል",
   "palette.jump.contact": "አግኙኝ",
-  "palette.jump.contactMeta": "ክፍል 06 · እንሥራ",
+  "palette.jump.contactMeta": "እንሥራ",
   "palette.opt.toggleTheme": "ገጽታ ቀይር",
   "palette.opt.toggleThemeMeta": "ጨለማ ↔ ብርሃን ↔ ስርዓት",
   "palette.opt.darkTheme": "ጨለማ ጭነት",

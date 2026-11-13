@@ -6,6 +6,13 @@
 
 export type Platform = "Firebase" | "Vercel" | "Telegram";
 
+/**
+ * Homepage weight. The hero and featured entries own the top of the page, so
+ * they must carry card copy; `src/lib/content-checks.ts` enforces that at
+ * build time instead of letting a thin card slip through.
+ */
+export type Tier = "hero" | "featured" | "standard";
+
 export interface Deployment {
   slug: string;
   name: string;
@@ -13,6 +20,14 @@ export interface Deployment {
   description: string;
   url: string;
   platform: Platform;
+  tier?: Tier;
+  /** One-sentence outcome used on the hero block and featured cards. */
+  outcome?: string;
+  /**
+   * The single figure a reviewer should remember. Only real, verifiable
+   * numbers belong here; "TODO(metric)" is allowed but reported at build.
+   */
+  metric?: string;
   /** Not every project has a recorded ship date; the dossier omits it when absent. */
   year?: string;
   stack: string[];
@@ -35,6 +50,10 @@ export const deployments: Deployment[] = [
   {
     slug: "bigxo",
     name: "Big XO",
+    tier: "featured",
+    outcome:
+      "Spatial tic-tac-toe with an AI opponent, shipped as a Telegram Mini App and an Android build.",
+    metric: "TODO(metric)",
     tagline: "Ultimate Tic Tac Toe",
     description:
       "3×3×3 spatial tic-tac-toe with a single-player AI opponent and local pass-and-play multiplayer. Ships as a Telegram Mini App and a native Android build via Capacitor, with Supabase-backed auth and WebAuthn.",
@@ -50,6 +69,10 @@ export const deployments: Deployment[] = [
   {
     slug: "gameo",
     name: "GameO",
+    tier: "featured",
+    outcome:
+      "Live bingo rooms with real-money rails: Chapa deposits, Ethiopian bank payouts and a 5% rake.",
+    metric: "5% platform rake",
     tagline: "Real-money Ethiopian Bingo",
     description:
       "Live bingo rooms with buy-ins, a 5% platform rake, in-app wallets, Chapa payment rails for deposits and Ethiopian bank payouts for withdrawals, plus a full Amharic/English locale switch and a live admin console.",
@@ -65,6 +88,10 @@ export const deployments: Deployment[] = [
   {
     slug: "cite-chain",
     name: "Cite-Chain",
+    tier: "featured",
+    outcome:
+      "Scientific attribution anchored on Bitcoin and settled in audited splits on Base.",
+    metric: "TODO(metric)",
     tagline: "Blockchain-verified research attribution",
     description:
       "Provenance protocol for scientific contributions. Hashes are anchored on Bitcoin via OpenTimestamps, pinned content-addressed to IPFS, and contribution splits with royalty distribution settle in audited smart contracts on Base L2. ORCID-linked.",
@@ -79,6 +106,10 @@ export const deployments: Deployment[] = [
   {
     slug: "ticketye",
     name: "Ticketye",
+    tier: "hero",
+    outcome:
+      "Route discovery, seat selection and checkout for intercity bus travel across Ethiopia.",
+    metric: "TODO(metric)",
     tagline: "Nationwide bus e-ticketing",
     description:
       "Ethiopia's nationwide bus e-ticket system. Route discovery, seat selection, live operator and fare mapping, ticket lifecycle management, and localised multi-language checkout across the national network.",

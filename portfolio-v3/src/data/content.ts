@@ -193,6 +193,7 @@ export interface Domain {
 }
 
 export const domains: Domain[] = [
+  { label: "Engines from Scratch", detail: "CPU graphics, game loops, physics, branchless paths" },
   { label: "Simulation Programming", detail: "Physics, agents and systems modelling" },
   { label: "Full-Stack Engineering", detail: "Design through to deployment and scale" },
   { label: "Mobile & Mini Apps", detail: "Capacitor, Ionic, Telegram Web Apps" },

@@ -27,10 +27,12 @@ export const en = {
   "nav.skip": "Skip to content",
   "nav.work": "Work",
   "nav.origin": "Origin",
+  "nav.about": "About",
   "nav.mind": "Mind",
   "nav.vault": "CV",
   "nav.awards": "Awards",
   "nav.contact": "Contact",
+  "nav.archive": "Archive",
   "nav.search": "Search",
   "nav.cv": "CV ↓",
   "nav.menu": "Menu",
@@ -73,8 +75,13 @@ export const en = {
   "hero.utc": "EAT",
   "hero.liveCount": "{n} live deployments",
   "hero.lead":
-    "I have been writing code since 2013, starting with batch scripts and a question I never dropped: how much can a machine be trusted to do? That question turned into real-money games, a Bitcoin-anchored citation ledger, and security tools. It also led me to [[physics and philosophy]], which I study and teach out loud.",
-  "hero.ctaWork": "View work →",
+    "I have been writing code since 2013 and still ask the same question: how much can a machine be trusted to do? The answers so far are games with real money in them, a Bitcoin-anchored citation ledger, security tooling, and engines written from scratch: graphics, games and physics.",
+  "hero.craft.engines": "Engines, from scratch",
+  "hero.craft.domains": "graphics · games · physics",
+  "hero.craft.branchless": "Branchless paths",
+  "hero.craft.cpu": "CPU first",
+  "hero.ctaWork": "See featured work →",
+  "hero.ctaContact": "Get in touch →",
   "hero.hint": "⌘K or / to search everything · ? for shortcuts",
   "hero.stat.deploy.k": "Live deployments",
   "hero.stat.deploy.s": "verified at build",
@@ -91,22 +98,22 @@ export const en = {
   "hero.relicCaption": "Scanned from the previous site · still turning",
 
   // ── Section 01 · Deployments ──────────────────────────────
-  "sec.deployments.eyebrow": "Section 01 · Deployments",
+  "sec.deployments.eyebrow": "Deployments",
   "sec.deployments.title": "Shipped &\nreachable",
   "sec.deployments.lead":
     "Every URL below was requested while this page was being built. The status you see is a real HTTP response, not a claim.",
   "sec.deployments.responding": "{{live}} / {total} responding",
   "sec.deployments.archived": "· <<{n}>> archived",
-  "sec.deployments.probe": "Build-time probe",
+  "sec.deployments.probe": "Live status",
   "sec.deployments.archivedStatus": "archived · source",
   "sec.deployments.source": "Source",
-  "sec.deployments.inspect": "Open dossier",
+  "sec.deployments.inspect": "Read case study",
   "sec.deployments.captures": "{n} captures",
   "sec.deployments.filters.title": "Filter",
   "sec.deployments.filters.all": "All",
   "sec.deployments.filters.showing": "Showing {n} of {total}",
-  "sec.deployments.dialog.label": "Project dossier",
-  "sec.deployments.dialog.close": "Close dossier",
+  "sec.deployments.dialog.label": "Case study",
+  "sec.deployments.dialog.close": "Close case study",
   "sec.deployments.dialog.viewport": "Viewport",
   "sec.deployments.dialog.desktop": "Desktop",
   "sec.deployments.dialog.tablet": "Tablet",
@@ -122,6 +129,65 @@ export const en = {
   "sec.deployments.dialog.status": "Status",
   "sec.deployments.dialog.noPreview": "No preview was captured for this one. The source is the record.",
   "sec.deployments.dialog.hint": "← → viewports · Esc closes",
+
+  // ── Homepage hierarchy ────────────────────────────────────
+  "sec.heroProject.eyebrow": "Selected projects",
+  "sec.featured.eyebrow": "Featured work",
+  "sec.heroProject.pause": "Pause slideshow",
+  "sec.heroProject.play": "Play slideshow",
+  "sec.featured.title": "Selected\nwork",
+  "sec.featured.lead":
+    "Three projects with the most to explain: real money, national infrastructure, and a protocol with no undo. Each opens with captures at desktop, tablet and phone widths.",
+  "sec.work.metric": "Metric",
+  "sec.work.openLive": "Open live site",
+  "sec.work.sourceOnly": "source only",
+  "sec.work.archive": "View archive",
+  "sec.work.archiveCount": "Archive · {n} projects",
+  "sec.work.capturesHint": "{n} captures · click to open",
+  "sec.work.liveEyebrow": "Live status",
+  "sec.work.liveTitle": "Everything else,\nstill answering",
+  "sec.work.liveLead":
+    "The rest of the deployments, with the response time measured while this page was built. Green is under 300 ms, amber under 800, red above that.",
+  "sec.work.liveCount": "{{live}} / {total} responding",
+  "sec.work.liveStatus": "Live status",
+  "sec.work.measured":
+    "Response times are measured at build time. Reload after a deploy for fresh numbers.",
+  "sec.work.response": "{ms} ms",
+  "sec.work.colProject": "Project",
+  "sec.work.colPlatform": "Host",
+  "sec.work.colYear": "Year",
+  "sec.work.colStatus": "Status",
+  "sec.work.colLink": "Link",
+  "sec.readClosely.eyebrow": "Read closely",
+  "sec.readClosely.title": "The repositories,\nread closely",
+  "sec.readClosely.lead":
+    "Three repositories judged the way they deserve: what the code promises, and what the README leaves out. The first is a CPU-only graphics engine that draws lines and ellipses without conditionals.",
+  "sec.readClosely.all": "All {n} repositories",
+  "sec.readClosely.readme": "{n} B README",
+  "sec.readClosely.branchless": "branchless · no if statements",
+
+  // ── Archive ───────────────────────────────────────────────
+  "archive.meta.title": "Archive · Natnael Wubet",
+  "archive.meta.description":
+    "Every project Natnael Wubet has shipped, including archived work whose hosting is gone.",
+  "archive.eyebrow": "Archive",
+  "archive.title": "Everything I have\nshipped",
+  "archive.lead":
+    "The complete list, live hosts and gone ones alike. Archived projects link to source because the hosting no longer exists.",
+  "archive.back": "Back to the portfolio",
+  "archive.count": "{{total}} projects · {live} live",
+  "archive.colProject": "Project",
+  "archive.colPlatform": "Host",
+  "archive.colYear": "Year",
+  "archive.colCategory": "Category",
+  "archive.colStatus": "Status",
+  "archive.colLink": "Link",
+  "archive.all": "All",
+  "archive.filters.showing": "Showing {n} of {total}",
+  "archive.empty": "No projects in this category.",
+  "archive.note": "Archived entries are never probed; they link to source.",
+  "archive.open": "Open project",
+  "archive.dialog.close": "Close archive",
 
   // ── Status vocabulary ─────────────────────────────────────
   "status.live": "live",
@@ -220,7 +286,7 @@ export const en = {
   "sec.repos.group.Config": "Config",
 
   // ── Section 03 · Origin ───────────────────────────────────
-  "sec.origin.eyebrow": "Section 02 · Origin",
+  "sec.origin.eyebrow": "Origin",
   "sec.origin.heritageTitle": "Where I'm rooted",
   "sec.origin.milestones": "Milestones",
   "sec.origin.entries": "{n} entries · 2013 → now",
@@ -235,7 +301,7 @@ export const en = {
 
 
   // ── Section 04 · The interior ─────────────────────────────
-  "sec.mind.eyebrow": "Section 03 · The interior",
+  "sec.mind.eyebrow": "The interior",
   "sec.mind.map": "Five fields",
   "sec.mind.core": "fields",
   "sec.mind.title": "What I think about\nwhen I'm not building",
@@ -245,7 +311,7 @@ export const en = {
   "sec.mind.watch": "Watch",
 
   // ── Section 05 · The vault ────────────────────────────────
-  "sec.vault.eyebrow": "Section 04 · The Vault",
+  "sec.vault.eyebrow": "The Vault",
   "sec.vault.title": "Every page,\nin three dimensions",
   "sec.vault.lead":
     "These frames are the actual rendered pages of [[cv.pdf]], extracted from the source document and mapped onto a volumetric carousel. Drag to rotate.",
@@ -255,7 +321,7 @@ export const en = {
   "sec.vault.rotate": "Rotate",
 
   // ── Section 06 · Awards ───────────────────────────────────
-  "sec.awards.eyebrow": "Section 05 · Record",
+  "sec.awards.eyebrow": "Record",
   "sec.awards.based": "Based in",
   "sec.awards.communityNote": "The communities above meet here.",
   "sec.awards.lead": "Six competitions, two Cisco certificates, six communities. The receipts are below.",
@@ -298,7 +364,7 @@ export const en = {
   "sec.photos.archive": "Personal archive",
 
   // ── Section 08 · Contact ──────────────────────────────────
-  "sec.connect.eyebrow": "Section 06 · Contact",
+  "sec.connect.eyebrow": "Contact",
   "sec.connect.available": "Open to work",
   "sec.connect.remote": "Bahir Dar · remote",
   "sec.connect.reply": "Replies within a day",
@@ -375,17 +441,17 @@ export const en = {
   "palette.bigxoMeta": "Play in Telegram",
   "palette.interior": "The interior",
   "palette.jump.work": "Deployments",
-  "palette.jump.workMeta": "Section 01 · shipped & reachable",
+  "palette.jump.workMeta": "shipped & reachable",
   "palette.jump.origin": "Origin",
-  "palette.jump.originMeta": "Section 02 · the story",
+  "palette.jump.originMeta": "the story",
   "palette.jump.vault": "CV Vault",
-  "palette.jump.vaultMeta": "Section 04 · every page in 3D",
+  "palette.jump.vaultMeta": "every page in 3D",
   "palette.jump.awards": "Awards",
-  "palette.jump.awardsMeta": "Section 05 · record",
+  "palette.jump.awardsMeta": "record",
   "palette.jump.photos": "Photos",
   "palette.jump.photosMeta": "Off-screen · personal",
   "palette.jump.contact": "Contact",
-  "palette.jump.contactMeta": "Section 06 · let's build",
+  "palette.jump.contactMeta": "let's build",
   "palette.opt.toggleTheme": "Toggle theme",
   "palette.opt.toggleThemeMeta": "Dark ↔ light ↔ system",
   "palette.opt.darkTheme": "Dark theme",

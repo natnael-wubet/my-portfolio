@@ -273,6 +273,10 @@ export const amData: Record<string, string> = {
   "Physics, taught out loud. Relativity, simulation and emergence, explained the way I wish someone had explained them to me.":
     "ፊዚክስ፣ በአደባባይ ተነግሮ። አንፃራዊነት፣ ማስመሰልና መገለጥ፣ አንድ ሰው ለእኔ ቢያስረዳኝ በሚፈልገው መንገድ ተብራርቷል።",
 
+  /* ─── Domains ────────────────────────────────────────────── */
+  "Engines from Scratch": "ከባዶ የተገነቡ ሞተሮች",
+  "CPU graphics, game loops, physics, branchless paths": "የCPU ግራፊክስ፣ የጨዋታ ዑደቶች፣ ፊዚክስ፣ ያለ if መንገዶች",
+
   /* ─── Deployment categories ─────────────────────────────── */
   Product: "ምርት",
   Platform: "መድረክ",
