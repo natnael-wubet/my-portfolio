@@ -193,12 +193,13 @@ const devices = [
       noPreview: emptyText?.textContent ?? "",
     };
 
-    let index = 0;
+    let order: number[] = projects.map((_, i) => i);
+    let pos = 0;
     let device: "desktop" | "tablet" | "phone" = "desktop";
     let lastTrigger: HTMLElement | null = null;
 
     const pad = (n: number) => String(n).padStart(2, "0");
-    const current = () => projects[index];
+    const current = () => projects[order[pos]];
 
     const renderFacts = (p: (typeof projects)[number]) => {
       const rows: Array<[string, string]> = [];
@@ -241,14 +242,14 @@ const devices = [
       frame.classList.add("is-switching");
     };
 
-    const render = (nextIndex: number) => {
-      index = (nextIndex + projects.length) % projects.length;
+    const render = (nextPos: number) => {
+      pos = ((nextPos % order.length) + order.length) % order.length;
       const p = current();
 
       title.textContent = p.name;
       tagline.textContent = p.tagline;
       desc.textContent = p.description;
-      counter.textContent = `${pad(index + 1)} / ${pad(projects.length)}`;
+      counter.textContent = `${pad(pos + 1)} / ${pad(order.length)}`;
       platform.textContent = p.year ? `${p.platform} · ${p.year}` : p.platform;
       url.textContent = p.host;
       status.dataset.state = p.archived ? "archived" : p.status;
@@ -270,13 +271,21 @@ const devices = [
     };
 
     const openDialog = (slug: string, trigger: HTMLElement | null) => {
-      const at = projects.findIndex((p) => p.slug === slug);
-      if (at < 0) return;
+      const absolute = projects.findIndex((p) => p.slug === slug);
+      if (absolute < 0) return;
+      const at = order.indexOf(absolute);
+      if (at < 0) {
+        // The card was filtered out between click and open: fall back to all.
+        order = projects.map((_, i) => i);
+        pos = absolute;
+      } else {
+        pos = at;
+      }
       lastTrigger = trigger;
       document.documentElement.classList.add("pd-open");
       (window as any).lenis?.stop?.();
       dialog.showModal();
-      render(at);
+      render(pos);
       $<HTMLButtonElement>("pd-close").focus();
     };
 
@@ -294,8 +303,25 @@ const devices = [
     });
 
     $("pd-close").addEventListener("click", closeDialog);
-    $("pd-prev").addEventListener("click", () => render(index - 1));
-    $("pd-next").addEventListener("click", () => render(index + 1));
+    $("pd-prev").addEventListener("click", () => render(pos - 1));
+    $("pd-next").addEventListener("click", () => render(pos + 1));
+
+    /*
+     * The card grid can be filtered. When it is, the dossier's prev/next walk
+     * the visible projects only, so paging never jumps to a project the reader
+     * just filtered out.
+     */
+    document.addEventListener("deploy:filter", (event) => {
+      const slugs = (event as CustomEvent<{ slugs?: string[] }>).detail?.slugs;
+      const next = slugs?.length
+        ? projects.map((_, i) => i).filter((i) => slugs.includes(projects[i].slug))
+        : projects.map((_, i) => i);
+      if (!next.length) return;
+      const openSlug = dialog.open ? current().slug : null;
+      order = next;
+      pos = openSlug ? Math.max(0, next.findIndex((i) => projects[i].slug === openSlug)) : 0;
+      if (dialog.open) render(pos);
+    });
 
     deviceButtons.forEach((button) => {
       button.addEventListener("click", () => {
@@ -306,26 +332,27 @@ const devices = [
 
     dialog.addEventListener("keydown", (event) => {
       const key = event.key;
-      const focusDevice = document.activeElement?.classList.contains("pd-device");
-      if (key === "ArrowRight" || key === "ArrowLeft") {
-        if (focusDevice) {
-          event.preventDefault();
-          const order: Array<"desktop" | "tablet" | "phone"> = ["desktop", "tablet", "phone"];
-          const at = order.indexOf(device);
-          const step = key === "ArrowRight" ? 1 : -1;
-          for (let i = 1; i <= order.length; i++) {
-            const candidate = order[(at + step * i + order.length * 2) % order.length];
-            if (current().shots[candidate]) {
-              setDevice(candidate);
-              document.querySelector<HTMLButtonElement>(`.pd-device[data-device="${candidate}"]`)?.focus();
-              break;
-            }
+      if (key !== "ArrowRight" && key !== "ArrowLeft") return;
+      const step = key === "ArrowRight" ? 1 : -1;
+      event.preventDefault();
+
+      // Focus in the viewport rail: arrows move between device frames.
+      if (document.activeElement?.classList.contains("pd-device")) {
+        const deviceOrder: Array<"desktop" | "tablet" | "phone"> = ["desktop", "tablet", "phone"];
+        const at = deviceOrder.indexOf(device);
+        for (let i = 1; i <= deviceOrder.length; i++) {
+          const candidate = deviceOrder[(at + step * i + deviceOrder.length * 2) % deviceOrder.length];
+          if (current().shots[candidate]) {
+            setDevice(candidate);
+            document.querySelector<HTMLButtonElement>(`.pd-device[data-device="${candidate}"]`)?.focus();
+            break;
           }
-        } else {
-          event.preventDefault();
-          render(index + (key === "ArrowRight" ? 1 : -1));
         }
+        return;
       }
+
+      // Everywhere else: arrows page through the visible projects.
+      render(pos + step);
     });
 
     document.querySelectorAll<HTMLButtonElement>("[data-project]").forEach((trigger) => {

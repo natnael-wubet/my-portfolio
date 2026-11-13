@@ -1,0 +1,167 @@
+---
+/**
+ * A project mark for cards and dossiers.
+ *
+ * Real brand assets are used as images. Projects without a usable logo get an
+ * inline glyph so it inherits the accent and reads in both themes. Everything
+ * here is decorative: the card heading already names the project.
+ */
+import { logos, type LogoGlyph } from "../data/logos";
+
+interface Props {
+  slug: string;
+  accent: string;
+  class?: string;
+}
+const { slug, accent, class: className } = Astro.props;
+const spec = logos[slug];
+const tone = spec?.kind === "glyph" && spec.color ? spec.color : accent;
+
+const glyphs: Record<LogoGlyph, string> = {
+  flow: `
+    <rect x="11" y="11" width="42" height="42" rx="12" fill="currentColor" fill-opacity="0.12" stroke="currentColor" stroke-width="2.4" />
+    <circle cx="24" cy="24" r="4.2" fill="currentColor" stroke="none" />
+    <path d="M16.5 41c5.5-7.5 10.5 3.5 15.5-3s9-4.5 15.5-1.5" />
+  `,
+  target: `
+    <circle cx="32" cy="32" r="20" fill="currentColor" fill-opacity="0.07" stroke="currentColor" stroke-width="2.2" />
+    <circle cx="32" cy="32" r="11.5" stroke="currentColor" stroke-width="2.2" opacity="0.75" />
+    <path d="M24.5 33.5l5 5 10.5-12" stroke-width="2.8" />
+  `,
+  book: `
+    <path d="M10.5 18.5c7.5-3 15-1.5 21.5 3.5 6.5-5 14-6.5 21.5-3.5v28c-7.5-3-15-1.5-21.5 3.5-6.5-5-14-6.5-21.5-3.5v-28z" fill="currentColor" fill-opacity="0.09" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round" />
+    <path d="M32 22v28" stroke="currentColor" stroke-width="2.1" opacity="0.8" />
+    <path d="M18 27.5c4.5-1 8 0 10 1.2M18 35c4.5-1 8 0 10 1.2" stroke="currentColor" stroke-width="1.7" opacity="0.55" />
+  `,
+  network: `
+    <path d="M18 21.5l14 22M46 19.5l-12 24M20.5 21.5l23-2.5" stroke="currentColor" stroke-width="2.2" opacity="0.65" />
+    <circle cx="18" cy="20" r="6.2" fill="currentColor" fill-opacity="0.14" stroke="currentColor" stroke-width="2.2" />
+    <circle cx="46" cy="18" r="6.2" fill="currentColor" fill-opacity="0.14" stroke="currentColor" stroke-width="2.2" />
+    <circle cx="32" cy="45" r="6.2" fill="currentColor" fill-opacity="0.14" stroke="currentColor" stroke-width="2.2" />
+  `,
+  abyss: `
+    <path d="M32 6.5L57.5 32 32 57.5 6.5 32z" fill="currentColor" fill-opacity="0.07" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" />
+    <path d="M32 18.5L45.5 32 32 45.5 18.5 32z" fill="currentColor" fill-opacity="0.12" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" />
+    <circle cx="32" cy="32" r="3.4" fill="currentColor" stroke="none" />
+  `,
+  shield: `
+    <path d="M32 7.5l19.5 7.2v16.5c0 11.2-8 20.2-19.5 25.3-11.5-5.1-19.5-14.1-19.5-25.3V14.7z" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round" />
+    <path d="M23.5 40.5V23.5l17 17v-17" stroke="currentColor" stroke-width="2.7" stroke-linecap="square" />
+  `,
+  translate: `
+    <rect x="7.5" y="11" width="31" height="23" rx="5.5" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-width="2.2" />
+    <path d="M15.5 28l5.5-12 5.5 12M17.8 23.5h6.4" stroke="currentColor" stroke-width="2.2" />
+    <rect x="29.5" y="30" width="27" height="21" rx="5.5" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="2.2" />
+    <path d="M36 37.5h14M36 44h9" stroke="currentColor" stroke-width="2" opacity="0.7" />
+  `,
+  layers: `
+    <path d="M32 7.5l24 11-24 11-24-11z" fill="currentColor" fill-opacity="0.15" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" />
+    <path d="M8 29l24 11 24-11" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" opacity="0.75" />
+    <path d="M8 39.5l24 11 24-11" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" opacity="0.45" />
+  `,
+  ticket: `
+    <path d="M8 18h48a4 4 0 0 1 4 4v5.5a6.5 6.5 0 0 0 0 13V46a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-5.5a6.5 6.5 0 0 0 0-13V22a4 4 0 0 1 4-4z" fill="currentColor" fill-opacity="0.09" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" />
+    <path d="M40 23.5v17" stroke="currentColor" stroke-width="2" stroke-dasharray="3 4" opacity="0.8" />
+    <path d="M15 27.5h16M15 33.5h16M15 39.5h10" stroke="currentColor" stroke-width="2" opacity="0.8" />
+  `,
+  rim: `
+    <path d="M7 10h13l12 27 12-27h13L32 58z" fill="currentColor" fill-opacity="0.14" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" />
+    <path d="M20 10l12 27 12-27" stroke="currentColor" stroke-width="2.4" opacity="0.85" />
+  `,
+};
+---
+
+<span class:list={["project-logo", className]} style={`--logo-accent:${tone}`} aria-hidden="true">
+  {
+    spec?.kind === "image" && (
+      <img
+        class:list={["project-logo-img", `is-${spec.fit ?? "square"}`]}
+        src={spec.src}
+        alt=""
+        loading="lazy"
+        decoding="async"
+      />
+    )
+  }
+  {
+    spec?.kind === "wordmark" && (
+      <span class="project-logo-word">
+        <span class="project-logo-word-head">{spec.head}</span>
+        <span class="project-logo-word-sep">/</span>
+        <span class="project-logo-word-tail">{spec.tail}</span>
+      </span>
+    )
+  }
+  {
+    spec?.kind === "glyph" && (
+      <svg
+        class="project-logo-mark"
+        viewBox="0 0 64 64"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.4"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        set:html={glyphs[spec.glyph]}
+      />
+    )
+  }
+</span>
+
+<style>
+  .project-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    color: color-mix(in srgb, var(--logo-accent) 82%, var(--color-chalk));
+  }
+
+  .project-logo-img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 88px;
+    object-fit: contain;
+  }
+
+  .project-logo-img.is-wide {
+    max-height: 54px;
+    max-width: 82%;
+  }
+
+  .project-logo-img.is-tall {
+    max-height: 104px;
+  }
+
+  .project-logo-mark {
+    width: 88px;
+    height: 88px;
+  }
+
+  .project-logo-word {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.1em;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3.4vw, 2rem);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .project-logo-word-head {
+    color: var(--color-chalk);
+  }
+
+  .project-logo-word-sep {
+    color: var(--logo-accent);
+    font-weight: 400;
+  }
+
+  .project-logo-word-tail {
+    color: color-mix(in srgb, var(--logo-accent) 84%, var(--color-chalk));
+  }
+</style>

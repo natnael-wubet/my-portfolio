@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import { deployments, checkHealth } from "../data/deployments";
 import { rich, td, type T } from "../i18n";
 import ProjectDialog, { type ProjectRecord } from "./ProjectDialog.astro";
+import ProjectLogo from "./ProjectLogo.astro";
 
 interface Props {
   t: T;
@@ -25,11 +26,17 @@ const rows = deployments.map((d) => {
     ...d,
     health: health[d.slug] ?? { status: "unknown" as const },
     shots,
+    captures: Object.values(shots).filter(Boolean).length,
     host: new URL(d.url).host,
   };
 });
 const probed = rows.filter((r) => !r.archived);
 const live = probed.filter((r) => r.health.status === "live").length;
+
+const categories = ["Product", "Platform", "Tool", "Game", "Protocol"] as const;
+const counts = Object.fromEntries(
+  categories.map((category) => [category, rows.filter((r) => r.category === category).length])
+) as Record<(typeof categories)[number], number>;
 
 const projects: ProjectRecord[] = rows.map((d) => ({
   slug: d.slug,
@@ -72,37 +79,58 @@ const projects: ProjectRecord[] = rows.map((d) => ({
       </div>
     </div>
 
-    <!-- Featured deployments -->
-    <div class="deploy-grid mt-14">
+    <!-- Category filter: the grid is long, so let people cut it down. -->
+    <div class="deploy-tools" data-reveal style="--d:180ms">
+      <div class="deploy-filter-wrap">
+        <span class="deploy-tools-label" id="deploy-filter-label">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+            <path d="M2 3.5h12L9.5 8.5v4l-3 1.5v-5.5z" />
+          </svg>
+          {t("sec.deployments.filters.title")}
+        </span>
+        <div class="deploy-filters" role="group" aria-labelledby="deploy-filter-label">
+          <button class="deploy-chip" type="button" data-filter="all" aria-pressed="true">
+            {t("sec.deployments.filters.all")}
+            <span class="deploy-chip-count">{rows.length}</span>
+          </button>
+          {
+            categories.map((category) => (
+              <button class="deploy-chip" type="button" data-filter={category} aria-pressed="false">
+                {td(t, category)}
+                <span class="deploy-chip-count">{counts[category]}</span>
+              </button>
+            ))
+          }
+        </div>
+      </div>
+      <span
+        class="deploy-showing"
+        data-showing
+        data-template={t("sec.deployments.filters.showing")}
+        aria-live="polite"
+      >
+        {t("sec.deployments.filters.showing", { n: rows.length, total: rows.length })}
+      </span>
+    </div>
+
+    <!-- Deployment cards: logo first, dossier on open. -->
+    <div class="deploy-grid">
       {
         rows.map((d, i) => {
           const st = d.health.status;
-          const preview = d.preview ?? "desktop";
-          const previewSrc = d.shots[preview] ? `/shots/${d.slug}-${preview}.webp` : null;
           return (
             <article
               class="deploy-card group relative flex flex-col bg-[var(--color-ink)]"
               data-reveal
+              data-category={d.category}
               style={`--d:${(i % 3) * 90}ms;--deploy-accent:${d.accent}`}
             >
               <div class="deploy-media">
-                {previewSrc ? (
-                  <img
-                    class="deploy-media-img"
-                    src={previewSrc}
-                    alt=""
-                    width="1600"
-                    height="1000"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                ) : (
-                  <span class="deploy-media-fallback" aria-hidden="true">
-                    <span class="deploy-media-mark">{d.name.slice(0, 2)}</span>
-                    <span class="deploy-media-label">{d.platform}</span>
-                  </span>
-                )}
-                <span class="deploy-media-shade" aria-hidden="true" />
+                <span class="deploy-plate" aria-hidden="true">
+                  <span class="deploy-plate-grid" />
+                  <span class="deploy-plate-aura" />
+                </span>
+
                 <span class="deploy-media-bar">
                   <span class="deploy-index">
                     {String(i + 1).padStart(2, "0")} / {String(rows.length).padStart(2, "0")}
@@ -113,6 +141,21 @@ const projects: ProjectRecord[] = rows.map((d) => ({
                     {d.health.ms ? ` · ${d.health.ms}ms` : ""}
                   </span>
                 </span>
+
+                <span class="deploy-logo-wrap">
+                  <ProjectLogo slug={d.slug} accent={d.accent} />
+                </span>
+
+                <span class="deploy-media-foot">
+                  <span class="deploy-kind">{td(t, d.category)}</span>
+                  <span class="deploy-open-pill">
+                    {t("sec.deployments.inspect")}
+                    <span class="deploy-open-arrow" aria-hidden="true">↗</span>
+                  </span>
+                </span>
+
+                <span class="deploy-spot" aria-hidden="true" />
+                <span class="deploy-scan" aria-hidden="true" />
               </div>
 
               <div class="deploy-body">
@@ -143,11 +186,26 @@ const projects: ProjectRecord[] = rows.map((d) => ({
                   ))}
                 </div>
 
-                <div class="flex items-center justify-between border-t border-[var(--color-line)] pt-4">
+                <div class="deploy-foot">
                   <span class="truncate font-mono text-[0.6875rem] text-[var(--color-fog)]">{d.host}</span>
-                  <span class="deploy-inspect font-mono text-[0.6875rem] tracking-[0.16em] uppercase">
-                    {t("sec.deployments.inspect")} <span aria-hidden="true">↗</span>
-                  </span>
+                  {d.captures > 0 ? (
+                    <span class="deploy-captures">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true">
+                        <rect x="1.6" y="4.4" width="12.8" height="9.4" rx="1.6" />
+                        <path d="M5.2 4.4 6.1 2.6h3.8l.9 1.8" />
+                        <circle cx="8" cy="9" r="2.5" />
+                      </svg>
+                      {t("sec.deployments.captures", { n: d.captures })}
+                    </span>
+                  ) : d.archived ? (
+                    <span class="deploy-captures">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+                        <path d="M6 3.5 3.5 6 6 8.5M10 3.5 12.5 6 10 8.5M3.5 6h9" />
+                        <path d="M3.5 12.5h9" />
+                      </svg>
+                      {t("sec.deployments.source")}
+                    </span>
+                  ) : null}
                 </div>
               </div>
 
@@ -173,11 +231,63 @@ const projects: ProjectRecord[] = rows.map((d) => ({
   <ProjectDialog t={t} projects={projects} />
 </section>
 
+<script>
+  const chips = Array.from(document.querySelectorAll<HTMLButtonElement>(".deploy-chip"));
+  const cards = Array.from(document.querySelectorAll<HTMLElement>(".deploy-card"));
+  const grid = document.querySelector<HTMLElement>(".deploy-grid");
+  const showing = document.querySelector<HTMLElement>("[data-showing]");
+  const template = showing?.dataset.template ?? "{n} / {total}";
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  // ── Filtering ──────────────────────────────────────────────
+  //    The cards are already in the DOM; filtering only toggles `hidden`, so
+  //    the dossier's project order never changes under the reader.
+  const setFilter = (value: string) => {
+    let visible = 0;
+    cards.forEach((card) => {
+      const match = value === "all" || card.dataset.category === value;
+      card.hidden = !match;
+      if (match) {
+        card.classList.add("is-in");
+        visible += 1;
+      }
+    });
+    chips.forEach((chip) => {
+      chip.setAttribute("aria-pressed", String(chip.dataset.filter === value));
+    });
+    grid?.classList.toggle("is-filtered", value !== "all");
+    if (showing) {
+      showing.textContent = template
+        .replace("{n}", String(visible))
+        .replace("{total}", String(cards.length));
+    }
+  };
+
+  chips.forEach((chip) => {
+    chip.addEventListener("click", () => setFilter(chip.dataset.filter ?? "all"));
+  });
+
+  // ── Pointer spotlight ──────────────────────────────────────
+  //    A cursor-following glow makes the card feel like a lit surface rather
+  //    than a picture. Touch and reduced-motion readers get the static plate.
+  if (finePointer && !reduced) {
+    cards.forEach((card) => {
+      card.addEventListener("pointermove", (event) => {
+        const box = card.getBoundingClientRect();
+        card.style.setProperty("--mx", `${event.clientX - box.left}px`);
+        card.style.setProperty("--my", `${event.clientY - box.top}px`);
+      });
+    });
+  }
+</script>
+
 <style>
   .deploy-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 1px;
+    margin-top: 1.5rem;
     background: var(--color-line);
     border: 1px solid var(--color-line);
   }
@@ -198,6 +308,24 @@ const projects: ProjectRecord[] = rows.map((d) => ({
     transition: background-color 0.22s ease;
   }
 
+  .deploy-card[hidden] {
+    display: none;
+  }
+
+  /*
+   * A filtered grid can leave an empty cell at the end. Dropping the shared
+   * hairline background and outlining each visible card keeps that leftover
+   * space from reading as a missing project.
+   */
+  .deploy-grid.is-filtered {
+    background: transparent;
+    border-color: transparent;
+  }
+
+  .deploy-grid.is-filtered .deploy-card {
+    box-shadow: 0 0 0 1px var(--color-line);
+  }
+
   .deploy-card:has(.deploy-hit:hover) {
     background: var(--color-ink-2);
   }
@@ -207,70 +335,159 @@ const projects: ProjectRecord[] = rows.map((d) => ({
     outline-offset: -2px;
   }
 
+  /* ── Filter bar ─────────────────────────────────────────── */
+  .deploy-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.85rem 1.25rem;
+    margin-top: 2.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .deploy-filter-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+  }
+
+  .deploy-tools-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .deploy-tools-label svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .deploy-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .deploy-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.42rem 0.65rem;
+    border: 1px solid var(--color-line);
+    background: transparent;
+    color: var(--color-fog-2);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .deploy-chip:hover {
+    border-color: var(--color-line-2);
+    color: var(--color-chalk);
+  }
+
+  .deploy-chip:focus-visible {
+    outline: 1px solid var(--color-signal);
+    outline-offset: 2px;
+  }
+
+  .deploy-chip[aria-pressed="true"] {
+    border-color: var(--color-signal);
+    background: color-mix(in srgb, var(--color-signal) 10%, transparent);
+    color: var(--color-chalk);
+  }
+
+  .deploy-chip-count {
+    color: var(--color-fog);
+    font-size: 0.5rem;
+    letter-spacing: 0.06em;
+  }
+
+  .deploy-chip[aria-pressed="true"] .deploy-chip-count {
+    color: var(--color-signal);
+  }
+
+  .deploy-showing {
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  /* ── Logo plate ─────────────────────────────────────────── */
   .deploy-media {
     position: relative;
     overflow: hidden;
-    aspect-ratio: 16 / 10;
+    isolation: isolate;
+    aspect-ratio: 16 / 9;
     border-bottom: 1px solid var(--color-line);
     background:
-      radial-gradient(90% 80% at 50% 0%, color-mix(in srgb, var(--deploy-accent) 22%, transparent), transparent 72%),
-      var(--color-ink-3);
+      linear-gradient(180deg, color-mix(in srgb, var(--deploy-accent) 8%, transparent), transparent 45%),
+      var(--color-ink-2);
   }
 
-  .deploy-media-img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: top center;
-    filter: saturate(0.92) contrast(1.02);
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
-  }
-
-  .deploy-card:has(.deploy-hit:hover) .deploy-media-img {
-    transform: scale(1.035);
-    filter: saturate(1.02) contrast(1.02);
-  }
-
-  .deploy-media-fallback {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.6rem;
-    height: 100%;
-    background:
-      linear-gradient(135deg, transparent 48%, color-mix(in srgb, var(--deploy-accent) 22%, transparent) 48% 52%, transparent 52%),
-      radial-gradient(80% 80% at 50% 50%, color-mix(in srgb, var(--deploy-accent) 18%, transparent), transparent 70%);
-  }
-
-  .deploy-media-mark {
-    font-family: var(--font-display);
-    font-size: 2.4rem;
-    font-weight: 700;
-    letter-spacing: -0.04em;
-    color: color-mix(in srgb, var(--deploy-accent) 70%, var(--color-chalk));
-    text-transform: uppercase;
-  }
-
-  .deploy-media-label {
-    font-family: var(--font-mono);
-    font-size: 0.5625rem;
-    letter-spacing: 0.22em;
-    color: var(--color-fog);
-    text-transform: uppercase;
-  }
-
-  .deploy-media-shade {
+  .deploy-plate,
+  .deploy-spot,
+  .deploy-scan {
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, color-mix(in srgb, var(--color-ink) 46%, transparent), transparent 34%, transparent 74%, color-mix(in srgb, var(--color-ink) 34%, transparent));
     pointer-events: none;
+  }
+
+  .deploy-plate-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(color-mix(in srgb, var(--color-line) 72%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--color-line) 72%, transparent) 1px, transparent 1px);
+    background-size: 26px 26px;
+    opacity: 0.55;
+    mask-image: radial-gradient(82% 82% at 50% 46%, #000 20%, transparent 78%);
+  }
+
+  .deploy-plate-aura {
+    position: absolute;
+    top: 46%;
+    left: 50%;
+    width: 64%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--deploy-accent) 30%, transparent), transparent 68%);
+    filter: blur(8px);
+    opacity: 0.72;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .deploy-logo-wrap {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 2.3rem 1.25rem 2.9rem;
+    filter: drop-shadow(0 12px 26px color-mix(in srgb, var(--deploy-accent) 20%, transparent));
+    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
   }
 
   .deploy-media-bar {
     position: absolute;
     inset: 0 0 auto;
+    z-index: 2;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -296,6 +513,114 @@ const projects: ProjectRecord[] = rows.map((d) => ({
     backdrop-filter: blur(4px);
   }
 
+  .deploy-media-foot {
+    position: absolute;
+    inset: auto 0.7rem 0.65rem;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .deploy-kind {
+    padding: 0.22rem 0.4rem;
+    border: 1px solid color-mix(in srgb, var(--deploy-accent) 32%, var(--color-line-2));
+    background: color-mix(in srgb, var(--color-ink) 68%, transparent);
+    color: var(--color-fog-2);
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    backdrop-filter: blur(4px);
+  }
+
+  .deploy-open-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.38rem 0.6rem;
+    border: 1px solid color-mix(in srgb, var(--deploy-accent) 52%, var(--color-line-2));
+    background: color-mix(in srgb, var(--deploy-accent) 12%, color-mix(in srgb, var(--color-ink) 78%, transparent));
+    color: var(--color-chalk);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    backdrop-filter: blur(6px);
+    transition: background-color 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
+  }
+
+  .deploy-open-arrow {
+    color: var(--deploy-accent);
+    transition: transform 0.22s ease;
+  }
+
+  .deploy-card:has(.deploy-hit:hover) .deploy-open-pill,
+  .deploy-card:has(.deploy-hit:focus-visible) .deploy-open-pill {
+    border-color: var(--deploy-accent);
+    background: color-mix(in srgb, var(--deploy-accent) 30%, var(--color-ink));
+    transform: translateY(-1px);
+  }
+
+  .deploy-card:has(.deploy-hit:hover) .deploy-open-arrow {
+    transform: translate(1px, -1px);
+  }
+
+  .deploy-card:has(.deploy-hit:hover) .deploy-plate-aura {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.12);
+  }
+
+  .deploy-card:has(.deploy-hit:hover) .deploy-logo-wrap {
+    transform: translateY(-4px) scale(1.04);
+    filter: drop-shadow(0 16px 32px color-mix(in srgb, var(--deploy-accent) 32%, transparent));
+  }
+
+  .deploy-spot {
+    z-index: 1;
+    background: radial-gradient(
+      220px circle at var(--mx, 50%) var(--my, 42%),
+      color-mix(in srgb, var(--deploy-accent) 22%, transparent),
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .deploy-card:has(.deploy-hit:hover) .deploy-spot {
+    opacity: 1;
+  }
+
+  .deploy-scan {
+    z-index: 1;
+    top: 0;
+    bottom: auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--deploy-accent) 85%, white), transparent);
+    opacity: 0;
+  }
+
+  .deploy-card:has(.deploy-hit:hover) .deploy-scan {
+    animation: deploy-scan 1.7s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes deploy-scan {
+    0% {
+      top: 0;
+      opacity: 0;
+    }
+    18% {
+      opacity: 0.75;
+    }
+    100% {
+      top: 100%;
+      opacity: 0;
+    }
+  }
+
+  /* ── Card body ──────────────────────────────────────────── */
   .deploy-body {
     display: flex;
     flex-direction: column;
@@ -318,19 +643,6 @@ const projects: ProjectRecord[] = rows.map((d) => ({
     margin: 0;
   }
 
-  .deploy-inspect {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    color: var(--color-fog);
-    transition: color 0.2s ease, transform 0.2s ease;
-  }
-
-  .deploy-card:has(.deploy-hit:hover) .deploy-inspect {
-    color: var(--color-signal);
-    transform: translateX(2px);
-  }
-
   /*
    * Each card's accent comes from the data. Mixing it toward --color-chalk
    * keeps the tagline readable in both themes without a second palette:
@@ -340,11 +652,37 @@ const projects: ProjectRecord[] = rows.map((d) => ({
     color: color-mix(in srgb, var(--deploy-accent) 72%, var(--color-chalk));
   }
 
+  .deploy-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    border-top: 1px solid var(--color-line);
+    padding-top: 0.9rem;
+  }
+
+  .deploy-captures {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .deploy-captures svg {
+    width: 11px;
+    height: 11px;
+  }
+
   /* The whole card is the hit area, but the content stays a normal article. */
   .deploy-hit {
     position: absolute;
     inset: 0;
-    z-index: 2;
+    z-index: 3;
     border: 0;
     background: transparent;
     cursor: pointer;
@@ -354,15 +692,56 @@ const projects: ProjectRecord[] = rows.map((d) => ({
     outline: none;
   }
 
+  @media (max-width: 640px) {
+    .deploy-tools {
+      align-items: flex-start;
+    }
+
+    .deploy-filter-wrap {
+      width: 100%;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.55rem;
+    }
+
+    .deploy-filters {
+      width: 100%;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding-bottom: 0.3rem;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .deploy-filters::-webkit-scrollbar {
+      display: none;
+    }
+
+    .deploy-chip {
+      flex: 0 0 auto;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .deploy-media-img,
-    .deploy-inspect,
-    .deploy-card {
+    .deploy-card,
+    .deploy-chip,
+    .deploy-logo-wrap,
+    .deploy-plate-aura,
+    .deploy-open-pill,
+    .deploy-open-arrow,
+    .deploy-spot {
       transition: none;
     }
 
-    .deploy-card:has(.deploy-hit:hover) .deploy-media-img {
+    .deploy-card:has(.deploy-hit:hover) .deploy-logo-wrap,
+    .deploy-card:has(.deploy-hit:hover) .deploy-plate-aura,
+    .deploy-card:has(.deploy-hit:hover) .deploy-open-pill,
+    .deploy-card:has(.deploy-hit:hover) .deploy-open-arrow {
       transform: none;
+    }
+
+    .deploy-card:has(.deploy-hit:hover) .deploy-scan {
+      animation: none;
     }
   }
 </style>

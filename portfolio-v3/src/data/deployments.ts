@@ -101,7 +101,7 @@ export const deployments: Deployment[] = [
     year: "2025",
     stack: ["Vue", "Mapbox", "Material Design", "Firebase"],
     category: "Product",
-    accent: "#ec4899",
+    accent: "#3ec46d",
     featured: true,
   },
   {
