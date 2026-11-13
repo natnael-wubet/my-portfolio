@@ -23,6 +23,9 @@ npm run preview  # serve dist/ locally
 - **Build-time truth.** Every live deployment URL is requested while the site
   is built; the status badges, latency and "N / M responding" line are the
   real HTTP results. Archived projects are never probed. They link to source.
+  The public contribution graph is read from GitHub at the same time, and a
+  dated snapshot in `src/data/contributions.json` keeps the calendar honest
+  when a build has no network.
 - **Command palette.** `⌘K` / `Ctrl-K` or `/` opens a fuzzy palette over
   deployments, repositories, awards, certifications, disciplines and display
   actions. Ambiguous `action:` links are dispatched as DOM events, not
@@ -76,9 +79,15 @@ npm run preview  # serve dist/ locally
 - **One event bus.** Cross-component actions are DOM events on `document`:
   `opt:theme`, `opt:accent`, `opt:lang`, `opt:help`, `opt:diag`, `opt:xray`,
   `opt:brief`, `opt:fit`, plus `ui:toast` for the single aria-live status line.
-- **Small enhancements.** Hero stats count up when first seen, the contact
-  terminal copies any answer on click (or with `copy`), and the repository
-  list filters and sorts in place.
+- **Repository shelf.** The ConAnim dossier and field notes come first, then a
+  GitHub-shaped activity panel: contributions, current and longest streaks,
+  best day, a 53-week calendar, a language bar counted by repository, and
+  achievements earned from the record. The full shelf of 48 repositories sits
+  in native collapsible groups, with filter chips, source-order/name/star
+  sorting and expand-all/collapse-all controls that work without JavaScript
+  for the disclosure itself.
+- **Small enhancements.** Hero stats count up when first seen, and the contact
+  terminal copies any answer on click (or with `copy`).
 - **Amharic typography.** `Noto Sans Ethiopic` is loaded only on `/am/` and
   takes over the display stack there. Because Geʽez script does not use
   letter-spacing the same way Latin does, tracking is flattened and small
@@ -89,8 +98,8 @@ npm run preview  # serve dist/ locally
 ```text
 src/
 ├── components/       # Nav, Hero (specimen + instrument), Deployments, Repos,
-│                     # Origin, Mind, Vault, Awards, Photos, Connect, Footer,
-│                     # CommandPalette,
+│                     # GitHubPanel, Origin, Mind, Vault, Awards, Photos,
+│                     # Connect, Footer, CommandPalette,
 │                     # Shortcuts, DisplayOptions, Instrument (diagnostics +
 │                     # X-ray + toast), Brief (tailored one-pager),
 │                     # Fit (role matcher), Site
@@ -104,6 +113,8 @@ src/
 ├── lib/
 │   ├── build.ts      # git commit + timestamp captured at build time
 │   ├── fit.ts        # pure role matcher, scoring and evidence selection
+│   ├── github.ts     # build-time contribution graph, streaks and fallback
+│   ├── languages.ts  # language colours and repository breakdown
 │   ├── lenses.ts     # the five hiring lenses shared by brief and fit
 │   ├── profile.ts    # canonical public record, built from src/data
 │   ├── profile-schema.ts  # JSON Schema for /profile.json
@@ -153,6 +164,8 @@ the same files as a panel (`#machine`), and the palette can copy the profile.
 
 ## Deployment
 
-`npm run build` produces plain static files. The only network dependency is
-the optional deployment health probe during the build; failures are swallowed
-and surface as an `unknown` badge, never as a broken build.
+`npm run build` produces plain static files. Network access is optional: the
+build probes live deployment URLs and reads the public GitHub contribution
+graph, but both failures are swallowed. A dead host surfaces as an `unknown`
+badge, and the calendar falls back to its dated snapshot, never to a broken
+build.

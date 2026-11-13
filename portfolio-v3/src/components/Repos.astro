@@ -1,6 +1,8 @@
 ---
 import { repos } from "../data/content";
 import RepoShowcase from "./RepoShowcase.astro";
+import GitHubPanel from "./GitHubPanel.astro";
+import { langColor } from "../lib/languages";
 import { td, type T } from "../i18n";
 
 interface Props {
@@ -10,17 +12,14 @@ const { t } = Astro.props;
 
 const groups = ["Security", "Game", "Tool", "Web", "Config"] as const;
 const counts = Object.fromEntries(groups.map((g) => [g, repos.filter((r) => r.group === g).length]));
-const langColor: Record<string, string> = {
-  PowerShell: "#012456",
-  Python: "#3572A5",
-  JavaScript: "#f1e05a",
-  TypeScript: "#3178c6",
-  Processing: "#0096d6",
-  Lua: "#000080",
-  HTML: "#e34c26",
-  CSS: "#663399",
-  Other: "var(--color-line-2)",
-};
+const grouped = groups.map((group) => {
+  const list = repos.filter((r) => r.group === group);
+  return {
+    group,
+    repos: list,
+    languages: [...new Set(list.map((r) => r.language))],
+  };
+});
 ---
 
 <section id="repos" class="relative border-t border-[var(--color-line)]">
@@ -43,6 +42,8 @@ const langColor: Record<string, string> = {
 
     <RepoShowcase t={t} />
 
+    <GitHubPanel t={t} />
+
     <!-- the full shelf -->
     <div class="mt-16 flex flex-col gap-3 border-t border-[var(--color-line)] pt-8 md:flex-row md:items-end md:justify-between">
       <div class="flex flex-col gap-2">
@@ -57,59 +58,90 @@ const langColor: Record<string, string> = {
     <!-- filter tabs -->
     <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
       <div class="flex flex-wrap gap-2" id="repo-filters">
-        <button class="filter-chip is-active" data-group="all" type="button">
+        <button class="filter-chip is-active" data-group="all" type="button" aria-pressed="true">
           {t("sec.repos.all")} <span class="text-[var(--color-line-2)]">{repos.length}</span>
         </button>
         {
           groups.map((g) => (
-            <button class="filter-chip" data-group={g} type="button">
+            <button class="filter-chip" data-group={g} type="button" aria-pressed="false">
               {t(`sec.repos.group.${g}`)} <span class="text-[var(--color-line-2)]">{counts[g]}</span>
             </button>
           ))
         }
       </div>
 
-      <label class="ml-auto flex items-center gap-2.5">
-        <span class="font-mono text-[0.625rem] tracking-[0.18em] text-[var(--color-fog)] uppercase">{t("sec.repos.sort")}</span>
-        <select class="repo-sort" id="repo-sort">
-          <option value="default">{t("sec.repos.sortDefault")}</option>
-          <option value="name">{t("sec.repos.sortName")}</option>
-          <option value="stars">{t("sec.repos.sortStars")}</option>
-        </select>
-      </label>
+      <div class="ml-auto flex flex-wrap items-center gap-2">
+        <button class="repo-toggle" type="button" data-repo-expand>{t("sec.repos.expandAll")}</button>
+        <button class="repo-toggle" type="button" data-repo-collapse>{t("sec.repos.collapseAll")}</button>
+        <label class="flex items-center gap-2.5">
+          <span class="font-mono text-[0.625rem] tracking-[0.18em] text-[var(--color-fog)] uppercase">{t("sec.repos.sort")}</span>
+          <select class="repo-sort" id="repo-sort">
+            <option value="default">{t("sec.repos.sortDefault")}</option>
+            <option value="name">{t("sec.repos.sortName")}</option>
+            <option value="stars">{t("sec.repos.sortStars")}</option>
+          </select>
+        </label>
+      </div>
     </div>
 
     <div class="mt-8 border-t border-[var(--color-line)]" id="repo-list">
       {
-        repos.map((r) => (
-          <a
-            href={r.url}
-            target="_blank"
-            rel="noopener"
-            class="repo-row"
-            data-group={r.group}
-            data-name={r.name.toLowerCase()}
-            data-stars={r.stars ?? 0}
-            data-search={`${r.name} ${r.description} ${td(t, r.description)} ${r.language} ${r.group} ${t(`sec.repos.group.${r.group}`)}`.toLowerCase()}
-          >
-            <span class="flex items-center gap-2.5 font-mono text-[0.8125rem] text-[var(--color-chalk)]">
-              <span class="h-2 w-2 flex-none" style={{ background: langColor[r.language] ?? "#2a3036" }} />
-              <span class="truncate">{r.name}</span>
-            </span>
-            <span class="text-sm text-[var(--color-fog-2)]">
-              {td(t, r.description)}
-              {r.fork ? (
-                <span class="ml-2 inline-block border border-[var(--color-line)] px-1.5 py-0.5 align-middle font-mono text-[0.5rem] tracking-[0.16em] text-[var(--color-fog)] uppercase">
-                  {t("sec.repos.fork")}
+        grouped.map(({ group, repos: list, languages }, index) => (
+          <details class="repo-group" data-group={group} open={index === 0}>
+            <summary class="repo-group-head">
+              <span class="flex min-w-0 items-center gap-3">
+                <span class="repo-caret" aria-hidden="true">▸</span>
+                <span class="repo-group-title font-display text-lg font-semibold tracking-tight text-[var(--color-chalk)]">
+                  {t(`sec.repos.group.${group}`)}
                 </span>
-              ) : null}
-            </span>
-            <span class="flex items-center gap-4 font-mono text-[0.625rem] tracking-[0.14em] text-[var(--color-fog)] uppercase">
-              {r.stars ? <span class="text-[var(--color-signal)]">★ {r.stars}</span> : null}
-              <span class="hidden sm:inline">{r.language}</span>
-              <span class="text-[var(--color-line-2)] transition-colors group-hover:text-[var(--color-signal)]">↗</span>
-            </span>
-          </a>
+                <span class="border border-[var(--color-line)] px-1.5 py-0.5 font-mono text-[0.5rem] tracking-[0.14em] text-[var(--color-fog)]">
+                  {list.length}
+                </span>
+              </span>
+              <span class="hidden items-center gap-1.5 sm:flex" aria-hidden="true">
+                {languages.map((language) => (
+                  <span
+                    class="h-1.5 w-1.5 rounded-full"
+                    style={{ background: langColor[language] ?? "var(--color-line-2)" }}
+                    title={language}
+                  />
+                ))}
+              </span>
+            </summary>
+
+            <div class="repo-group-body">
+              {list.map((r) => (
+                <a
+                  href={r.url}
+                  target="_blank"
+                  rel="noopener"
+                  class="repo-row"
+                  data-group={r.group}
+                  data-name={r.name.toLowerCase()}
+                  data-stars={r.stars ?? 0}
+                  data-search={`${r.name} ${r.description} ${td(t, r.description)} ${r.language} ${r.group} ${t(`sec.repos.group.${r.group}`)}`.toLowerCase()}
+                >
+                  <span class="flex items-center gap-2.5 font-mono text-[0.8125rem] text-[var(--color-chalk)]">
+                    <span class="h-2 w-2 flex-none" style={{ background: langColor[r.language] ?? "#2a3036" }} />
+                    <span class="truncate">{r.name}</span>
+                  </span>
+                  <span class="text-sm text-[var(--color-fog-2)]">
+                    {td(t, r.description)}
+                    {r.fork ? (
+                      <span class="ml-2 inline-block border border-[var(--color-line)] px-1.5 py-0.5 align-middle font-mono text-[0.5rem] tracking-[0.16em] text-[var(--color-fog)] uppercase">
+                        {t("sec.repos.fork")}
+                      </span>
+                    ) : null}
+                  </span>
+                  <span class="flex items-center gap-4 font-mono text-[0.625rem] tracking-[0.14em] text-[var(--color-fog)] uppercase">
+                    {r.stars ? <span class="text-[var(--color-signal)]">★ {r.stars}</span> : null}
+                    <span class="hidden sm:inline">{r.language}</span>
+                    <span class="text-[var(--color-line-2)] transition-colors group-hover:text-[var(--color-signal)]">↗</span>
+                  </span>
+                </a>
+              ))}
+            </div>
+          </details>
         ))
       }
       <p class="py-6 text-center font-mono text-[0.6875rem] tracking-[0.18em] text-[var(--color-line-2)] uppercase" id="repo-empty" hidden>
@@ -179,39 +211,166 @@ const langColor: Record<string, string> = {
     background: var(--color-ink-2);
     color: var(--color-chalk);
   }
+
+  .repo-group {
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .repo-group-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.95rem 0;
+    cursor: pointer;
+    list-style: none;
+    transition: color 0.2s ease;
+  }
+
+  .repo-group-head::-webkit-details-marker {
+    display: none;
+  }
+
+  .repo-group-head:hover .repo-caret,
+  .repo-group-head:hover .repo-group-title {
+    color: var(--color-signal);
+  }
+
+  .repo-caret {
+    display: inline-block;
+    color: var(--color-fog);
+    font-size: 0.7rem;
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+
+  .repo-group[open] .repo-caret {
+    transform: rotate(90deg);
+    color: var(--color-signal);
+  }
+
+  .repo-group-body {
+    margin-left: 0.3rem;
+    padding-left: 1.35rem;
+    border-left: 1px solid var(--color-line);
+  }
+
+  .repo-group-body .repo-row:last-child {
+    border-bottom: 0;
+  }
+
+  .repo-toggle {
+    padding: 0.5rem 0.7rem;
+    border: 1px solid var(--color-line);
+    background: transparent;
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .repo-toggle:hover,
+  .repo-toggle:focus-visible {
+    border-color: var(--color-line-2);
+    color: var(--color-chalk);
+  }
+
+  @media (max-width: 640px) {
+    .repo-group-body {
+      padding-left: 0.8rem;
+    }
+
+    .repo-row {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.4rem 1rem;
+      align-items: start;
+    }
+
+    .repo-row > span:nth-child(2) {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+
+    .repo-row > span:nth-child(3) {
+      grid-column: 2;
+      grid-row: 1;
+      justify-content: flex-end;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .repo-caret,
+    .repo-toggle {
+      transition: none;
+    }
+  }
 </style>
 
 <script>
   const chips = Array.from(document.querySelectorAll<HTMLButtonElement>(".filter-chip"));
+  const groups = Array.from(document.querySelectorAll<HTMLDetailsElement>(".repo-group"));
   const rows = Array.from(document.querySelectorAll<HTMLElement>("#repo-list .repo-row"));
   const empty = document.getElementById("repo-empty") as HTMLParagraphElement;
   const list = document.getElementById("repo-list") as HTMLDivElement;
   const sort = document.getElementById("repo-sort") as HTMLSelectElement | null;
+  const expand = document.querySelector<HTMLButtonElement>("[data-repo-expand]");
+  const collapse = document.querySelector<HTMLButtonElement>("[data-repo-collapse]");
+  const sourceOrder = [...groups];
 
   const apply = (group: string) => {
-    let shown = 0;
-    rows.forEach((row) => {
-      const match = group === "all" || row.dataset.group === group;
-      row.style.display = match ? "" : "none";
-      if (match) shown++;
+    groups.forEach((el) => {
+      const match = group === "all" || el.dataset.group === group;
+      el.hidden = !match;
+      if (match && group !== "all") el.open = true;
     });
+    const shown = rows.filter((row) => group === "all" || row.dataset.group === group).length;
     empty.hidden = shown > 0;
-    chips.forEach((c) => c.classList.toggle("is-active", c.dataset.group === group));
+    chips.forEach((c) => {
+      const active = c.dataset.group === group;
+      c.classList.toggle("is-active", active);
+      c.setAttribute("aria-pressed", String(active));
+    });
   };
 
   chips.forEach((c) => c.addEventListener("click", () => apply(c.dataset.group ?? "all")));
 
-  // Sorting reorders the DOM in place; the source order is kept in `rows`
-  // so switching back to "default" is exact, not approximately alphabetical.
+  const maxStars = (el: HTMLDetailsElement) =>
+    Math.max(0, ...Array.from(el.querySelectorAll<HTMLElement>(".repo-row")).map((row) => Number(row.dataset.stars)));
+
+  // Sorting stays inside each group, and the groups themselves reorder when
+  // the sort is global (name or stars). The source order is kept in
+  // `sourceOrder` so "default" restores the original arrangement exactly.
   sort?.addEventListener("change", () => {
     const mode = sort.value;
-    const ordered =
+
+    groups.forEach((el) => {
+      const body = el.querySelector(".repo-group-body");
+      if (!body) return;
+      const groupRows = Array.from(body.querySelectorAll<HTMLElement>(".repo-row"));
+      const ordered =
+        mode === "default"
+          ? groupRows
+          : [...groupRows].sort((a, b) => {
+              if (mode === "stars") return Number(b.dataset.stars) - Number(a.dataset.stars);
+              return (a.dataset.name ?? "").localeCompare(b.dataset.name ?? "");
+            });
+      ordered.forEach((row) => body.appendChild(row));
+    });
+
+    const orderedGroups =
       mode === "default"
-        ? rows
-        : [...rows].sort((a, b) => {
-            if (mode === "stars") return Number(b.dataset.stars) - Number(a.dataset.stars);
-            return (a.dataset.name ?? "").localeCompare(b.dataset.name ?? "");
+        ? sourceOrder
+        : [...sourceOrder].sort((a, b) => {
+            if (mode === "stars") return maxStars(b) - maxStars(a);
+            const label = (el: HTMLDetailsElement) =>
+              el.querySelector(".repo-group-title")?.textContent?.trim() ?? "";
+            return label(a).localeCompare(label(b));
           });
-    ordered.forEach((row) => list.insertBefore(row, empty));
+    orderedGroups.forEach((el) => list.insertBefore(el, empty));
   });
+
+  expand?.addEventListener("click", () => groups.forEach((el) => { if (!el.hidden) el.open = true; }));
+  collapse?.addEventListener("click", () => groups.forEach((el) => { if (!el.hidden) el.open = false; }));
 </script>

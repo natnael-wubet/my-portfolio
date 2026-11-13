@@ -1,0 +1,469 @@
+---
+import { repos } from "../data/content";
+import { getContributions } from "../lib/github";
+import { languageBreakdown } from "../lib/languages";
+import type { T } from "../i18n";
+
+interface Props {
+  t: T;
+}
+const { t } = Astro.props;
+
+const calendar = await getContributions();
+const languages = languageBreakdown(repos);
+const lang = t.lang === "am" ? "am" : "en";
+const shortDate = new Intl.DateTimeFormat(lang, { month: "short", day: "numeric", timeZone: "UTC" });
+const weekday = (date: string) =>
+  new Intl.DateTimeFormat(lang, { weekday: "short", timeZone: "UTC" }).format(
+    new Date(`${date}T00:00:00Z`)
+  );
+const weekdayLabels = ["", weekday("2024-01-01"), "", weekday("2024-01-03"), "", weekday("2024-01-05"), ""];
+
+// Month labels sit above the first week that starts a new month.
+const months: { label: string; index: number }[] = [];
+let previous = "";
+calendar.weeks.forEach((week, index) => {
+  const day = week.find((cell) => cell !== null);
+  if (!day) return;
+  const month = day.date.slice(0, 7);
+  if (month !== previous) {
+    months.push({
+      label: new Intl.DateTimeFormat(lang, { month: "short", timeZone: "UTC" }).format(
+        new Date(`${day.date}T00:00:00Z`)
+      ),
+      index,
+    });
+    previous = month;
+  }
+});
+
+const achievements = [
+  { key: "years", badge: "13", tone: "var(--color-signal)" },
+  { key: "polyglot", badge: "{}", tone: "var(--color-cyan)" },
+  { key: "first", badge: "1st", tone: "var(--color-signal)" },
+  { key: "second", badge: "2nd", tone: "var(--color-amber)" },
+  { key: "open", badge: "48", tone: "var(--color-violet)" },
+  { key: "live", badge: "10", tone: "var(--color-rose)" },
+  { key: "bilingual", badge: "አ", tone: "var(--color-cyan)" },
+  { key: "streak", badge: String(calendar.longestStreak), tone: "var(--color-amber)" },
+];
+
+const sourceNote =
+  calendar.source === "live"
+    ? t("sec.repos.activityLive", { date: calendar.fetched })
+    : t("sec.repos.activityCached", { date: calendar.fetched });
+---
+
+<article class="gh-panel mt-14" data-reveal>
+  <header class="gh-head">
+    <img
+      class="gh-avatar"
+      src="/assets/github-avatar.jpg"
+      alt=""
+      width="48"
+      height="48"
+      loading="lazy"
+      decoding="async"
+    />
+    <div class="flex min-w-0 flex-col gap-0.5">
+      <span class="font-display text-lg font-semibold tracking-tight text-[var(--color-chalk)]">Natnael Wubet</span>
+      <a
+        class="font-mono text-[0.625rem] tracking-[0.14em] text-[var(--color-fog)] uppercase transition-colors hover:text-[var(--color-signal)]"
+        href="https://github.com/natnael-wubet"
+        target="_blank"
+        rel="noopener">@natnael-wubet ↗</a
+      >
+    </div>
+    <div class="ml-auto flex flex-col items-start gap-1 sm:items-end">
+      <span class="font-mono text-[0.5625rem] tracking-[0.18em] text-[var(--color-fog)] uppercase">
+        {t("sec.repos.activity")}
+      </span>
+      <span class="font-mono text-[0.5625rem] tracking-[0.14em] text-[var(--color-fog)]">{sourceNote}</span>
+    </div>
+  </header>
+
+  <div class="gh-stats">
+    <div class="gh-stat">
+      <span class="gh-stat-value">{calendar.total.toLocaleString(lang)}</span>
+      <span class="gh-stat-label">{t("sec.repos.contributions")}</span>
+    </div>
+    <div class="gh-stat">
+      <span class="gh-stat-value">{calendar.currentStreak}</span>
+      <span class="gh-stat-label">{t("sec.repos.currentStreak")}</span>
+    </div>
+    <div class="gh-stat">
+      <span class="gh-stat-value">{calendar.longestStreak}</span>
+      <span class="gh-stat-label">{t("sec.repos.longestStreak")}</span>
+    </div>
+    <div class="gh-stat">
+      <span class="gh-stat-value">{calendar.best.count}</span>
+      <span class="gh-stat-label">
+        {t("sec.repos.bestDay")} · {shortDate.format(new Date(`${calendar.best.date}T00:00:00Z`))}
+      </span>
+    </div>
+  </div>
+
+  <div class="gh-calendar-block">
+    <div class="flex flex-wrap items-baseline justify-between gap-2">
+      <span class="gh-label">{t("sec.repos.calendar")}</span>
+      <span class="font-mono text-[0.5625rem] tracking-[0.12em] text-[var(--color-fog)]">{t("sec.repos.calendarHint")}</span>
+    </div>
+
+    <div class="gh-calendar-scroll">
+      <div class="gh-calendar">
+        <div class="gh-months" style={`--weeks:${calendar.weeks.length}`}>
+          {
+            months.map((month) => (
+              <span class="gh-month" style={`grid-column:${month.index + 1}`}>
+                {month.label}
+              </span>
+            ))
+          }
+        </div>
+
+        <div class="gh-calendar-row">
+          <div class="gh-weekdays" aria-hidden="true">
+            {weekdayLabels.map((label) => <span>{label}</span>)}
+          </div>
+          <div class="gh-grid" style={`--weeks:${calendar.weeks.length}`} role="img" aria-label={t("sec.repos.calendar")}>
+            {
+              calendar.weeks.map((week) =>
+                week.map((day) =>
+                  day ? (
+                    <span
+                      class="gh-day"
+                      data-level={day.level}
+                      title={`${day.date} · ${t("sec.repos.contributionCount", { n: day.count })}`}
+                    />
+                  ) : (
+                    <span class="gh-day is-empty" />
+                  )
+                )
+              )
+            }
+          </div>
+        </div>
+
+        <div class="gh-legend">
+          <span>{t("sec.repos.less")}</span>
+          {[0, 1, 2, 3, 4].map((level) => <span class="gh-day" data-level={level} />)}
+          <span>{t("sec.repos.more")}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gh-languages">
+    <div class="flex flex-wrap items-baseline justify-between gap-2">
+      <span class="gh-label">{t("sec.repos.languages")}</span>
+      <span class="font-mono text-[0.5625rem] tracking-[0.12em] text-[var(--color-fog)]">
+        {t("sec.repos.languagesLead", { n: repos.length })}
+      </span>
+    </div>
+    <div class="lang-bar" role="img" aria-label={t("sec.repos.languages")}>
+      {
+        languages.map((slice) => (
+          <span
+            class="lang-segment"
+            style={`width:${(slice.share * 100).toFixed(2)}%;background:${slice.color}`}
+            title={`${slice.language}: ${slice.count}`}
+          />
+        ))
+      }
+    </div>
+    <ul class="lang-legend">
+      {
+        languages.map((slice) => (
+          <li class="flex items-center gap-2 font-mono text-[0.625rem] text-[var(--color-fog-2)]">
+            <span class="h-2 w-2 flex-none" style={`background:${slice.color}`} />
+            <span class="text-[var(--color-chalk)]">{slice.language}</span>
+            <span class="text-[var(--color-line-2)]">{slice.count}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <div class="gh-achievements">
+    <div class="flex flex-wrap items-baseline justify-between gap-2">
+      <span class="gh-label">{t("sec.repos.achievements")}</span>
+      <span class="font-mono text-[0.5625rem] tracking-[0.12em] text-[var(--color-fog)]">{t("sec.repos.achievementsLead")}</span>
+    </div>
+    <div class="achievement-grid">
+      {
+        achievements.map((item) => (
+          <div class="achievement">
+            <span class="achievement-badge" style={`--badge:${item.tone}`}>
+              {item.badge}
+            </span>
+            <div class="flex min-w-0 flex-col gap-1">
+              <span class="font-display text-sm font-semibold tracking-tight text-[var(--color-chalk)]">
+                {t(`sec.repos.ach.${item.key}.title`)}
+              </span>
+              <span class="text-[0.75rem] leading-relaxed text-[var(--color-fog-2)]">
+                {t(`sec.repos.ach.${item.key}.detail`)}
+              </span>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</article>
+
+<style>
+  .gh-panel {
+    border: 1px solid var(--color-line);
+    background: var(--color-ink);
+  }
+
+  .gh-head {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .gh-avatar {
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid var(--color-line-2);
+    object-fit: cover;
+    image-rendering: pixelated;
+  }
+
+  .gh-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--color-line);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  @media (min-width: 768px) {
+    .gh-stats {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .gh-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem 1.25rem;
+    background: var(--color-ink);
+  }
+
+  .gh-stat-value {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--color-chalk);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .gh-stat-label {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-fog);
+  }
+
+  .gh-calendar-block,
+  .gh-languages,
+  .gh-achievements {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 1.25rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .gh-achievements {
+    border-bottom: 0;
+  }
+
+  .gh-label {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-chalk);
+  }
+
+  .gh-calendar-scroll {
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    scrollbar-width: thin;
+  }
+
+  .gh-calendar {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: max-content;
+  }
+
+  .gh-months {
+    display: grid;
+    grid-template-columns: repeat(var(--weeks), 10px);
+    gap: 3px;
+    margin-left: 2.2rem;
+    height: 0.9rem;
+  }
+
+  .gh-month {
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-fog);
+    white-space: nowrap;
+  }
+
+  .gh-calendar-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .gh-weekdays {
+    display: grid;
+    grid-template-rows: repeat(7, 10px);
+    gap: 3px;
+    width: 1.7rem;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.06em;
+    color: var(--color-fog);
+  }
+
+  .gh-grid {
+    display: grid;
+    grid-template-rows: repeat(7, 10px);
+    grid-auto-flow: column;
+    grid-auto-columns: 10px;
+    gap: 3px;
+  }
+
+  .gh-day {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    background: var(--color-line);
+  }
+
+  .gh-day[data-level="1"] {
+    background: color-mix(in srgb, var(--color-signal) 26%, var(--color-ink));
+  }
+
+  .gh-day[data-level="2"] {
+    background: color-mix(in srgb, var(--color-signal) 46%, var(--color-ink));
+  }
+
+  .gh-day[data-level="3"] {
+    background: color-mix(in srgb, var(--color-signal) 68%, var(--color-ink));
+  }
+
+  .gh-day[data-level="4"] {
+    background: var(--color-signal);
+  }
+
+  .gh-day.is-empty {
+    background: transparent;
+  }
+
+  .gh-legend {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-left: 2.2rem;
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-fog);
+  }
+
+  .lang-bar {
+    display: flex;
+    height: 0.65rem;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    background: var(--color-line);
+  }
+
+  .lang-segment {
+    display: block;
+    height: 100%;
+  }
+
+  .lang-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .achievement-grid {
+    display: grid;
+    gap: 1px;
+    background: var(--color-line);
+    border: 1px solid var(--color-line);
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media (min-width: 640px) {
+    .achievement-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .achievement-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .achievement {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.9rem;
+    background: var(--color-ink);
+    transition: background-color 0.2s ease;
+  }
+
+  .achievement:hover {
+    background: var(--color-ink-2);
+  }
+
+  .achievement-badge {
+    display: grid;
+    place-items: center;
+    width: 2.35rem;
+    height: 2.35rem;
+    flex: none;
+    border: 1px solid color-mix(in srgb, var(--badge) 55%, var(--color-line));
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--badge) 12%, var(--color-ink));
+    color: var(--badge);
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.02em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .achievement {
+      transition: none;
+    }
+  }
+</style>
