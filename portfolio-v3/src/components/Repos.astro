@@ -2,6 +2,7 @@
 import { repos } from "../data/content";
 import RepoShowcase from "./RepoShowcase.astro";
 import GitHubPanel from "./GitHubPanel.astro";
+import Workbench from "./Workbench.astro";
 import { langColor } from "../lib/languages";
 import { td, type T } from "../i18n";
 
@@ -43,6 +44,8 @@ const grouped = groups.map((group) => {
     <RepoShowcase t={t} />
 
     <GitHubPanel t={t} />
+
+    <Workbench t={t} />
 
     <!-- the full shelf -->
     <div class="mt-16 flex flex-col gap-3 border-t border-[var(--color-line)] pt-8 md:flex-row md:items-end md:justify-between">

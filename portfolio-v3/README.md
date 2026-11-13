@@ -85,7 +85,9 @@ npm run preview  # serve dist/ locally
   achievements earned from the record. The full shelf of 48 repositories sits
   in native collapsible groups, with filter chips, source-order/name/star
   sorting and expand-all/collapse-all controls that work without JavaScript
-  for the disclosure itself.
+  for the disclosure itself. A compact workbench panel records the two Linux
+  desktops (Omarchy with Hyprland, Linux Mint with awesomewm), the editor and
+  terminal stack, and links the public configuration repositories.
 - **Small enhancements.** Hero stats count up when first seen, and the contact
   terminal copies any answer on click (or with `copy`).
 - **Amharic typography.** `Noto Sans Ethiopic` is loaded only on `/am/` and
@@ -98,7 +100,8 @@ npm run preview  # serve dist/ locally
 ```text
 src/
 ├── components/       # Nav, Hero (specimen + instrument), Deployments, Repos,
-│                     # GitHubPanel, Origin, Mind, Vault, Awards, Photos,
+│                     # GitHubPanel, Workbench, Origin, Mind, Vault, Awards,
+│                     # Photos,
 │                     # Connect, Footer, CommandPalette,
 │                     # Shortcuts, DisplayOptions, Instrument (diagnostics +
 │                     # X-ray + toast), Brief (tailored one-pager),

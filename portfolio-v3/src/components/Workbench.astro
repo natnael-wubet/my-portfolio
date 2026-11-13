@@ -1,0 +1,192 @@
+---
+import { repos } from "../data/content";
+import { td, type T } from "../i18n";
+
+interface Props {
+  t: T;
+}
+const { t } = Astro.props;
+
+const names = [
+  "myAwesomewm",
+  "myomarchylocal",
+  "natis_neovim_config",
+  "my-dooit-config",
+  "zenbrowserconfig",
+];
+const configRepos = names.flatMap((name) => {
+  const repo = repos.find((entry) => entry.name === name);
+  return repo ? [repo] : [];
+});
+
+const facts = [
+  {
+    key: "desktop",
+    value: t("sec.repos.wb.desktopValue"),
+    note: t("sec.repos.wb.desktopNote"),
+  },
+  {
+    key: "second",
+    value: t("sec.repos.wb.secondValue"),
+    note: t("sec.repos.wb.secondNote"),
+  },
+  {
+    key: "editor",
+    value: t("sec.repos.wb.editorValue"),
+    note: t("sec.repos.wb.editorNote"),
+  },
+  {
+    key: "shell",
+    value: t("sec.repos.wb.shellValue"),
+    note: t("sec.repos.wb.shellNote"),
+  },
+];
+---
+
+<article class="wb-panel mt-6" data-reveal>
+  <header class="wb-head">
+    <div class="flex flex-col gap-2">
+      <h3 class="wb-label">{t("sec.repos.workbench")}</h3>
+      <p class="m-0 max-w-2xl text-sm leading-relaxed text-[var(--color-fog-2)]">
+        {t("sec.repos.workbenchLead")}
+      </p>
+    </div>
+    <span class="font-mono text-[0.5625rem] tracking-[0.14em] text-[var(--color-fog)] uppercase">
+      {t("sec.repos.wb.count", { n: configRepos.length })}
+    </span>
+  </header>
+
+  <dl class="wb-grid">
+    {
+      facts.map((fact) => (
+        <div class="wb-cell">
+          <dt class="wb-key">{t(`sec.repos.wb.${fact.key}`)}</dt>
+          <dd class="wb-value">{fact.value}</dd>
+          <dd class="wb-note">{fact.note}</dd>
+        </div>
+      ))
+    }
+  </dl>
+
+  <div class="wb-links">
+    <h4 class="wb-label">{t("sec.repos.wb.configs")}</h4>
+    <div class="flex flex-wrap gap-2">
+      {
+        configRepos.map((repo) => (
+          <a class="wb-repo" href={repo.url} target="_blank" rel="noopener" title={td(t, repo.description)}>
+            {repo.name} ↗
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</article>
+
+<style>
+  .wb-panel {
+    border: 1px solid var(--color-line);
+    background: var(--color-ink);
+  }
+
+  .wb-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .wb-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1px;
+    margin: 0;
+    background: var(--color-line);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  @media (min-width: 640px) {
+    .wb-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .wb-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .wb-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1rem 1.25rem;
+    background: var(--color-ink);
+  }
+
+  .wb-label,
+  .wb-key,
+  .wb-note {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-fog);
+  }
+
+  .wb-label {
+    font-weight: 400;
+    font-size: 0.625rem;
+    letter-spacing: 0.2em;
+    color: var(--color-chalk);
+  }
+
+  .wb-value {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--color-chalk);
+  }
+
+  .wb-note {
+    letter-spacing: 0.06em;
+    text-transform: none;
+    color: var(--color-fog-2);
+  }
+
+  .wb-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 1.25rem;
+  }
+
+  .wb-repo {
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--color-line);
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.08em;
+    color: var(--color-fog-2);
+    text-decoration: none;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .wb-repo:hover,
+  .wb-repo:focus-visible {
+    border-color: var(--color-line-2);
+    color: var(--color-signal);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wb-repo {
+      transition: none;
+    }
+  }
+</style>

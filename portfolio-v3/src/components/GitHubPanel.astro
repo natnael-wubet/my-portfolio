@@ -70,7 +70,7 @@ const sourceNote =
       decoding="async"
     />
     <div class="flex min-w-0 flex-col gap-0.5">
-      <span class="font-display text-lg font-semibold tracking-tight text-[var(--color-chalk)]">Natnael Wubet</span>
+      <h3 class="m-0 font-display text-lg font-semibold tracking-tight text-[var(--color-chalk)]">Natnael Wubet</h3>
       <a
         class="font-mono text-[0.625rem] tracking-[0.14em] text-[var(--color-fog)] uppercase transition-colors hover:text-[var(--color-signal)]"
         href="https://github.com/natnael-wubet"
@@ -109,7 +109,7 @@ const sourceNote =
 
   <div class="gh-calendar-block">
     <div class="flex flex-wrap items-baseline justify-between gap-2">
-      <span class="gh-label">{t("sec.repos.calendar")}</span>
+      <h4 class="gh-label">{t("sec.repos.calendar")}</h4>
       <span class="font-mono text-[0.5625rem] tracking-[0.12em] text-[var(--color-fog)]">{t("sec.repos.calendarHint")}</span>
     </div>
 
@@ -162,7 +162,7 @@ const sourceNote =
 
   <div class="gh-languages">
     <div class="flex flex-wrap items-baseline justify-between gap-2">
-      <span class="gh-label">{t("sec.repos.languages")}</span>
+      <h4 class="gh-label">{t("sec.repos.languages")}</h4>
       <span class="font-mono text-[0.5625rem] tracking-[0.12em] text-[var(--color-fog)]">
         {t("sec.repos.languagesLead", { n: repos.length })}
       </span>
@@ -193,7 +193,7 @@ const sourceNote =
 
   <div class="gh-achievements">
     <div class="flex flex-wrap items-baseline justify-between gap-2">
-      <span class="gh-label">{t("sec.repos.achievements")}</span>
+      <h4 class="gh-label">{t("sec.repos.achievements")}</h4>
       <span class="font-mono text-[0.5625rem] tracking-[0.12em] text-[var(--color-fog)]">{t("sec.repos.achievementsLead")}</span>
     </div>
     <div class="achievement-grid">
@@ -295,6 +295,8 @@ const sourceNote =
   }
 
   .gh-label {
+    margin: 0;
+    font-weight: 400;
     font-family: var(--font-mono);
     font-size: 0.625rem;
     letter-spacing: 0.2em;
