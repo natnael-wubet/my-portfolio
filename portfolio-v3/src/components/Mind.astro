@@ -1,68 +1,138 @@
 ---
 import { disciplines, youtube } from "../data/content";
 import { rich, td, type T } from "../i18n";
+import DisciplineGlyph from "./DisciplineGlyph.astro";
 
 interface Props {
   t: T;
 }
 const { t } = Astro.props;
+
+type Glyph = "physics" | "philosophy" | "psychology" | "ecology" | "humanism";
+const accents = [
+  "var(--color-cyan)",
+  "var(--color-violet)",
+  "var(--color-rose)",
+  "var(--color-signal)",
+  "var(--color-amber)",
+];
+
+// Five nodes on one circle, starting at the top and stepping 72° each time.
+const nodes = disciplines.map((d, i) => {
+  const angle = ((-90 + i * 72) * Math.PI) / 180;
+  return {
+    ...d,
+    accent: accents[i] ?? "var(--color-signal)",
+    x: (50 + Math.cos(angle) * 37).toFixed(2),
+    y: (50 + Math.sin(angle) * 37).toFixed(2),
+  };
+});
 ---
 
-<section id="mind" class="relative border-t border-[var(--color-line)] overflow-hidden">
+<section id="mind" class="relative overflow-hidden border-t border-[var(--color-line)]">
   <!-- faint field so the section reads differently from the rest -->
-  <div class="pointer-events-none absolute inset-0 -z-10 opacity-[0.35]" aria-hidden="true"
-    style="background-image: radial-gradient(circle at 1px 1px, var(--color-line-2) 1px, transparent 0); background-size: 28px 28px; mask-image: radial-gradient(ellipse 90% 70% at 50% 40%, #000 10%, transparent 75%);"></div>
+  <div
+    class="pointer-events-none absolute inset-0 -z-10 opacity-[0.35]"
+    aria-hidden="true"
+    style="background-image: radial-gradient(circle at 1px 1px, var(--color-line-2) 1px, transparent 0); background-size: 28px 28px; mask-image: radial-gradient(ellipse 90% 70% at 50% 40%, #000 10%, transparent 75%);"
+  >
+  </div>
 
   <div class="shell py-24 lg:py-32">
     <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-      <div class="flex flex-col gap-5">
+      <div class="flex flex-col gap-5" data-reveal>
         <span class="eyebrow">{t("sec.mind.eyebrow")}</span>
         <h2 class="display display-lg" set:html={rich(t("sec.mind.title"))} />
       </div>
-      <p class="max-w-md text-[var(--color-fog-2)]">
+      <p class="max-w-md text-[var(--color-fog-2)]" data-reveal style="--d:120ms">
         {t("sec.mind.lead")}
       </p>
     </div>
 
-    <!-- Disciplines.
-         Five cards, the last one spanning two columns: 6 cells, which divides
-         evenly by both 2 (md) and 3 (xl) so no cell is ever stranded. -->
-    <div class="mt-14 grid gap-px bg-[var(--color-line)] md:grid-cols-2 xl:grid-cols-3">
-      {
-        disciplines.map((d, i) => (
-          <article
-            class={`group relative flex flex-col gap-4 bg-[var(--color-ink)] p-7 transition-colors duration-300 hover:bg-[var(--color-ink-2)] lg:p-8 ${
-              i === disciplines.length - 1 ? "md:col-span-2" : ""
-            }`}
-            data-reveal
-            style={`--d:${i * 70}ms`}
-          >
-            <div class="flex items-start justify-between gap-4">
-              <span class="font-mono text-[0.625rem] tracking-[0.2em] text-[var(--color-line-2)] uppercase">
-                {String(i + 1).padStart(2, "0")}
+    <!-- The five fields are one constellation: pick a node, the panel follows. -->
+    <div class="mind-shell mt-14" data-mind>
+      <div class="mind-map" role="tablist" aria-label={t("sec.mind.map")}>
+        <div class="mind-orbit" aria-hidden="true">
+          <span class="mind-ring mind-ring--outer"></span>
+          <span class="mind-ring mind-ring--mid"></span>
+          <span class="mind-ring mind-ring--inner"></span>
+          <span class="mind-sweep"></span>
+        </div>
+
+        <div class="mind-core" aria-hidden="true">
+          <span class="mind-core-num">{String(disciplines.length).padStart(2, "0")}</span>
+          <span class="mind-core-label">{t("sec.mind.core")}</span>
+        </div>
+
+        {
+          nodes.map((d, i) => (
+            <button
+              class="mind-node"
+              type="button"
+              role="tab"
+              id={`mind-tab-${d.key}`}
+              aria-controls={`mind-panel-${d.key}`}
+              aria-selected={i === 0 ? "true" : "false"}
+              tabindex={i === 0 ? "0" : "-1"}
+              data-mind-node={i}
+              style={`left:${d.x}%;top:${d.y}%;--node-accent:${d.accent}`}
+            >
+              <span class="mind-node-disc">
+                <DisciplineGlyph name={d.key as Glyph} />
               </span>
-              <span
-                class="h-px w-10 bg-[var(--color-line-2)] transition-all duration-500 group-hover:w-16 group-hover:bg-[var(--color-signal)]"
-                aria-hidden="true"
-              />
-            </div>
+              <span class="mind-node-name">{td(t, d.name)}</span>
+              <span class="mind-node-index">{String(i + 1).padStart(2, "0")}</span>
+            </button>
+          ))
+        }
+      </div>
 
-            <h3 class="font-display text-2xl font-semibold tracking-tight text-[var(--color-chalk)] transition-colors duration-300 group-hover:text-[var(--color-signal)]">
-              {td(t, d.name)}
-            </h3>
+      <div class="mind-panels">
+        {
+          disciplines.map((d, i) => (
+            <article
+              class="mind-panel"
+              id={`mind-panel-${d.key}`}
+              role="tabpanel"
+              aria-labelledby={`mind-tab-${d.key}`}
+              data-mind-panel={i}
+              style={`--node-accent:${accents[i] ?? "var(--color-signal)"}`}
+            >
+              <span class="mind-watermark" aria-hidden="true">
+                <DisciplineGlyph name={d.key as Glyph} />
+              </span>
 
-            <p class="max-w-2xl text-sm leading-relaxed text-[var(--color-fog-2)]">{td(t, d.blurb)}</p>
-
-            <div class="mt-auto flex flex-wrap gap-1.5 pt-3">
-              {d.tags.map((tag) => (
-                <span class="border border-[var(--color-line)] px-2 py-1 font-mono text-[0.5625rem] tracking-[0.1em] text-[var(--color-fog)] uppercase">
-                  {td(t, tag)}
+              <div class="mind-panel-head">
+                <span class="mind-panel-index">
+                  {String(i + 1).padStart(2, "0")} / {String(disciplines.length).padStart(2, "0")}
                 </span>
-              ))}
-            </div>
-          </article>
-        ))
-      }
+                <span class="mind-panel-glyph">
+                  <DisciplineGlyph name={d.key as Glyph} />
+                </span>
+              </div>
+
+              <h3 class="mind-panel-title">{td(t, d.name)}</h3>
+              <p class="mind-panel-blurb">{td(t, d.blurb)}</p>
+
+              <ul class="mind-tags">
+                {d.tags.map((tag) => (
+                  <li>{td(t, tag)}</li>
+                ))}
+              </ul>
+
+              <div class="mind-panel-foot" aria-hidden="true">
+                <span class="mind-panel-ticks">
+                  {disciplines.map((_, j) => (
+                    <i class={j === i ? "is-on" : ""} />
+                  ))}
+                </span>
+                <span class="mind-panel-mark">{td(t, d.name)}</span>
+              </div>
+
+            </article>
+          ))
+        }
+      </div>
     </div>
 
     <!-- YouTube channel gets its own full-width band -->
@@ -70,7 +140,7 @@ const { t } = Astro.props;
       href={youtube.url}
       target="_blank"
       rel="noopener"
-      class="group relative mt-px flex flex-col gap-5 overflow-hidden border border-[var(--color-line)] bg-[var(--color-ink-2)] p-7 no-underline transition-colors duration-300 hover:border-[var(--color-line-2)] lg:flex-row lg:items-center lg:gap-8 lg:p-9"
+      class="group relative mt-6 flex flex-col gap-5 overflow-hidden border border-[var(--color-line)] bg-[var(--color-ink-2)] p-7 no-underline transition-colors duration-300 hover:border-[var(--color-line-2)] lg:flex-row lg:items-center lg:gap-8 lg:p-9"
       data-reveal
       style="--d:120ms"
     >
@@ -78,7 +148,8 @@ const { t } = Astro.props;
         class="pointer-events-none absolute -right-20 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full opacity-30 blur-3xl transition-opacity duration-500 group-hover:opacity-60"
         style="background: radial-gradient(circle, #ff5470 0%, transparent 70%);"
         aria-hidden="true"
-      />
+      >
+      </div>
 
       <div class="relative flex flex-none items-center gap-4">
         <span class="grid h-14 w-14 place-items-center overflow-hidden rounded-full border border-[var(--color-line-2)] bg-[var(--color-ink-3)]">
@@ -93,14 +164,18 @@ const { t } = Astro.props;
           />
         </span>
         <span class="flex flex-col">
-          <span class="font-mono text-[0.625rem] tracking-[0.2em] text-[var(--color-fog)] uppercase">{t("sec.mind.youtube", { handle: youtube.handle })}</span>
+          <span class="font-mono text-[0.625rem] tracking-[0.2em] text-[var(--color-fog)] uppercase">
+            {t("sec.mind.youtube", { handle: youtube.handle })}
+          </span>
           <span class="font-display text-xl font-semibold tracking-tight text-[var(--color-chalk)] transition-colors group-hover:text-[var(--color-signal)]">
             {youtube.title}
           </span>
         </span>
       </div>
 
-      <p class="relative max-w-2xl flex-1 text-sm leading-relaxed text-[var(--color-fog-2)]">{td(t, youtube.blurb)}</p>
+      <p class="relative max-w-2xl flex-1 text-sm leading-relaxed text-[var(--color-fog-2)]">
+        {td(t, youtube.blurb)}
+      </p>
 
       <span class="relative flex flex-none items-center gap-2 self-start border border-[var(--color-line-2)] px-5 py-2.5 font-mono text-[0.6875rem] tracking-[0.16em] text-[var(--color-chalk)] uppercase transition-colors group-hover:border-[var(--color-signal)] group-hover:text-[var(--color-signal)] lg:self-auto">
         {t("sec.mind.watch")} <span class="transition-transform duration-300 group-hover:translate-x-1">↗</span>
@@ -108,3 +183,509 @@ const { t } = Astro.props;
     </a>
   </div>
 </section>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-mind]");
+
+  if (root) {
+    const nodes = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-mind-node]"));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>("[data-mind-panel]"));
+    let active = 0;
+
+    root.classList.add("is-enhanced");
+
+    const select = (index: number, moveFocus = false) => {
+      active = (index + nodes.length) % nodes.length;
+
+      nodes.forEach((node, i) => {
+        const on = i === active;
+        node.setAttribute("aria-selected", on ? "true" : "false");
+        node.tabIndex = on ? 0 : -1;
+        if (on && moveFocus) node.focus();
+      });
+
+      panels.forEach((panel, i) => {
+        const on = i === active;
+        panel.hidden = !on;
+        panel.classList.remove("is-active");
+        if (on) {
+          void panel.offsetWidth;
+          panel.classList.add("is-active");
+        }
+      });
+    };
+
+    select(0);
+
+    nodes.forEach((node, i) => {
+      node.addEventListener("click", () => select(i));
+      node.addEventListener("keydown", (event) => {
+        const keys = ["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp", "Home", "End"];
+        if (!keys.includes(event.key)) return;
+        event.preventDefault();
+        if (event.key === "Home") select(0, true);
+        else if (event.key === "End") select(nodes.length - 1, true);
+        else if (event.key === "ArrowRight" || event.key === "ArrowDown") select(active + 1, true);
+        else select(active - 1, true);
+      });
+    });
+
+    // A slow parallax on the rings, never on the text.
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const fine = window.matchMedia("(pointer: fine)").matches;
+    if (!reduced && fine) {
+      root.addEventListener("pointermove", (event) => {
+        const rect = root.getBoundingClientRect();
+        root.style.setProperty("--mx", ((event.clientX - rect.left) / rect.width - 0.5).toFixed(3));
+        root.style.setProperty("--my", ((event.clientY - rect.top) / rect.height - 0.5).toFixed(3));
+      });
+      root.addEventListener("pointerleave", () => {
+        root.style.setProperty("--mx", "0");
+        root.style.setProperty("--my", "0");
+      });
+    }
+  }
+</script>
+
+<style>
+  .mind-shell {
+    display: grid;
+    gap: 1px;
+    background: var(--color-line);
+    border: 1px solid var(--color-line);
+  }
+
+  @media (min-width: 1024px) {
+    .mind-shell {
+      grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+      align-items: stretch;
+    }
+  }
+
+  /* ── Constellation ──────────────────────────────────────── */
+  .mind-map {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 1rem;
+    background:
+      radial-gradient(70% 60% at 50% 50%, color-mix(in srgb, var(--color-signal) 5%, transparent), transparent 72%),
+      var(--color-ink);
+  }
+
+  @media (min-width: 1024px) {
+    .mind-map {
+      display: block;
+      aspect-ratio: 1;
+      min-height: 30rem;
+      padding: 0;
+      overflow: hidden;
+    }
+  }
+
+  .mind-orbit,
+  .mind-core {
+    display: none;
+  }
+
+  @media (min-width: 1024px) {
+    .mind-orbit {
+      position: absolute;
+      inset: 0;
+      display: block;
+      transform: translate(calc(var(--mx, 0) * 10px), calc(var(--my, 0) * 10px));
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+
+    .mind-core {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2rem;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+  }
+
+  .mind-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 1px solid var(--color-line);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .mind-ring--outer {
+    width: 92%;
+    height: 92%;
+    border-style: dashed;
+    opacity: 0.55;
+  }
+
+  .mind-ring--mid {
+    width: 74%;
+    height: 74%;
+    border-color: var(--color-line-2);
+  }
+
+  .mind-ring--inner {
+    width: 42%;
+    height: 42%;
+    border-style: dashed;
+    opacity: 0.6;
+  }
+
+  .mind-sweep {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 74%;
+    height: 74%;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg 300deg,
+      color-mix(in srgb, var(--color-signal) 10%, transparent) 340deg,
+      transparent 360deg
+    );
+    mask-image: radial-gradient(circle, transparent 63%, #000 64%);
+    animation: mind-sweep 28s linear infinite;
+    opacity: 0.8;
+  }
+
+  @keyframes mind-sweep {
+    to {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+
+  .mind-core-num {
+    font-family: var(--font-display);
+    font-size: 2.1rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--color-chalk);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .mind-core-label {
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.2em;
+    color: var(--color-fog);
+    text-transform: uppercase;
+  }
+
+  .mind-node {
+    position: static;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.35rem 0.75rem 0.35rem 0.35rem;
+    border: 1px solid var(--color-line);
+    background: var(--color-ink);
+    color: var(--color-fog-2);
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+  }
+
+  @media (min-width: 1024px) {
+    .mind-node {
+      position: absolute;
+      flex-direction: column;
+      gap: 0.5rem;
+      width: 8.6rem;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      text-align: center;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .mind-node-disc {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid var(--color-line-2);
+    border-radius: 50%;
+    background: var(--color-ink);
+    color: var(--color-fog);
+    transition: border-color 0.25s ease, color 0.25s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  }
+
+  @media (min-width: 1024px) {
+    .mind-node-disc {
+      width: 4.5rem;
+      height: 4.5rem;
+      padding: 0.85rem;
+    }
+  }
+
+  .mind-node-disc :global(.discipline-glyph) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .mind-node-name {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    transition: color 0.25s ease;
+  }
+
+  @media (min-width: 1024px) {
+    .mind-node-name {
+      font-size: 0.5625rem;
+      letter-spacing: 0.18em;
+    }
+  }
+
+  .mind-node-index {
+    display: none;
+  }
+
+  @media (min-width: 1024px) {
+    .mind-node-index {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.5rem;
+      letter-spacing: 0.16em;
+      color: var(--color-line-2);
+    }
+  }
+
+  .mind-node:hover,
+  .mind-node:focus-visible {
+    color: var(--color-chalk);
+    border-color: var(--color-line-2);
+  }
+
+  @media (min-width: 1024px) {
+    .mind-node:hover,
+    .mind-node:focus-visible {
+      border-color: transparent;
+    }
+  }
+
+  .mind-node:hover .mind-node-disc,
+  .mind-node:focus-visible .mind-node-disc {
+    color: var(--node-accent);
+    border-color: color-mix(in srgb, var(--node-accent) 60%, var(--color-line-2));
+    transform: translateY(-2px);
+  }
+
+  .mind-node[aria-selected="true"] .mind-node-disc {
+    color: var(--node-accent);
+    border-color: var(--node-accent);
+    box-shadow:
+      0 0 0 4px color-mix(in srgb, var(--node-accent) 12%, transparent),
+      0 0 34px color-mix(in srgb, var(--node-accent) 22%, transparent);
+  }
+
+  .mind-node[aria-selected="true"] .mind-node-name {
+    color: var(--color-chalk);
+  }
+
+  .mind-node[aria-selected="true"] .mind-node-index {
+    color: var(--node-accent);
+  }
+
+  /* ── Detail panel ───────────────────────────────────────── */
+  .mind-panels {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-ink);
+  }
+
+  .mind-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex: 1;
+    overflow: hidden;
+    padding: 1.6rem;
+    background:
+      radial-gradient(90% 80% at 100% 0%, color-mix(in srgb, var(--node-accent) 10%, transparent), transparent 62%),
+      var(--color-ink);
+  }
+
+  @media (min-width: 1024px) {
+    .mind-panel {
+      min-height: 30rem;
+      padding: 2.2rem;
+    }
+  }
+
+  .mind-panel + .mind-panel {
+    border-top: 1px solid var(--color-line);
+  }
+
+  .mind-panel.is-active {
+    animation: mind-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes mind-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .mind-watermark {
+    position: absolute;
+    right: -3.5rem;
+    bottom: -4.5rem;
+    width: 19rem;
+    height: 19rem;
+    color: var(--node-accent);
+    opacity: 0.06;
+    pointer-events: none;
+  }
+
+  .mind-watermark :global(.discipline-glyph) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .mind-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 2px;
+    background: var(--node-accent);
+    opacity: 0.7;
+  }
+
+  .mind-panel-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .mind-panel-index {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.2em;
+    color: var(--color-fog);
+  }
+
+  .mind-panel-glyph {
+    width: 5rem;
+    height: 5rem;
+    color: var(--node-accent);
+    opacity: 0.9;
+  }
+
+  .mind-panel-glyph :global(.discipline-glyph) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .mind-panel-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3.1rem);
+    font-weight: 700;
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+    color: var(--color-chalk);
+  }
+
+  .mind-panel-blurb {
+    max-width: 34rem;
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.75;
+    color: var(--color-fog-2);
+  }
+
+  .mind-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: auto 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .mind-tags li {
+    padding: 0.3rem 0.55rem;
+    border: 1px solid var(--color-line);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.12em;
+    color: var(--color-fog-2);
+    text-transform: uppercase;
+  }
+
+  .mind-panel-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--color-line);
+  }
+
+  .mind-panel-ticks {
+    display: inline-flex;
+    gap: 0.35rem;
+  }
+
+  .mind-panel-ticks i {
+    width: 1.15rem;
+    height: 2px;
+    background: var(--color-line-2);
+  }
+
+  .mind-panel-ticks i.is-on {
+    background: var(--node-accent);
+  }
+
+  .mind-panel-mark {
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.18em;
+    color: var(--color-line-2);
+    text-transform: uppercase;
+  }
+
+
+  @media (prefers-reduced-motion: reduce) {
+    .mind-sweep,
+    .mind-panel.is-active {
+      animation: none;
+    }
+
+    .mind-orbit,
+    .mind-node,
+    .mind-node-disc,
+    .mind-node-name {
+      transition: none;
+    }
+
+    .mind-node:hover .mind-node-disc,
+    .mind-node:focus-visible .mind-node-disc {
+      transform: none;
+    }
+  }
+</style>

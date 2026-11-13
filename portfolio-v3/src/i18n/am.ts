@@ -231,6 +231,8 @@ export const am: Dict & Record<string, string> = {
 
   // ── Section 04 · The interior ─────────────────────────────
   "sec.mind.eyebrow": "ክፍል 03 · ውስጣዊው",
+  "sec.mind.map": "አምስቱ መስኮች",
+  "sec.mind.core": "መስኮች",
   "sec.mind.title": "ስላልሠራሁ\nየሚያሰብኩበት ነገር",
   "sec.mind.lead":
     "ሥራው የሚታየው ግማሽ ብቻ ነው። ከእነካቸው በታች ያሉት እነዚህ ናቸው፣ እና አትክልት አይደሉም፣ የሥራው ምንጭ ናቸው።",

@@ -1,0 +1,88 @@
+---
+/**
+ * One line drawing per discipline. Shared 64×64 box, currentColor strokes,
+ * so the constellation nodes and the detail panel can tint them per theme.
+ */
+interface Props {
+  name: "physics" | "philosophy" | "psychology" | "ecology" | "humanism";
+}
+const { name } = Astro.props;
+---
+
+<svg
+  class="discipline-glyph"
+  viewBox="0 0 64 64"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.3"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+>
+  {
+    name === "physics" && (
+      <>
+        <circle cx="32" cy="32" r="3.5" />
+        <ellipse cx="32" cy="32" rx="24" ry="9" transform="rotate(-30 32 32)" />
+        <ellipse cx="32" cy="32" rx="24" ry="9" transform="rotate(30 32 32)" />
+        <ellipse cx="32" cy="32" rx="24" ry="9" transform="rotate(90 32 32)" opacity="0.45" />
+        <circle cx="50" cy="20" r="1.8" />
+        <circle cx="14" cy="43" r="1.8" />
+        <path d="M9 12l2 4M53 51l2 4M10 52l3-2M53 12l2 3" opacity="0.4" />
+      </>
+    )
+  }
+  {
+    name === "philosophy" && (
+      <>
+        <path d="M18 16h28M22 16v30M32 16v30M42 16v30M18 46h28M15 52h34" />
+        <path d="M24 24h16M24 31h16M24 38h16" opacity="0.35" />
+        <circle cx="32" cy="9" r="2" />
+        <path d="M32 11v5" opacity="0.5" />
+      </>
+    )
+  }
+  {
+    name === "psychology" && (
+      <>
+        <path d="M38 10c-9 0-15 7-15 16 0 5 2 8 2 12 0 4-3 5-3 9 0 4 3 7 8 7h13c5 0 8-3 8-8V26c0-9-5-16-13-16z" />
+        <path d="M33 26c4 0 7 3 7 7s-3 7-7 7-7-3-7-7" />
+        <path d="M33 29c2 0 3.5 1.5 3.5 3.5S35 36 33 36" />
+        <path d="M23 42h-6M24 47h-5" opacity="0.45" />
+      </>
+    )
+  }
+  {
+    name === "ecology" && (
+      <>
+        <circle cx="32" cy="32" r="5" />
+        <circle cx="32" cy="11" r="3" />
+        <circle cx="50" cy="24" r="3" />
+        <circle cx="46" cy="47" r="3" />
+        <circle cx="18" cy="47" r="3" />
+        <circle cx="14" cy="24" r="3" />
+        <path d="M32 16v11M47 26l-11 4M44 44l-9-8M20 44l9-8M17 26l11 4" />
+        <path d="M32 11c-5-4-9-3-11 0M50 24c5-2 6-6 4-9M46 47c3 4 2 8-1 10M18 47c-3 4-2 8 1 10M14 24c-5-2-6-6-4-9" opacity="0.4" />
+      </>
+    )
+  }
+  {
+    name === "humanism" && (
+      <>
+        <circle cx="24" cy="20" r="6" />
+        <path d="M12 48c0-8 5-13 12-13s12 5 12 13" />
+        <circle cx="45" cy="24" r="4.5" opacity="0.65" />
+        <path d="M36 48c0-6 4-10 9-10s9 4 9 10" opacity="0.65" />
+        <path d="M32 54h-8M44 54h-8" opacity="0.3" />
+      </>
+    )
+  }
+</svg>
+
+<style>
+  .discipline-glyph {
+    width: 100%;
+    height: 100%;
+    color: inherit;
+  }
+</style>

@@ -232,6 +232,8 @@ export const en = {
 
   // ── Section 04 · The interior ─────────────────────────────
   "sec.mind.eyebrow": "Section 03 · The interior",
+  "sec.mind.map": "Five fields",
+  "sec.mind.core": "fields",
   "sec.mind.title": "What I think about\nwhen I'm not building",
   "sec.mind.lead":
     "The work is the visible half. These are the things underneath it, and they are not hobbies, they are the source code.",
