@@ -141,6 +141,7 @@ export const en = {
   "sec.repos.bestDay": "best day",
   "sec.repos.calendar": "Contribution calendar",
   "sec.repos.calendarHint": "Each cell is one day. Hover for the count.",
+  "sec.repos.contributionCountOne": "{n} contribution",
   "sec.repos.contributionCount": "{n} contributions",
   "sec.repos.less": "Less",
   "sec.repos.more": "More",

@@ -140,6 +140,7 @@ export const am: Dict & Record<string, string> = {
   "sec.repos.bestDay": "ምርጥ ቀን",
   "sec.repos.calendar": "የአስተዋጽኦ የቀን መቁጠሪያ",
   "sec.repos.calendarHint": "እያንዳንዱ ሕዋስ አንድ ቀን ነው። ቁጥሩን ለማየት በላዩ ላይ ያስቀምጡ።",
+  "sec.repos.contributionCountOne": "{n} አስተዋጽኦ",
   "sec.repos.contributionCount": "{n} አስተዋጽኦዎች",
   "sec.repos.less": "ያነሰ",
   "sec.repos.more": "የበለጠ",

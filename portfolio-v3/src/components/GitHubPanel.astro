@@ -16,6 +16,7 @@ const liveCount = Object.values(health).filter((entry) => entry.status === "live
 const languages = languageBreakdown(repos);
 const lang = t.lang === "am" ? "am" : "en";
 const shortDate = new Intl.DateTimeFormat(lang, { month: "short", day: "numeric", timeZone: "UTC" });
+const longDate = new Intl.DateTimeFormat(lang, { dateStyle: "medium", timeZone: "UTC" });
 const weekday = (date: string) =>
   new Intl.DateTimeFormat(lang, { weekday: "short", timeZone: "UTC" }).format(
     new Date(`${date}T00:00:00Z`)
@@ -136,7 +137,10 @@ const sourceNote =
                     <span
                       class="gh-day"
                       data-level={day.level}
-                      title={`${day.date} · ${t("sec.repos.contributionCount", { n: day.count })}`}
+                      title={`${longDate.format(new Date(`${day.date}T00:00:00Z`))} · ${t(
+                        day.count === 1 ? "sec.repos.contributionCountOne" : "sec.repos.contributionCount",
+                        { n: day.count }
+                      )}`}
                     />
                   ) : (
                     <span class="gh-day is-empty" />
