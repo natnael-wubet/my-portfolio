@@ -1,5 +1,6 @@
 ---
 import { repos } from "../data/content";
+import { checkHealth } from "../data/deployments";
 import { getContributions } from "../lib/github";
 import { languageBreakdown } from "../lib/languages";
 import type { T } from "../i18n";
@@ -10,6 +11,8 @@ interface Props {
 const { t } = Astro.props;
 
 const calendar = await getContributions();
+const health = await checkHealth();
+const liveCount = Object.values(health).filter((entry) => entry.status === "live").length;
 const languages = languageBreakdown(repos);
 const lang = t.lang === "am" ? "am" : "en";
 const shortDate = new Intl.DateTimeFormat(lang, { month: "short", day: "numeric", timeZone: "UTC" });
@@ -42,8 +45,8 @@ const achievements = [
   { key: "polyglot", badge: "{}", tone: "var(--color-cyan)" },
   { key: "first", badge: "1st", tone: "var(--color-signal)" },
   { key: "second", badge: "2nd", tone: "var(--color-amber)" },
-  { key: "open", badge: "48", tone: "var(--color-violet)" },
-  { key: "live", badge: "10", tone: "var(--color-rose)" },
+  { key: "open", badge: String(repos.length), n: repos.length, tone: "var(--color-violet)" },
+  { key: "live", badge: String(liveCount), n: liveCount, tone: "var(--color-rose)" },
   { key: "bilingual", badge: "አ", tone: "var(--color-cyan)" },
   { key: "streak", badge: String(calendar.longestStreak), tone: "var(--color-amber)" },
 ];
@@ -201,7 +204,7 @@ const sourceNote =
                 {t(`sec.repos.ach.${item.key}.title`)}
               </span>
               <span class="text-[0.75rem] leading-relaxed text-[var(--color-fog-2)]">
-                {t(`sec.repos.ach.${item.key}.detail`)}
+                {t(`sec.repos.ach.${item.key}.detail`, { n: item.n ?? 0 })}
               </span>
             </div>
           </div>

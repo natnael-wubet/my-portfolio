@@ -233,7 +233,15 @@ async function probeOnce(url: string): Promise<{ code: number; ms: number; title
  *   blow past a single-shot timeout.
  * - Failures are swallowed, a dead host must never break the build.
  */
-export async function checkHealth(): Promise<Record<string, Health>> {
+let healthCache: Promise<Record<string, Health>> | null = null;
+
+export function checkHealth(): Promise<Record<string, Health>> {
+  if (healthCache) return healthCache;
+  healthCache = probeAll();
+  return healthCache;
+}
+
+async function probeAll(): Promise<Record<string, Health>> {
   const entries = await Promise.all(
     deployments.map(async (d): Promise<readonly [string, Health]> => {
       if (d.archived) return [d.slug, { status: "archived" } as Health];
