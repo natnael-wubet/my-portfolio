@@ -26,6 +26,14 @@ npm run preview  # serve dist/ locally
   The public contribution graph is read from GitHub at the same time, and a
   dated snapshot in `src/data/contributions.json` keeps the calendar honest
   when a build has no network.
+- **Project dossiers.** Every card opens a real `<dialog>` with the full
+  record: live copy, stack, platform, category, probe status and latency. The
+  stage shows an actual capture of the site inside a desktop, tablet or phone
+  frame, switchable with the tabs or the arrow keys; the open button goes to
+  the live URL (or the source, for archived work). Captures are WebP files in
+  `public/shots/`, taken at three viewports, so the preview is the site as it
+  shipped, not a mockup. Focus returns to the card on close, Escape closes,
+  and Lenis stops while the dialog is open.
 - **Command palette.** `⌘K` / `Ctrl-K` or `/` opens a fuzzy palette over
   deployments, repositories, awards, certifications, disciplines and display
   actions. Ambiguous `action:` links are dispatched as DOM events, not
@@ -100,13 +108,14 @@ npm run preview  # serve dist/ locally
 ```text
 src/
 ├── components/       # Nav, Hero (specimen + instrument), Deployments, Repos,
-│                     # GitHubPanel, Workbench, Origin, Mind, Vault, Awards,
-│                     # Photos,
+│                     # GitHubPanel, Workbench, ProjectDialog, Origin, Mind,
+│                     # Vault, Awards, Photos,
 │                     # Connect, Footer, CommandPalette,
 │                     # Shortcuts, DisplayOptions, Instrument (diagnostics +
 │                     # X-ray + toast), Brief (tailored one-pager),
 │                     # Fit (role matcher), Site
 ├── data/             # English source of truth for deployments and prose
+├── ../public/shots/  # live captures at desktop, tablet and phone widths
 ├── i18n/
 │   ├── en.ts         # chrome keys, the typed dictionary shape
 │   ├── am.ts         # Amharic chrome, typed against en

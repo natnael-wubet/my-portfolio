@@ -41,7 +41,7 @@ const text = () => {
       `${project.description}`,
       "",
       `- URL: ${project.url}`,
-      `- Year: ${project.year}`,
+      ...(project.year ? [`- Year: ${project.year}`] : []),
       `- Category: ${project.category} · Platform: ${project.platform} · Status: ${project.status}`,
       `- Stack: ${project.keywords.join(", ")}`,
       ...(project.telegram ? ["- Telegram Mini App: yes"] : []),

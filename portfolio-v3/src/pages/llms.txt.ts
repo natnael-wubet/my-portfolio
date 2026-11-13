@@ -34,7 +34,7 @@ const text = () => {
     "",
     ...live.map(
       (project) =>
-        `- [${project.name}](${project.url}): ${project.tagline}. ${project.description} Stack: ${project.keywords.join(", ")}. (${project.year}, ${project.category})`
+        `- [${project.name}](${project.url}): ${project.tagline}. ${project.description} Stack: ${project.keywords.join(", ")}. (${project.year ?? "undated"}, ${project.category})`
     ),
     "",
     ...(archived.length

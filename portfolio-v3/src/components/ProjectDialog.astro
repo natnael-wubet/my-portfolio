@@ -1,0 +1,970 @@
+---
+/**
+ * Project dossier dialog.
+ *
+ * One <dialog> serves every deployment. The cards only carry a slug; the
+ * record (localised copy, stack, health, and which screenshots exist) is
+ * serialised once at build time. Screenshots are real captures of the live
+ * sites at three viewports, stored as WebP under /public/shots.
+ */
+import type { T } from "../i18n";
+
+export interface ProjectRecord {
+  slug: string;
+  name: string;
+  tagline: string;
+  description: string;
+  url: string;
+  platform: string;
+  year: string | null;
+  stack: string[];
+  category: string;
+  accent: string;
+  archived: boolean;
+  status: string;
+  statusLabel: string;
+  ms: number | null;
+  host: string;
+  shots: { desktop: boolean; tablet: boolean; phone: boolean };
+}
+
+interface Props {
+  t: T;
+  projects: ProjectRecord[];
+}
+const { t, projects } = Astro.props;
+const json = JSON.stringify(projects).replace(/</g, "\\u003c");
+const devices = [
+  { key: "desktop", label: t("sec.deployments.dialog.desktop") },
+  { key: "tablet", label: t("sec.deployments.dialog.tablet") },
+  { key: "phone", label: t("sec.deployments.dialog.phone") },
+] as const;
+---
+
+<dialog
+  id="project-dialog"
+  class="pd"
+  aria-labelledby="pd-title"
+  data-platform={t("sec.deployments.dialog.platform")}
+  data-category={t("sec.deployments.dialog.category")}
+  data-year={t("sec.deployments.dialog.year")}
+  data-status={t("sec.deployments.dialog.status")}
+  data-archived={t("sec.deployments.archivedStatus")}
+  data-open={t("sec.deployments.dialog.open")}
+  data-source={t("sec.deployments.dialog.source")}
+>
+  <div class="pd-shell">
+    <header class="pd-top">
+      <div class="pd-top-left">
+        <span class="pd-kicker">{t("sec.deployments.dialog.label")}</span>
+        <span class="pd-counter" id="pd-counter">01 / {String(projects.length).padStart(2, "0")}</span>
+      </div>
+      <div class="pd-top-right">
+        <span class="pd-platform" id="pd-platform"></span>
+        <button class="pd-close" type="button" id="pd-close" aria-label={t("sec.deployments.dialog.close")}>
+          <span aria-hidden="true">✕</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="pd-body">
+      <div class="pd-stage" id="pd-stage">
+        <div class="pd-rail" role="group" aria-label={t("sec.deployments.dialog.viewport")}>
+          {
+            devices.map((device, i) => (
+              <button
+                class="pd-device"
+                type="button"
+                data-device={device.key}
+                aria-pressed={i === 0 ? "true" : "false"}
+              >
+                <span class={`pd-device-icon pd-device-icon--${device.key}`} aria-hidden="true" />
+                {device.label}
+              </button>
+            ))
+          }
+        </div>
+
+        <div class="pd-viewport">
+          <div class="pd-device-frame" id="pd-frame" data-device="desktop">
+            <div class="pd-browser" id="pd-browser">
+              <span class="pd-browser-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="pd-browser-url" id="pd-url"></span>
+            </div>
+            <div class="pd-screen">
+              <img id="pd-shot" alt="" decoding="async" />
+              <span class="pd-empty" id="pd-empty" hidden>
+                <span class="pd-empty-mark" aria-hidden="true">◻</span>
+                <span id="pd-empty-text">{t("sec.deployments.dialog.noPreview")}</span>
+              </span>
+            </div>
+            <span class="pd-phone-notch" aria-hidden="true" />
+            <span class="pd-phone-button" aria-hidden="true" />
+            <span class="pd-tablet-camera" aria-hidden="true" />
+          </div>
+        </div>
+
+        <div class="pd-stage-foot">
+          <span class="status" id="pd-status" data-state="unknown">
+            <span class="status-dot" />
+            <span id="pd-status-text"></span>
+          </span>
+          <span class="pd-hint">{t("sec.deployments.dialog.hint")}</span>
+        </div>
+      </div>
+
+      <div class="pd-copy">
+        <p class="pd-tagline" id="pd-tagline"></p>
+        <h2 class="pd-title" id="pd-title"></h2>
+        <p class="pd-desc" id="pd-desc"></p>
+
+        <dl class="pd-facts" id="pd-facts"></dl>
+
+        <div class="pd-stack-wrap">
+          <span class="pd-label">{t("sec.deployments.dialog.stack")}</span>
+          <ul class="pd-stack" id="pd-stack"></ul>
+        </div>
+
+        <div class="pd-actions">
+          <a class="btn btn-primary pd-open" id="pd-open" href="#" target="_blank" rel="noopener">
+            <span id="pd-open-text">{t("sec.deployments.dialog.open")}</span>
+            <span aria-hidden="true">↗</span>
+          </a>
+          <div class="pd-pager">
+            <button class="pd-arrow" type="button" id="pd-prev" aria-label={t("sec.deployments.dialog.prev")}>←</button>
+            <button class="pd-arrow" type="button" id="pd-next" aria-label={t("sec.deployments.dialog.next")}>→</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script type="application/json" id="project-data" set:html={json} />
+
+<script>
+  const dialog = document.getElementById("project-dialog") as HTMLDialogElement | null;
+  const raw = document.getElementById("project-data")?.textContent ?? "[]";
+  const projects = JSON.parse(raw) as Array<{
+    slug: string;
+    name: string;
+    tagline: string;
+    description: string;
+    url: string;
+    platform: string;
+    year: string | null;
+    stack: string[];
+    category: string;
+    accent: string;
+    archived: boolean;
+    status: string;
+    statusLabel: string;
+    ms: number | null;
+    host: string;
+    shots: Record<"desktop" | "tablet" | "phone", boolean>;
+  }>;
+
+  if (dialog && projects.length) {
+    const $ = <E extends HTMLElement>(id: string) => document.getElementById(id) as E;
+    const frame = $("pd-frame");
+    const shot = $<HTMLImageElement>("pd-shot");
+    const empty = $("pd-empty");
+    const emptyText = $("pd-empty-text");
+    const browser = $("pd-browser");
+    const url = $("pd-url");
+    const title = $("pd-title");
+    const tagline = $("pd-tagline");
+    const desc = $("pd-desc");
+    const facts = $("pd-facts");
+    const stack = $("pd-stack");
+    const open = $<HTMLAnchorElement>("pd-open");
+    const openText = $("pd-open-text");
+    const counter = $("pd-counter");
+    const platform = $("pd-platform");
+    const status = $("pd-status");
+    const statusText = $("pd-status-text");
+    const deviceButtons = Array.from(document.querySelectorAll<HTMLButtonElement>(".pd-device"));
+    const labels = {
+      platform: dialog.dataset.platform ?? "",
+      category: dialog.dataset.category ?? "",
+      year: dialog.dataset.year ?? "",
+      status: dialog.dataset.status ?? "",
+      archived: dialog.dataset.archived ?? "",
+      noPreview: emptyText?.textContent ?? "",
+    };
+
+    let index = 0;
+    let device: "desktop" | "tablet" | "phone" = "desktop";
+    let lastTrigger: HTMLElement | null = null;
+
+    const pad = (n: number) => String(n).padStart(2, "0");
+    const current = () => projects[index];
+
+    const renderFacts = (p: (typeof projects)[number]) => {
+      const rows: Array<[string, string]> = [];
+      if (labels.platform) rows.push([labels.platform, p.platform]);
+      if (labels.category) rows.push([labels.category, p.category]);
+      if (labels.year && p.year) rows.push([labels.year, p.year]);
+      if (labels.status) {
+        rows.push([labels.status, p.ms ? `${p.statusLabel} · ${p.ms}ms` : p.statusLabel]);
+      }
+      facts.innerHTML = rows
+        .map(([key, value]) => `<div class="pd-fact"><dt>${key}</dt><dd>${value}</dd></div>`)
+        .join("");
+    };
+
+    const setDevice = (next: "desktop" | "tablet" | "phone") => {
+      const p = current();
+      device = next;
+      const available = p.shots[next];
+      frame.dataset.device = next;
+      deviceButtons.forEach((button) => {
+        const on = button.dataset.device === next;
+        button.setAttribute("aria-pressed", on ? "true" : "false");
+        const key = button.dataset.device as "desktop" | "tablet" | "phone";
+        button.disabled = !p.shots[key];
+      });
+      frame.classList.toggle("is-empty", !available);
+      empty.hidden = available;
+      if (available) {
+        shot.hidden = false;
+        shot.src = `/shots/${p.slug}-${next}.webp`;
+        shot.alt = `${p.name} at ${next} width`;
+      } else {
+        shot.hidden = true;
+        shot.removeAttribute("src");
+        shot.alt = "";
+        emptyText.textContent = labels.noPreview;
+      }
+      frame.classList.remove("is-switching");
+      void frame.offsetWidth;
+      frame.classList.add("is-switching");
+    };
+
+    const render = (nextIndex: number) => {
+      index = (nextIndex + projects.length) % projects.length;
+      const p = current();
+
+      title.textContent = p.name;
+      tagline.textContent = p.tagline;
+      desc.textContent = p.description;
+      counter.textContent = `${pad(index + 1)} / ${pad(projects.length)}`;
+      platform.textContent = p.year ? `${p.platform} · ${p.year}` : p.platform;
+      url.textContent = p.host;
+      status.dataset.state = p.archived ? "archived" : p.status;
+      statusText.textContent = p.statusLabel;
+      dialog.style.setProperty("--pd-accent", p.accent);
+
+      renderFacts(p);
+
+      stack.innerHTML = p.stack.map((item) => `<li>${item}</li>`).join("");
+
+      open.href = p.url;
+      openText.textContent = p.archived ? (dialog.dataset.source ?? "") : (dialog.dataset.open ?? "");
+      open.setAttribute("aria-label", `${p.name}: ${openText.textContent}`);
+      open.classList.toggle("is-source", p.archived);
+
+      const preferred: Array<"desktop" | "tablet" | "phone"> = ["desktop", "tablet", "phone"];
+      const fallback = preferred.find((key) => p.shots[key]);
+      setDevice(fallback ?? "desktop");
+    };
+
+    const openDialog = (slug: string, trigger: HTMLElement | null) => {
+      const at = projects.findIndex((p) => p.slug === slug);
+      if (at < 0) return;
+      lastTrigger = trigger;
+      document.documentElement.classList.add("pd-open");
+      (window as any).lenis?.stop?.();
+      dialog.showModal();
+      render(at);
+      $<HTMLButtonElement>("pd-close").focus();
+    };
+
+    const closeDialog = () => dialog.close();
+
+    dialog.addEventListener("close", () => {
+      document.documentElement.classList.remove("pd-open");
+      (window as any).lenis?.start?.();
+      lastTrigger?.focus();
+      lastTrigger = null;
+    });
+
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) closeDialog();
+    });
+
+    $("pd-close").addEventListener("click", closeDialog);
+    $("pd-prev").addEventListener("click", () => render(index - 1));
+    $("pd-next").addEventListener("click", () => render(index + 1));
+
+    deviceButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const next = button.dataset.device as "desktop" | "tablet" | "phone";
+        if (current().shots[next]) setDevice(next);
+      });
+    });
+
+    dialog.addEventListener("keydown", (event) => {
+      const key = event.key;
+      const focusDevice = document.activeElement?.classList.contains("pd-device");
+      if (key === "ArrowRight" || key === "ArrowLeft") {
+        if (focusDevice) {
+          event.preventDefault();
+          const order: Array<"desktop" | "tablet" | "phone"> = ["desktop", "tablet", "phone"];
+          const at = order.indexOf(device);
+          const step = key === "ArrowRight" ? 1 : -1;
+          for (let i = 1; i <= order.length; i++) {
+            const candidate = order[(at + step * i + order.length * 2) % order.length];
+            if (current().shots[candidate]) {
+              setDevice(candidate);
+              document.querySelector<HTMLButtonElement>(`.pd-device[data-device="${candidate}"]`)?.focus();
+              break;
+            }
+          }
+        } else {
+          event.preventDefault();
+          render(index + (key === "ArrowRight" ? 1 : -1));
+        }
+      }
+    });
+
+    document.querySelectorAll<HTMLButtonElement>("[data-project]").forEach((trigger) => {
+      trigger.addEventListener("click", () => {
+        const slug = trigger.dataset.project;
+        if (slug) openDialog(slug, trigger);
+      });
+    });
+  }
+</script>
+
+<style>
+  .pd {
+    width: min(1180px, calc(100vw - 2.5rem));
+    max-width: none;
+    max-height: min(92vh, 900px);
+    margin: auto;
+    padding: 0;
+    border: 1px solid var(--color-line-2);
+    background: var(--color-ink);
+    color: var(--color-chalk);
+    overflow: hidden;
+  }
+
+  .pd::backdrop {
+    background: color-mix(in srgb, var(--color-ink) 72%, transparent);
+    backdrop-filter: blur(10px) saturate(0.9);
+  }
+
+  .pd[open] {
+    animation: pd-in 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes pd-in {
+    from {
+      opacity: 0;
+      transform: translateY(14px) scale(0.985);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .pd-shell {
+    display: flex;
+    flex-direction: column;
+    max-height: inherit;
+    background:
+      radial-gradient(110% 80% at 82% -10%, color-mix(in srgb, var(--pd-accent, var(--color-signal)) 12%, transparent), transparent 62%),
+      var(--color-ink);
+  }
+
+  .pd-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.9rem 1.1rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .pd-top-left,
+  .pd-top-right {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .pd-kicker,
+  .pd-counter,
+  .pd-platform,
+  .pd-label {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .pd-kicker {
+    color: var(--color-signal);
+  }
+
+  .pd-counter {
+    color: var(--color-fog);
+  }
+
+  .pd-platform {
+    color: var(--color-fog-2);
+    letter-spacing: 0.14em;
+  }
+
+  .pd-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--color-line);
+    background: transparent;
+    color: var(--color-fog-2);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .pd-close:hover,
+  .pd-close:focus-visible {
+    border-color: var(--color-chalk);
+    background: var(--color-chalk);
+    color: var(--color-ink);
+  }
+
+  .pd-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    overflow: auto;
+  }
+
+  @media (min-width: 1000px) {
+    .pd-body {
+      grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+      overflow: hidden;
+    }
+  }
+
+  .pd-stage {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 0;
+    padding: 1.1rem;
+    border-bottom: 1px solid var(--color-line);
+    background:
+      linear-gradient(color-mix(in srgb, var(--color-line) 42%, transparent) 1px, transparent 1px) 0 0 / 100% 34px,
+      linear-gradient(90deg, color-mix(in srgb, var(--color-line) 42%, transparent) 1px, transparent 1px) 0 0 / 34px 100%,
+      radial-gradient(90% 70% at 50% 0%, color-mix(in srgb, var(--pd-accent, var(--color-signal)) 14%, transparent), transparent 72%),
+      var(--color-ink-2);
+    background-blend-mode: normal, normal, normal, normal;
+  }
+
+  @media (min-width: 1000px) {
+    .pd-stage {
+      border-bottom: 0;
+      border-right: 1px solid var(--color-line);
+      padding: 1.4rem;
+    }
+  }
+
+  .pd-rail {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .pd-device {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.7rem;
+    border: 1px solid var(--color-line);
+    background: color-mix(in srgb, var(--color-ink) 70%, transparent);
+    color: var(--color-fog-2);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .pd-device[aria-pressed="true"] {
+    border-color: var(--color-signal);
+    background: color-mix(in srgb, var(--color-signal) 10%, transparent);
+    color: var(--color-chalk);
+  }
+
+  .pd-device:disabled {
+    opacity: 0.32;
+    cursor: not-allowed;
+  }
+
+  .pd-device:focus-visible {
+    outline: 1px solid var(--color-signal);
+    outline-offset: 2px;
+  }
+
+  .pd-device-icon {
+    display: inline-block;
+    border: 1px solid currentColor;
+    border-radius: 1px;
+  }
+
+  .pd-device-icon--desktop {
+    width: 12px;
+    height: 8px;
+  }
+
+  .pd-device-icon--tablet {
+    width: 8px;
+    height: 10px;
+    border-radius: 2px;
+  }
+
+  .pd-device-icon--phone {
+    width: 6px;
+    height: 11px;
+    border-radius: 2px;
+  }
+
+  .pd-viewport {
+    display: grid;
+    place-items: center;
+    flex: 1;
+    min-height: 270px;
+    padding: 0.35rem 0 0.9rem;
+  }
+
+  .pd-device-frame {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    filter: drop-shadow(0 26px 44px color-mix(in srgb, var(--color-ink) 55%, transparent));
+    transition: max-width 0.28s ease;
+  }
+
+  .pd-device-frame[data-device="tablet"] {
+    max-width: 320px;
+  }
+
+  .pd-device-frame[data-device="phone"] {
+    max-width: 210px;
+  }
+
+  .pd-device-frame.is-switching .pd-screen {
+    animation: pd-shot 0.26s ease;
+  }
+
+  @keyframes pd-shot {
+    from {
+      opacity: 0.4;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Desktop: lid, browser bar, base. */
+  .pd-device-frame[data-device="desktop"] {
+    padding: 7px 7px 0;
+    border: 1px solid color-mix(in srgb, var(--color-line-2) 80%, transparent);
+    border-radius: 10px 10px 3px 3px;
+    background: linear-gradient(180deg, var(--color-ink-3), var(--color-ink));
+  }
+
+  .pd-device-frame[data-device="desktop"]::after {
+    content: "";
+    display: block;
+    height: 11px;
+    margin: 0 -22px;
+    border-radius: 0 0 14px 14px;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--color-line-2) 75%, transparent), var(--color-ink));
+    box-shadow: 0 8px 0 -3px color-mix(in srgb, var(--color-ink) 70%, transparent);
+  }
+
+  /* Tablet and phone: bezels. */
+  .pd-device-frame[data-device="tablet"],
+  .pd-device-frame[data-device="phone"] {
+    padding: 9px;
+    border: 1px solid color-mix(in srgb, var(--color-line-2) 80%, transparent);
+    background: linear-gradient(180deg, var(--color-ink-3), var(--color-ink));
+  }
+
+  .pd-device-frame[data-device="tablet"] {
+    border-radius: 20px;
+  }
+
+  .pd-device-frame[data-device="phone"] {
+    border-radius: 28px;
+  }
+
+  .pd-browser {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 0.35rem 0.45rem;
+  }
+
+  .pd-device-frame[data-device="desktop"] .pd-browser {
+    display: flex;
+  }
+
+  .pd-browser-dots {
+    display: inline-flex;
+    gap: 3px;
+  }
+
+  .pd-browser-dots i {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-line-2);
+  }
+
+  .pd-browser-url {
+    flex: 1;
+    overflow: hidden;
+    padding: 2px 6px;
+    border: 1px solid var(--color-line);
+    border-radius: 3px;
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.06em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .pd-screen {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 16 / 10;
+    background: var(--color-ink-3);
+  }
+
+  .pd-device-frame[data-device="tablet"] .pd-screen {
+    aspect-ratio: 834 / 1112;
+    border-radius: 12px;
+  }
+
+  .pd-device-frame[data-device="phone"] .pd-screen {
+    aspect-ratio: 390 / 844;
+    border-radius: 20px;
+  }
+
+  .pd-screen img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  .pd-empty {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    padding: 1.5rem;
+    background:
+      radial-gradient(80% 60% at 50% 40%, color-mix(in srgb, var(--pd-accent, var(--color-signal)) 16%, transparent), transparent 70%),
+      var(--color-ink-3);
+    color: var(--color-fog-2);
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    line-height: 1.7;
+    text-align: center;
+  }
+
+  .pd-empty[hidden] {
+    display: none;
+  }
+
+  .pd-empty-mark {
+    font-size: 1.4rem;
+    color: var(--color-fog);
+  }
+
+  .pd-phone-notch {
+    display: none;
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    width: 34%;
+    height: 14px;
+    border-radius: 0 0 10px 10px;
+    background: var(--color-ink);
+    transform: translateX(-50%);
+  }
+
+  .pd-device-frame[data-device="phone"] .pd-phone-notch {
+    display: block;
+  }
+
+  .pd-phone-button {
+    display: none;
+    position: absolute;
+    right: -2px;
+    top: 26%;
+    width: 2px;
+    height: 34px;
+    border-radius: 2px;
+    background: var(--color-line-2);
+  }
+
+  .pd-device-frame[data-device="phone"] .pd-phone-button {
+    display: block;
+  }
+
+  .pd-tablet-camera {
+    display: none;
+    position: absolute;
+    top: 3px;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--color-line-2);
+    transform: translateX(-50%);
+  }
+
+  .pd-device-frame[data-device="tablet"] .pd-tablet-camera {
+    display: block;
+  }
+
+  .pd-stage-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-top: 0.65rem;
+    border-top: 1px solid var(--color-line);
+  }
+
+  .pd-stage-foot .status {
+    font-size: 0.5625rem;
+  }
+
+  .pd-hint {
+    max-width: 58%;
+    color: var(--color-line-2);
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.1em;
+    line-height: 1.6;
+    text-align: right;
+    text-transform: uppercase;
+  }
+
+  .pd-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 1.05rem;
+    min-width: 0;
+    padding: 1.4rem;
+    overflow: auto;
+  }
+
+  @media (min-width: 1000px) {
+    .pd-copy {
+      padding: 1.8rem 1.9rem 1.6rem;
+    }
+  }
+
+  .pd-tagline {
+    margin: 0;
+    color: var(--pd-accent, var(--color-signal));
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .pd-title {
+    margin: -0.55rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.85rem, 4vw, 2.7rem);
+    font-weight: 700;
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+  }
+
+  .pd-desc {
+    margin: 0;
+    color: var(--color-fog-2);
+    font-size: 0.875rem;
+    line-height: 1.75;
+  }
+
+  .pd-facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    margin: 0;
+    background: var(--color-line);
+    border: 1px solid var(--color-line);
+  }
+
+  :global(.pd-fact) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.65rem 0.8rem;
+    background: var(--color-ink);
+  }
+
+  :global(.pd-fact dt) {
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  :global(.pd-fact:last-child:nth-child(odd)) {
+    grid-column: span 2;
+  }
+
+  :global(.pd-fact dd) {
+    margin: 0;
+    color: var(--color-chalk);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    text-transform: capitalize;
+  }
+
+  .pd-stack-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .pd-label {
+    color: var(--color-fog);
+  }
+
+  .pd-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  :global(.pd-stack li) {
+    padding: 0.28rem 0.5rem;
+    border: 1px solid var(--color-line);
+    color: var(--color-fog-2);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.08em;
+  }
+
+  .pd-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: auto;
+    padding-top: 0.4rem;
+  }
+
+  .pd-open {
+    flex: 1 1 auto;
+    justify-content: space-between;
+  }
+
+  .pd-open.is-source {
+    border-color: var(--color-line-2);
+    color: var(--color-chalk);
+  }
+
+  .pd-pager {
+    display: inline-flex;
+    gap: 0.35rem;
+  }
+
+  .pd-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border: 1px solid var(--color-line-2);
+    background: transparent;
+    color: var(--color-fog-2);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .pd-arrow:hover,
+  .pd-arrow:focus-visible {
+    border-color: var(--color-chalk);
+    background: var(--color-chalk);
+    color: var(--color-ink);
+  }
+
+  :global(html.pd-open),
+  :global(html.pd-open body) {
+    overflow: hidden;
+  }
+
+  @media (max-width: 640px) {
+    .pd {
+      width: 100vw;
+      max-height: 100dvh;
+      height: 100dvh;
+      border: 0;
+    }
+
+    .pd-viewport {
+      min-height: 190px;
+      padding-bottom: 0.5rem;
+    }
+
+    .pd-device-frame[data-device="desktop"] {
+      max-width: 340px;
+    }
+
+    .pd-device-frame[data-device="tablet"] {
+      max-width: 230px;
+    }
+
+    .pd-device-frame[data-device="phone"] {
+      max-width: 168px;
+    }
+
+    .pd-hint {
+      display: none;
+    }
+
+    .pd-copy {
+      padding: 1.2rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pd[open],
+    .pd-device-frame,
+    .pd-device-frame.is-switching .pd-screen {
+      animation: none;
+      transition: none;
+    }
+  }
+</style>

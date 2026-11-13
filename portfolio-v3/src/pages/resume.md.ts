@@ -31,7 +31,7 @@ const text = () => {
       "",
       `${project.description}`,
       "",
-      `**Stack:** ${project.keywords.join(", ")} · **Year:** ${project.year} · **Link:** ${project.url}`,
+      `**Stack:** ${project.keywords.join(", ")}${project.year ? ` · **Year:** ${project.year}` : ""} · **Link:** ${project.url}`,
       ""
     );
   });

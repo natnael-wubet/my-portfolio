@@ -1,6 +1,8 @@
 ---
+import { existsSync } from "node:fs";
 import { deployments, checkHealth } from "../data/deployments";
 import { rich, td, type T } from "../i18n";
+import ProjectDialog, { type ProjectRecord } from "./ProjectDialog.astro";
 
 interface Props {
   t: T;
@@ -9,9 +11,44 @@ const { t } = Astro.props;
 
 const health = await checkHealth();
 
-const rows = deployments.map((d) => ({ ...d, health: health[d.slug] ?? { status: "unknown" as const } }));
+const devices = ["desktop", "tablet", "phone"] as const;
+const hasShot = (slug: string, device: (typeof devices)[number]) =>
+  existsSync(`public/shots/${slug}-${device}.webp`);
+
+const rows = deployments.map((d) => {
+  const shots = {
+    desktop: hasShot(d.slug, "desktop"),
+    tablet: hasShot(d.slug, "tablet"),
+    phone: hasShot(d.slug, "phone"),
+  };
+  return {
+    ...d,
+    health: health[d.slug] ?? { status: "unknown" as const },
+    shots,
+    host: new URL(d.url).host,
+  };
+});
 const probed = rows.filter((r) => !r.archived);
 const live = probed.filter((r) => r.health.status === "live").length;
+
+const projects: ProjectRecord[] = rows.map((d) => ({
+  slug: d.slug,
+  name: d.name,
+  tagline: td(t, d.tagline),
+  description: td(t, d.description),
+  url: d.url,
+  platform: d.platform,
+  year: d.year ?? null,
+  stack: d.stack,
+  category: td(t, d.category),
+  accent: d.accent,
+  archived: Boolean(d.archived),
+  status: d.health.status,
+  statusLabel: d.archived ? t("sec.deployments.archivedStatus") : t(`status.${d.health.status}`),
+  ms: d.health.ms ?? null,
+  host: d.host,
+  shots: d.shots,
+}));
 ---
 
 <section id="work" class="relative border-t border-[var(--color-line)]">
@@ -36,33 +73,54 @@ const live = probed.filter((r) => r.health.status === "live").length;
     </div>
 
     <!-- Featured deployments -->
-    <div class="mt-14 grid gap-px bg-[var(--color-line)] md:grid-cols-2 xl:grid-cols-3">
+    <div class="deploy-grid mt-14">
       {
         rows.map((d, i) => {
           const st = d.health.status;
+          const preview = d.preview ?? "desktop";
+          const previewSrc = d.shots[preview] ? `/shots/${d.slug}-${preview}.webp` : null;
           return (
-            <a
-              href={d.url}
-              target="_blank"
-              rel="noopener"
-              class="deploy-card group relative flex flex-col gap-5 bg-[var(--color-ink)] p-6 no-underline transition-colors hover:bg-[var(--color-ink-2)] lg:p-7"
+            <article
+              class="deploy-card group relative flex flex-col bg-[var(--color-ink)]"
               data-reveal
               style={`--d:${(i % 3) * 90}ms;--deploy-accent:${d.accent}`}
             >
-              <div class="flex items-start justify-between gap-4">
-                <span class="font-mono text-[0.625rem] tracking-[0.2em] text-[var(--color-line-2)] uppercase">
-                  {String(i + 1).padStart(2, "0")} / {String(rows.length).padStart(2, "0")}
-                </span>
-                <span class="status" data-state={st}>
-                  <span class="status-dot" />
-                  {st === "archived" ? t("sec.deployments.archivedStatus") : t(`status.${st}`)}
-                  {d.health.ms ? ` · ${d.health.ms}ms` : ""}
+              <div class="deploy-media">
+                {previewSrc ? (
+                  <img
+                    class="deploy-media-img"
+                    src={previewSrc}
+                    alt=""
+                    width="1600"
+                    height="1000"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : (
+                  <span class="deploy-media-fallback" aria-hidden="true">
+                    <span class="deploy-media-mark">{d.name.slice(0, 2)}</span>
+                    <span class="deploy-media-label">{d.platform}</span>
+                  </span>
+                )}
+                <span class="deploy-media-shade" aria-hidden="true" />
+                <span class="deploy-media-bar">
+                  <span class="deploy-index">
+                    {String(i + 1).padStart(2, "0")} / {String(rows.length).padStart(2, "0")}
+                  </span>
+                  <span class="status" data-state={st}>
+                    <span class="status-dot" />
+                    {st === "archived" ? t("sec.deployments.archivedStatus") : t(`status.${st}`)}
+                    {d.health.ms ? ` · ${d.health.ms}ms` : ""}
+                  </span>
                 </span>
               </div>
 
-              <div class="flex flex-col gap-2">
+              <div class="deploy-body">
                 <div class="flex items-center gap-2">
-                  <h3 class="font-display text-2xl font-semibold tracking-tight text-[var(--color-chalk)] transition-colors group-hover:text-[var(--color-signal)]">
+                  <h3
+                    id={`${d.slug}-name`}
+                    class="font-display text-2xl font-semibold tracking-tight text-[var(--color-chalk)] transition-colors group-hover:text-[var(--color-signal)]"
+                  >
                     {d.name}
                   </h3>
                   {d.telegram && (
@@ -74,40 +132,205 @@ const live = probed.filter((r) => r.health.status === "live").length;
                 <span class="deploy-tagline font-mono text-[0.6875rem] tracking-[0.1em] uppercase">
                   {td(t, d.tagline)}
                 </span>
-              </div>
 
-              <p class="text-sm leading-relaxed text-[var(--color-fog-2)]">{td(t, d.description)}</p>
+                <p class="deploy-desc text-sm leading-relaxed text-[var(--color-fog-2)]">{td(t, d.description)}</p>
 
-              <div class="mt-auto flex flex-wrap gap-1.5 pt-2">
-                {d.stack.map((s) => (
-                  <span class="border border-[var(--color-line)] px-2 py-1 font-mono text-[0.5625rem] tracking-[0.1em] text-[var(--color-fog)] uppercase">
-                    {s}
+                <div class="mt-auto flex flex-wrap gap-1.5 pt-2">
+                  {d.stack.slice(0, 5).map((s) => (
+                    <span class="border border-[var(--color-line)] px-2 py-1 font-mono text-[0.5625rem] tracking-[0.1em] text-[var(--color-fog)] uppercase">
+                      {s}
+                    </span>
+                  ))}
+                </div>
+
+                <div class="flex items-center justify-between border-t border-[var(--color-line)] pt-4">
+                  <span class="truncate font-mono text-[0.6875rem] text-[var(--color-fog)]">{d.host}</span>
+                  <span class="deploy-inspect font-mono text-[0.6875rem] tracking-[0.16em] uppercase">
+                    {t("sec.deployments.inspect")} <span aria-hidden="true">↗</span>
                   </span>
-                ))}
+                </div>
               </div>
 
-              <div class="flex items-center justify-between border-t border-[var(--color-line)] pt-4">
-                <span class="truncate font-mono text-[0.6875rem] text-[var(--color-fog)]">
-                  {d.archived ? "github.com/natnael-wubet" : new URL(d.url).host}
-                </span>
-                <span class="font-mono text-[0.6875rem] tracking-[0.16em] text-[var(--color-fog)] uppercase transition-transform group-hover:translate-x-1 group-hover:text-[var(--color-signal)]">
-                  ↗ {d.archived ? t("sec.deployments.source") : d.platform}
-                </span>
-              </div>
+              <button
+                class="deploy-hit"
+                type="button"
+                data-project={d.slug}
+                aria-haspopup="dialog"
+                aria-label={`${d.name}: ${t("sec.deployments.inspect")}`}
+              />
 
               <span
-                class="pointer-events-none absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100"
+                class="pointer-events-none absolute inset-x-0 bottom-0 z-[3] h-px origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100"
                 style={{ background: "var(--deploy-accent)" }}
               />
-            </a>
+            </article>
           );
         })
       }
     </div>
   </div>
+
+  <ProjectDialog t={t} projects={projects} />
 </section>
 
 <style>
+  .deploy-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1px;
+    background: var(--color-line);
+    border: 1px solid var(--color-line);
+  }
+
+  @media (min-width: 700px) {
+    .deploy-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1180px) {
+    .deploy-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .deploy-card {
+    transition: background-color 0.22s ease;
+  }
+
+  .deploy-card:has(.deploy-hit:hover) {
+    background: var(--color-ink-2);
+  }
+
+  .deploy-card:has(.deploy-hit:focus-visible) {
+    outline: 2px solid var(--color-signal);
+    outline-offset: -2px;
+  }
+
+  .deploy-media {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 16 / 10;
+    border-bottom: 1px solid var(--color-line);
+    background:
+      radial-gradient(90% 80% at 50% 0%, color-mix(in srgb, var(--deploy-accent) 22%, transparent), transparent 72%),
+      var(--color-ink-3);
+  }
+
+  .deploy-media-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    filter: saturate(0.92) contrast(1.02);
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+  }
+
+  .deploy-card:has(.deploy-hit:hover) .deploy-media-img {
+    transform: scale(1.035);
+    filter: saturate(1.02) contrast(1.02);
+  }
+
+  .deploy-media-fallback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    height: 100%;
+    background:
+      linear-gradient(135deg, transparent 48%, color-mix(in srgb, var(--deploy-accent) 22%, transparent) 48% 52%, transparent 52%),
+      radial-gradient(80% 80% at 50% 50%, color-mix(in srgb, var(--deploy-accent) 18%, transparent), transparent 70%);
+  }
+
+  .deploy-media-mark {
+    font-family: var(--font-display);
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: color-mix(in srgb, var(--deploy-accent) 70%, var(--color-chalk));
+    text-transform: uppercase;
+  }
+
+  .deploy-media-label {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.22em;
+    color: var(--color-fog);
+    text-transform: uppercase;
+  }
+
+  .deploy-media-shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--color-ink) 46%, transparent), transparent 34%, transparent 74%, color-mix(in srgb, var(--color-ink) 34%, transparent));
+    pointer-events: none;
+  }
+
+  .deploy-media-bar {
+    position: absolute;
+    inset: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.6rem 0.7rem;
+  }
+
+  .deploy-index {
+    padding: 0.18rem 0.35rem;
+    background: color-mix(in srgb, var(--color-ink) 68%, transparent);
+    color: var(--color-fog-2);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.16em;
+    backdrop-filter: blur(4px);
+  }
+
+  .deploy-media-bar .status {
+    padding: 0.18rem 0.4rem;
+    background: color-mix(in srgb, var(--color-ink) 68%, transparent);
+    color: var(--color-fog-2);
+    font-size: 0.5625rem;
+    backdrop-filter: blur(4px);
+  }
+
+  .deploy-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    flex: 1;
+    padding: 1.25rem;
+  }
+
+  @media (min-width: 1180px) {
+    .deploy-body {
+      padding: 1.5rem;
+    }
+  }
+
+  .deploy-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+  }
+
+  .deploy-inspect {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--color-fog);
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+
+  .deploy-card:has(.deploy-hit:hover) .deploy-inspect {
+    color: var(--color-signal);
+    transform: translateX(2px);
+  }
+
   /*
    * Each card's accent comes from the data. Mixing it toward --color-chalk
    * keeps the tagline readable in both themes without a second palette:
@@ -115,5 +338,31 @@ const live = probed.filter((r) => r.health.status === "live").length;
    */
   .deploy-tagline {
     color: color-mix(in srgb, var(--deploy-accent) 72%, var(--color-chalk));
+  }
+
+  /* The whole card is the hit area, but the content stays a normal article. */
+  .deploy-hit {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .deploy-hit:focus-visible {
+    outline: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .deploy-media-img,
+    .deploy-inspect,
+    .deploy-card {
+      transition: none;
+    }
+
+    .deploy-card:has(.deploy-hit:hover) .deploy-media-img {
+      transform: none;
+    }
   }
 </style>

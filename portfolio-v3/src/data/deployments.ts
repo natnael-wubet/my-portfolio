@@ -13,11 +13,14 @@ export interface Deployment {
   description: string;
   url: string;
   platform: Platform;
-  year: string;
+  /** Not every project has a recorded ship date; the dossier omits it when absent. */
+  year?: string;
   stack: string[];
   category: "Product" | "Game" | "Protocol" | "Tool" | "Platform";
   accent: string;
   featured?: boolean;
+  /** Which capture leads the card. Defaults to the desktop shot. */
+  preview?: "desktop" | "tablet" | "phone";
   /** Telegram Mini App */
   telegram?: boolean;
   /**
@@ -180,6 +183,83 @@ export const deployments: Deployment[] = [
     category: "Tool",
     accent: "#d946ef",
     archived: true,
+  },
+  {
+    slug: "niala-insurance",
+    name: "Niala Insurance",
+    tagline: "Mobile phone insurance, end to end",
+    description:
+      "A public insurance site and a staff console for phone cover in Ethiopia. Policy and product pages, claim intake, approved-account onboarding behind reCAPTCHA, and a downloads shelf for claim forms. The customer site and the internal console are separate Firebase Hosting targets over one backend.",
+    url: "https://nialaweb.web.app",
+    platform: "Firebase",
+    stack: ["React", "Firebase", "reCAPTCHA", "REST"],
+    category: "Platform",
+    accent: "#dc2626",
+    featured: true,
+  },
+  {
+    slug: "event-calendar",
+    name: "Campus Event Calendar",
+    tagline: "A week of events, one screen",
+    description:
+      "A weekly and daily events calendar for Georgetown University's School of Foreign Service in Qatar. Firebase holds the schedule; the client renders a seven-day grid with previous and next week navigation, a day view, and event detail cards. A separate admin view signs in with Google to manage the schedule.",
+    url: "https://event-dashboard-view.web.app",
+    platform: "Firebase",
+    year: "2025",
+    stack: ["React", "Vite", "Mantine", "Firebase", "Recoil", "dayjs"],
+    category: "Product",
+    accent: "#1d4ed8",
+    featured: true,
+  },
+  {
+    slug: "abyss-translator",
+    name: "Abyss Translator",
+    tagline: "Amharic text translation in the browser",
+    description:
+      "A small translation desk: paste or compose rich text, pick a target language, and read the result without leaving the page. Built as an Ionic app with a tabbed mobile shell and a Firebase Hosting deploy.",
+    url: "https://abyss-30ed8.web.app",
+    platform: "Firebase",
+    preview: "tablet",
+    stack: ["Ionic", "React", "Firebase"],
+    category: "Tool",
+    accent: "#6366f1",
+  },
+  {
+    slug: "podcast",
+    name: "Podcast",
+    tagline: "Amharic radio, on the phone",
+    description:
+      "An Amharic podcast and radio app with a short guided onboarding, programme discovery by show, and episode playback in an Ionic shell. Built mobile-first and shipped to Firebase Hosting.",
+    url: "https://podcast-f29fa.web.app",
+    platform: "Firebase",
+    stack: ["Ionic", "Vite", "Firebase"],
+    category: "Product",
+    accent: "#f97316",
+  },
+  {
+    slug: "nexus",
+    name: "Nexus",
+    tagline: "Chat that keeps your data yours",
+    description:
+      "A landing and sign-in surface for a chat platform that keeps identity and message history with the user while still reaching third-party chat services. A React page on Firebase Hosting.",
+    url: "https://nexus-4fb35.web.app",
+    platform: "Firebase",
+    stack: ["React", "Firebase"],
+    category: "Platform",
+    accent: "#0ea5e9",
+  },
+  {
+    slug: "portfolio-v1",
+    name: "Portfolio v1",
+    tagline: "The previous site, still online",
+    description:
+      "The first portfolio: a React build with a cosmic hero, an eleven-year introduction and a project index. Kept live as a reference point for how the work, and the telling of it, have changed.",
+    url: "https://naty-wubet.web.app",
+    platform: "Firebase",
+    year: "2024",
+    stack: ["React", "Vite", "Firebase"],
+    category: "Product",
+    accent: "#a855f7",
   },
   {
     slug: "bigxo-mini",

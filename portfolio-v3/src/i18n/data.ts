@@ -99,6 +99,31 @@ export const amData: Record<string, string> = {
   "The stripped, Telegram-first build of Big XO: haptic feedback, custom keyboard handling and safe-area aware layout for running inside a Mini App viewport.":
     "የBig XO ቀጭን፣ Telegram-ቀዳሚ ግንባታ፣ የመዳሰሻ ግብረ-መልስ፣ ብጁ የቁልፍ ሰሌዳ አያያዝና በMini App እይታ ውስጥ ለመሮጥ የቦታ-ደህንነት ንቁ አቀማመጥ።",
 
+  Product: "ምርት",
+  Game: "ጨዋታ",
+  Protocol: "ፕሮቶኮል",
+  Tool: "መሣሪያ",
+  Platform: "መድረክ",
+
+  "Mobile phone insurance, end to end": "የሞባይል ስልክ ዋስትና፣ ከመጀመሪያ እስከ መጨረሻ",
+  "A public insurance site and a staff console for phone cover in Ethiopia. Policy and product pages, claim intake, approved-account onboarding behind reCAPTCHA, and a downloads shelf for claim forms. The customer site and the internal console are separate Firebase Hosting targets over one backend.":
+    "ለኢትዮጵያ የስልክ ዋስትና ይፋዊ ድረ ገጽና የሠራተኛ ኮንሶል። የፖሊሲና የምርት ገጾች፣ የይገባኛል ጥያቄ መቀበል፣ ከreCAPTCHA በስተጀርባ የተፈቀደ የመለያ ምዝገባ፣ እና ለይገባኛል ቅጾች የማውረጃ መደርደሪያ። የደንበኛው ድረ ገጽና የውስጥ ኮንሶሉ በአንድ የኋላ ጫፍ ላይ የተለያዩ የFirebase Hosting ጣቢያዎች ናቸው።",
+  "A week of events, one screen": "የአንድ ሳምንት ዝግጅቶች፣ በአንድ ገጽ",
+  "A weekly and daily events calendar for Georgetown University's School of Foreign Service in Qatar. Firebase holds the schedule; the client renders a seven-day grid with previous and next week navigation, a day view, and event detail cards. A separate admin view signs in with Google to manage the schedule.":
+    "ለጆርጅታውን ዩኒቨርሲቲ የውጭ ጉዳይ ትምህርት ቤት በኳታር ሳምንታዊና ዕለታዊ የዝግጅት ቀን መቁጠሪያ። መርሃ ግብሩን Firebase ይይዛል፤ ደንበኛው ባለ ሰባት ቀን ፍርግርግ ከቀዳሚና ቀጣይ ሳምንት አሰሳ፣ የቀን እይታና የዝግጅት ዝርዝር ካርዶች ጋር ያሳያል።",
+  "Amharic radio, on the phone": "የአማርኛ ሬዲዮ፣ በስልክ ላይ",
+  "An Amharic podcast and radio app with a short guided onboarding, programme discovery by show, and episode playback in an Ionic shell. Built mobile-first and shipped to Firebase Hosting.":
+    "የአማርኛ ፖድካስትና ሬዲዮ መተግበሪያ፣ አጭር የሚመራ መግቢያ፣ ፕሮግራሞችን በዝግጅት መፈለግ፣ እና በIonic ቅርፊት ውስጥ የክፍል ማጫወት። ሞባይል-ቀዳሚ ሆኖ የተሠራና ወደ Firebase Hosting የተላከ።",
+  "Chat that keeps your data yours": "መረጃዎን ለእርስዎ የሚያስቀምጥ ውይይት",
+  "A landing and sign-in surface for a chat platform that keeps identity and message history with the user while still reaching third-party chat services. A React page on Firebase Hosting.":
+    "መለያና የመልእክት ታሪክን ከተጠቃሚው ጋር የሚያስቀምጥ የውይይት መድረክ መግቢያና ማረጋገጫ ገጽ፣ አሁንም የሶስተኛ ወገን የውይይት አገልግሎቶችን የሚደርስ። በFirebase Hosting ላይ የReact ገጽ።",
+  "The previous site, still online": "የቀድሞው ጣቢያ፣ አሁንም በመስመር ላይ",
+  "The first portfolio: a React build with a cosmic hero, an eleven-year introduction and a project index. Kept live as a reference point for how the work, and the telling of it, have changed.":
+    "የመጀመሪያው ፖርትፎሊዮ፦ በReact የተሠራ፣ የጠፈር ጀግና ምስል፣ የአስራ አንድ ዓመት መግቢያና የፕሮጀክት መዝገብ ያለው። ሥራውና አቀራረቡ እንዴት እንደተለወጡ የሚያሳይ ማጣቀሻ ሆኖ በመስመር ላይ ተጠብቆ ነው።",
+  "Amharic text translation in the browser": "የአማርኛ ጽሑፍ ትርጉም በአሳሽ ውስጥ",
+  "A small translation desk: paste or compose rich text, pick a target language, and read the result without leaving the page. Built as an Ionic app with a tabbed mobile shell and a Firebase Hosting deploy.":
+    "ትንሽ የትርጉም ጠረጴዛ፦ ሀብታም ጽሑፍ ይለጥፉ ወይም ይጻፉ፣ የመድረሻ ቋንቋ ይምረጡ፣ ከገጹ ሳይወጡ ውጤቱን ያንብቡ። በIonic መተግበሪያ፣ በታብ የተደረደረ የሞባይል ቅርፊትና በFirebase Hosting ማሰማራት የተሠራ።",
+
   /* ─── Awards ─────────────────────────────────────────────── */
   "1st": "1ኛ",
   "2nd": "2ኛ",
