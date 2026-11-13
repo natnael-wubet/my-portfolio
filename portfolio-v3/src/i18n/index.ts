@@ -74,8 +74,8 @@ const escapeHtml = (s: string) =>
  * Everything else is escaped, so dictionaries can never inject markup.
  */
 export const rich = (raw: string): string =>
-  escapeHtml(raw)
+  escapeHtml(raw.replace(/<</g, "\uE000").replace(/>>/g, "\uE001"))
     .replace(/\{\{([^}]+)\}\}/g, '<span class="text-[var(--color-signal)]">$1</span>')
     .replace(/\[\[([^\]]+)\]\]/g, '<span class="text-[var(--color-chalk)]">$1</span>')
-    .replace(/<<([^<]+)>>/g, '<span class="text-[var(--color-fog)]">$1</span>')
+    .replace(/\uE000([^\uE001]+)\uE001/g, '<span class="text-[var(--color-fog)]">$1</span>')
     .replace(/\n/g, "<br />");

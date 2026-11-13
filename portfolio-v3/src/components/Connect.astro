@@ -3,6 +3,7 @@ import { socials, repos, awards } from "../data/content";
 import { deployments } from "../data/deployments";
 import { rich, td, type T } from "../i18n";
 import Machine from "./Machine.astro";
+import SocialIcon from "./SocialIcon.astro";
 
 interface Props {
   t: T;
@@ -11,12 +12,20 @@ const { t } = Astro.props;
 
 const primary = socials.filter((s) => ["GitHub", "LinkedIn", "Telegram", "Email"].includes(s.label));
 const rest = socials.filter((s) => !["GitHub", "LinkedIn", "Telegram", "Email"].includes(s.label));
+const email = socials.find((s) => s.icon === "mail")?.handle ?? "";
 
 const stats = {
   live: deployments.filter((d) => !d.archived).length,
   repos: repos.length,
   awards: awards.length,
 };
+
+const topics = [
+  "sec.connect.topicProject",
+  "sec.connect.topicRole",
+  "sec.connect.topicCollab",
+  "sec.connect.topicHi",
+] as const;
 
 // The terminal answers client-side, so its strings ride along as JSON.
 const cmds = {
@@ -34,11 +43,20 @@ const cmds = {
 
 <section id="connect" class="relative border-t border-[var(--color-line)]">
   <div class="shell py-24 lg:py-32">
-    <div class="grid gap-14 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
+    <div class="grid gap-14 lg:grid-cols-[1.05fr_1fr] lg:gap-20">
       <div class="flex flex-col gap-8">
         <div class="flex flex-col gap-5" data-reveal>
           <span class="eyebrow">{t("sec.connect.eyebrow")}</span>
           <h2 class="display display-lg" set:html={rich(t("sec.connect.title"))} />
+        </div>
+
+        <!-- Availability at a glance, before the links. -->
+        <div class="connect-status" data-reveal style="--d:80ms">
+          <span class="connect-live">
+            <span class="status" data-state="live"><span class="status-dot"></span>{t("sec.connect.available")}</span>
+          </span>
+          <span class="connect-fact">{t("sec.connect.remote")}</span>
+          <span class="connect-fact">{t("sec.connect.reply")}</span>
         </div>
 
         <div class="flex flex-col gap-3">
@@ -48,31 +66,47 @@ const cmds = {
                 href={s.href}
                 target={s.href.startsWith("mailto:") || s.href.startsWith("tel:") ? undefined : "_blank"}
                 rel="noopener"
-                class="group flex items-center gap-5 border border-[var(--color-line)] p-5 no-underline transition-all hover:border-[var(--color-signal)] hover:bg-[var(--color-ink-2)]"
+                class="contact-row group"
                 data-reveal
-                style={`--d:${80 + i * 70}ms`}
+                style={`--d:${140 + i * 70}ms`}
               >
-                <span class="grid h-10 w-10 flex-none place-items-center border border-[var(--color-line-2)] font-mono text-[0.625rem] uppercase transition-colors group-hover:border-[var(--color-signal)] group-hover:text-[var(--color-signal)]">
-                  {s.label.slice(0, 2)}
+                <span class="contact-icon">
+                  <SocialIcon name={s.icon} />
                 </span>
-                <span class="flex min-w-0 flex-col">
-                  <span class="font-mono text-[0.625rem] tracking-[0.2em] text-[var(--color-fog)] uppercase">{td(t, s.label)}</span>
-                  <span class="truncate font-display text-base font-semibold text-[var(--color-chalk)] transition-colors group-hover:text-[var(--color-signal)]">
-                    {s.handle}
-                  </span>
+                <span class="contact-meta">
+                  <span class="contact-label">{td(t, s.label)}</span>
+                  <span class="contact-handle">{s.handle}</span>
                 </span>
-                <span class="ml-auto font-mono text-[var(--color-line-2)] transition-all group-hover:translate-x-1 group-hover:text-[var(--color-signal)]">
-                  ↗
+                <span class="contact-arrow" aria-hidden="true">↗</span>
+              </a>
+            ))
+          }
+        </div>
+
+        <!-- other links -->
+        <div class="flex flex-wrap gap-2" data-reveal style="--d:220ms">
+          {
+            rest.map((s) => (
+              <a
+                href={s.href}
+                target={s.href.startsWith("mailto:") || s.href.startsWith("tel:") ? undefined : "_blank"}
+                rel="noopener"
+                class="contact-chip group"
+              >
+                <span class="contact-chip-icon">
+                  <SocialIcon name={s.icon} />
                 </span>
+                <span class="contact-chip-label">{td(t, s.label)}</span>
+                <span class="contact-chip-handle">{s.handle}</span>
               </a>
             ))
           }
         </div>
       </div>
 
-      <div class="flex flex-col gap-8">
+      <div class="flex flex-col gap-6">
         <!-- Terminal -->
-        <div class="panel flex flex-col overflow-hidden">
+        <div class="panel flex flex-col overflow-hidden" data-reveal style="--d:120ms">
           <div class="flex items-center gap-2 border-b border-[var(--color-line)] px-4 py-3">
             <span class="h-2 w-2 rounded-full bg-[var(--color-rose)]/70"></span>
             <span class="h-2 w-2 rounded-full bg-[var(--color-amber)]/70"></span>
@@ -103,24 +137,51 @@ const cmds = {
           </div>
         </div>
 
-        <!-- other links -->
-        <div class="flex flex-wrap gap-2">
-          {
-            rest.map((s) => (
-              <a
-                href={s.href}
-                target={s.href.startsWith("mailto:") || s.href.startsWith("tel:") ? undefined : "_blank"}
-                rel="noopener"
-                class="group flex items-center gap-2.5 border border-[var(--color-line)] px-3.5 py-2.5 no-underline transition-colors hover:border-[var(--color-signal)]"
-              >
-                <span class="font-mono text-[0.625rem] tracking-[0.16em] text-[var(--color-fog)] uppercase transition-colors group-hover:text-[var(--color-chalk)]">
-                  {td(t, s.label)}
-                </span>
-                <span class="font-mono text-[0.6875rem] text-[var(--color-fog-2)]">{s.handle}</span>
-              </a>
-            ))
-          }
-        </div>
+        <!-- Compose, without leaving the page. -->
+        <form class="compose panel" id="compose" data-email={email} data-copied={t("sec.connect.copied")} data-reveal style="--d:180ms">
+          <div class="compose-head">
+            <span class="section-label">{t("sec.connect.compose")}</span>
+            <span class="compose-note">{t("sec.connect.composeNote")}</span>
+          </div>
+
+          <div class="compose-topics" role="group" aria-label={t("sec.connect.topic")}>
+            {
+              topics.map((key, i) => (
+                <button
+                  class="compose-topic"
+                  type="button"
+                  data-topic={t(key)}
+                  aria-pressed={i === 0 ? "true" : "false"}
+                >
+                  {t(key)}
+                </button>
+              ))
+            }
+          </div>
+
+          <label class="sr-only" for="compose-body">{t("sec.connect.body")}</label>
+          <textarea
+            class="compose-body"
+            id="compose-body"
+            rows="3"
+            placeholder={t("sec.connect.bodyPlaceholder")}
+            spellcheck="false"
+          ></textarea>
+
+          <div class="compose-actions">
+            <a class="btn btn-primary compose-send" id="compose-send" href={`mailto:${email}`}>
+              <span>{t("sec.connect.send")}</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+            <button class="compose-copy" id="compose-copy" type="button" data-email={email}>
+              {t("sec.connect.copyEmail")}
+            </button>
+          </div>
+
+          <p class="compose-fallback">
+            {t("sec.connect.noMail")} <a href={`mailto:${email}`}>{email}</a>
+          </p>
+        </form>
       </div>
     </div>
 
@@ -180,4 +241,364 @@ const cmds = {
     }
     document.dispatchEvent(new CustomEvent("ui:toast", { detail: out.dataset.copied ?? "Copied" }));
   });
+
+  // ── Compose ──────────────────────────────────────────────
+  //    Topic + body are folded into a mailto: link, so the visitor's own
+  //    mail app opens with the message already started. No server involved.
+  const compose = document.getElementById("compose") as HTMLFormElement | null;
+
+  if (compose) {
+    const email = compose.dataset.email ?? "";
+    const body = document.getElementById("compose-body") as HTMLTextAreaElement | null;
+    const send = document.getElementById("compose-send") as HTMLAnchorElement | null;
+    const copy = document.getElementById("compose-copy") as HTMLButtonElement | null;
+    const topicButtons = Array.from(compose.querySelectorAll<HTMLButtonElement>("[data-topic]"));
+    let topic = topicButtons[0]?.dataset.topic ?? "";
+
+    const update = () => {
+      if (!send) return;
+      const text = body?.value.trim() ?? "";
+      const params = new URLSearchParams();
+      if (topic) params.set("subject", topic);
+      if (text) params.set("body", text);
+      const query = params.toString().replace(/\+/g, "%20");
+      send.href = `mailto:${email}${query ? `?${query}` : ""}`;
+    };
+
+    topicButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        topic = button.dataset.topic ?? "";
+        topicButtons.forEach((other) => {
+          other.setAttribute("aria-pressed", other === button ? "true" : "false");
+        });
+        update();
+      });
+    });
+
+    body?.addEventListener("input", update);
+
+    copy?.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(copy.dataset.email ?? email);
+      } catch {
+        // Same fallback as the terminal: confirm the gesture regardless.
+      }
+      document.dispatchEvent(new CustomEvent("ui:toast", { detail: compose.dataset.copied ?? "Copied" }));
+    });
+
+    update();
+  }
 </script>
+
+<style>
+  /* ── Availability ───────────────────────────────────────── */
+  .connect-status {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1px;
+    border: 1px solid var(--color-line);
+    background: var(--color-line);
+  }
+
+  @media (min-width: 640px) {
+    .connect-status {
+      grid-template-columns: auto 1fr 1fr;
+    }
+  }
+
+  .connect-live,
+  .connect-fact {
+    display: flex;
+    align-items: center;
+    padding: 0.7rem 0.9rem;
+    background: var(--color-ink);
+  }
+
+  .connect-live .status {
+    font-size: 0.5625rem;
+  }
+
+  .connect-fact {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.14em;
+    color: var(--color-fog-2);
+    text-transform: uppercase;
+  }
+
+  /* ── Primary rows ───────────────────────────────────────── */
+  .contact-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.05rem 1.15rem;
+    border: 1px solid var(--color-line);
+    text-decoration: none;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+  }
+
+  .contact-row:hover,
+  .contact-row:focus-visible {
+    border-color: var(--color-signal);
+    background: var(--color-ink-2);
+  }
+
+  .contact-icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0.6rem;
+    border: 1px solid var(--color-line-2);
+    color: var(--color-fog-2);
+    transition: border-color 0.3s ease, color 0.3s ease, background-color 0.3s ease;
+  }
+
+  .contact-row:hover .contact-icon,
+  .contact-row:focus-visible .contact-icon {
+    border-color: var(--color-signal);
+    background: color-mix(in srgb, var(--color-signal) 9%, transparent);
+    color: var(--color-signal);
+  }
+
+  .contact-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+
+  .contact-label {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.2em;
+    color: var(--color-fog);
+    text-transform: uppercase;
+  }
+
+  .contact-handle {
+    overflow: hidden;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-chalk);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: color 0.25s ease;
+  }
+
+  .contact-row:hover .contact-handle,
+  .contact-row:focus-visible .contact-handle {
+    color: var(--color-signal);
+  }
+
+  .contact-arrow {
+    margin-left: auto;
+    color: var(--color-line-2);
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+
+  .contact-row:hover .contact-arrow,
+  .contact-row:focus-visible .contact-arrow {
+    color: var(--color-signal);
+    transform: translate(2px, -2px);
+  }
+
+  /* ── Secondary chips ────────────────────────────────────── */
+  .contact-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid var(--color-line);
+    text-decoration: none;
+    transition: border-color 0.25s ease, background-color 0.25s ease;
+  }
+
+  .contact-chip:hover,
+  .contact-chip:focus-visible {
+    border-color: var(--color-signal);
+    background: var(--color-ink-2);
+  }
+
+  .contact-chip-icon {
+    display: inline-flex;
+    width: 0.95rem;
+    height: 0.95rem;
+    color: var(--color-fog);
+    transition: color 0.25s ease;
+  }
+
+  .contact-chip:hover .contact-chip-icon,
+  .contact-chip:focus-visible .contact-chip-icon {
+    color: var(--color-signal);
+  }
+
+  .contact-chip-label {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.16em;
+    color: var(--color-fog-2);
+    text-transform: uppercase;
+    transition: color 0.25s ease;
+  }
+
+  .contact-chip:hover .contact-chip-label,
+  .contact-chip:focus-visible .contact-chip-label {
+    color: var(--color-chalk);
+  }
+
+  .contact-chip-handle {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    color: var(--color-fog);
+  }
+
+  /* ── Compose ────────────────────────────────────────────── */
+  .compose {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 1.15rem;
+  }
+
+  .compose-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .compose-note {
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.14em;
+    color: var(--color-fog);
+    text-transform: uppercase;
+  }
+
+  .compose-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .compose-topic {
+    padding: 0.35rem 0.6rem;
+    border: 1px solid var(--color-line);
+    background: transparent;
+    color: var(--color-fog-2);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .compose-topic:hover,
+  .compose-topic:focus-visible {
+    border-color: var(--color-line-2);
+    color: var(--color-chalk);
+  }
+
+  .compose-topic[aria-pressed="true"] {
+    border-color: var(--color-signal);
+    background: color-mix(in srgb, var(--color-signal) 10%, transparent);
+    color: var(--color-chalk);
+  }
+
+  .compose-body {
+    width: 100%;
+    min-height: 5.2rem;
+    padding: 0.7rem 0.8rem;
+    border: 1px solid var(--color-line);
+    background: var(--color-ink);
+    color: var(--color-chalk);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.65;
+    resize: vertical;
+    transition: border-color 0.2s ease;
+  }
+
+  .compose-body::placeholder {
+    color: var(--color-fog);
+  }
+
+  .compose-body:focus-visible {
+    border-color: var(--color-signal);
+    outline: none;
+  }
+
+  .compose-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .compose-send {
+    flex: 1 1 auto;
+    justify-content: space-between;
+  }
+
+  .compose-copy {
+    padding: 0.55rem 0.8rem;
+    border: 1px solid var(--color-line-2);
+    background: transparent;
+    color: var(--color-fog-2);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .compose-copy:hover,
+  .compose-copy:focus-visible {
+    border-color: var(--color-chalk);
+    background: var(--color-chalk);
+    color: var(--color-ink);
+  }
+
+  .compose-fallback {
+    margin: 0;
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.06em;
+    line-height: 1.6;
+  }
+
+  .compose-fallback a {
+    color: var(--color-fog-2);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .compose-fallback a:hover {
+    color: var(--color-signal);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contact-row,
+    .contact-icon,
+    .contact-handle,
+    .contact-arrow,
+    .contact-chip,
+    .contact-chip-icon,
+    .contact-chip-label,
+    .compose-topic,
+    .compose-body,
+    .compose-copy {
+      transition: none;
+    }
+
+    .contact-row:hover .contact-arrow {
+      transform: none;
+    }
+  }
+</style>
