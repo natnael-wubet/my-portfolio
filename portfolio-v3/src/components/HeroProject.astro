@@ -180,13 +180,16 @@ const slides = projects.map((d) => {
 <script>
   const root = document.querySelector<HTMLElement>("[data-carousel]");
   if (root) {
+    // The counter, play and arrow buttons sit in the section header, which is
+    // a sibling of the carousel element rather than a child of it.
+    const controls = root.closest<HTMLElement>("section") ?? root;
     const slides = Array.from(root.querySelectorAll<HTMLElement>("[data-slide]"));
     const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-tab]"));
-    const counter = root.querySelector<HTMLElement>("[data-carousel-counter]");
+    const counter = controls.querySelector<HTMLElement>("[data-carousel-counter]");
     const stage = root.querySelector<HTMLElement>(".hero-slides");
     const progress = root.querySelector<HTMLElement>("[data-progress]");
-    const play = root.querySelector<HTMLButtonElement>("[data-carousel-play]");
-    const playIcon = root.querySelector<HTMLElement>("[data-play-icon]");
+    const play = controls.querySelector<HTMLButtonElement>("[data-carousel-play]");
+    const playIcon = controls.querySelector<HTMLElement>("[data-play-icon]");
     const pad = (n: number) => String(n).padStart(2, "0");
 
     // Rotate on its own, but only for readers who accept motion, and only
@@ -253,8 +256,8 @@ const slides = projects.map((d) => {
       arm();
     };
 
-    root.querySelector("[data-carousel-prev]")?.addEventListener("click", () => select(current - 1));
-    root.querySelector("[data-carousel-next]")?.addEventListener("click", () => select(current + 1));
+    controls.querySelector("[data-carousel-prev]")?.addEventListener("click", () => select(current - 1));
+    controls.querySelector("[data-carousel-next]")?.addEventListener("click", () => select(current + 1));
     play?.addEventListener("click", () => setPlaying(!playing));
 
     tabs.forEach((tab, i) => {
