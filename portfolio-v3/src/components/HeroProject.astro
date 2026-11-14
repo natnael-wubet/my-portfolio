@@ -114,7 +114,7 @@ const slides = projects.map((d) => {
                       </div>
                       <img
                         src={d.shot}
-                        alt=""
+                        alt={t("sec.work.shotAlt", { name: d.name })}
                         width="1600"
                         height="1000"
                         loading={i === 0 ? "eager" : "lazy"}
@@ -132,7 +132,13 @@ const slides = projects.map((d) => {
                         {t("sec.work.capturesHint", { n: d.captures })}
                       </span>
                       {d.phoneShot && (
-                        <img class="hero-project-phone" src={d.phoneShot} alt="" loading="lazy" decoding="async" />
+                        <img
+                          class="hero-project-phone"
+                          src={d.phoneShot}
+                          alt={t("sec.work.phoneShotAlt", { name: d.name })}
+                          loading="lazy"
+                          decoding="async"
+                        />
                       )}
                     </div>
                   ) : (

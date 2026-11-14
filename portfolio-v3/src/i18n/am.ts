@@ -81,6 +81,8 @@ export const am: Dict & Record<string, string> = {
   "hero.craft.cpu": "CPU ቅድሚያ",
   "hero.ctaWork": "የተመረጡ ሥራዎችን አሳይ →",
   "hero.ctaContact": "አግኙኝ →",
+  "hero.emailLabel": "ኢሜይል",
+  "hero.emailSend": "ጻፍ",
   "signature.label": "በማሽን የሚነበብ መዝገብ",
   "signature.lead":
     "ይህ ፖርትፎሊዮ የራሱ ይፋዊ መዝገብ ነው፦ ቀኖናዊ የJSON መገለጫ፣ የLLM መዝገብና የMarkdown ሲቪ፣ በግንባታ ጊዜ ከዚያው መረጃ የሚመነጩ፣ ሁለት ጊዜ ያልተጻፉ።",
@@ -159,6 +161,8 @@ export const am: Dict & Record<string, string> = {
   "sec.work.archive": "መዝገቡን አሳይ",
   "sec.work.archiveCount": "መዝገብ · {n} ፕሮጀክቶች",
   "sec.work.capturesHint": "{n} ቅርጾች · ለመክፈት ጠቅ አድርግ",
+  "sec.work.shotAlt": "የ{name} ማያ ገጽ",
+  "sec.work.phoneShotAlt": "{name} በስልክ ላይ",
   "sec.work.liveEyebrow": "ቀጥታ ሁኔታ",
   "sec.work.liveTitle": "የቀረው ሁሉ፣\nአሁንም ይመልሳል",
   "sec.work.liveLead":

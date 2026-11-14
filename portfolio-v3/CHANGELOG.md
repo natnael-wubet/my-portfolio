@@ -20,13 +20,15 @@ The homepage now makes an argument instead of listing everything it can.
 - Case studies for Big XO, GameO, Ticketye and Cite-Chain in both locales: TL;DR, problem, approach, tradeoffs, outcome, what I would do differently, prev/next and a back link. Every other project keeps its record.
 - Amharic parity for every new UI string, the four carousel outcomes, and the four case studies.
 - No user-facing "dossier", "Scroll Section NN" or "Build-time probe" remains.
+- The hero carries the email address as selectable text beside the primary CTA, with the mailto as a secondary action.
+- Carousel screenshots have descriptive alt text in both locales.
 - The downloadable CV now says 13 years, matching the site. The Canva export has a real text layer, so the single glyph and the document title were patched in place instead of rebuilding the PDF.
 
 ### Build and correctness
 
 - `tier` on each deployment drives the homepage. `src/lib/content-checks.ts` fails the build when a hero or featured entry is missing its tagline, outcome, metric or screenshot, and warns on `TODO(metric)`.
 - One row builder (`src/lib/work.ts`) feeds the carousel, cards, tables, archive and dialog, so a project cannot appear differently in two places.
-- Canonical URLs and hreflang pairs for `/` and `/archive` in both locales. Sitemap lists all four routes. OG image URLs are absolute.
+- Canonical URLs and hreflang pairs for `/` and `/archive` in both locales, now on the Vercel production origin. Sitemap lists all four routes. OG image URLs are absolute.
 - Phone layout no longer scrolls sideways: inactive carousel slides are clipped, the language switch moves into the menu, and the diagnostics chip moves off the hero CTA column.
 
 ### Performance and accessibility

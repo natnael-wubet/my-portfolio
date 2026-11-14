@@ -3,7 +3,9 @@
  * machine-readable endpoints and structured data.
  */
 export const SITE = {
-  url: "https://naty-wubet.web.app",
+  // Astro injects the configured `site` here, so astro.config.mjs is the one
+  // place that decides the indexed origin.
+  url: (import.meta.env.SITE ?? "https://my-portfolio-three-lime-27.vercel.app").replace(/\/$/, ""),
   name: "Natnael Wubet",
   role: "Software Engineer",
   email: "natyw4122@gmail.com",

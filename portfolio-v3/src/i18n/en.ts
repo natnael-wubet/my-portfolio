@@ -82,6 +82,8 @@ export const en = {
   "hero.craft.cpu": "CPU first",
   "hero.ctaWork": "See featured work →",
   "hero.ctaContact": "Get in touch →",
+  "hero.emailLabel": "Email",
+  "hero.emailSend": "Write",
   "signature.label": "Machine-readable record",
   "signature.lead":
     "This portfolio is its own public record: canonical JSON profile, LLM index and Markdown CV, generated from the same data at build time and never written twice.",
@@ -160,6 +162,8 @@ export const en = {
   "sec.work.archive": "View archive",
   "sec.work.archiveCount": "Archive · {n} projects",
   "sec.work.capturesHint": "{n} captures · click to open",
+  "sec.work.shotAlt": "{name} screenshot",
+  "sec.work.phoneShotAlt": "{name} on a phone",
   "sec.work.liveEyebrow": "Live status",
   "sec.work.liveTitle": "Everything else,\nstill answering",
   "sec.work.liveLead":
