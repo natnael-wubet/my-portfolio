@@ -16,8 +16,9 @@ import { validateDeployments } from "../lib/content-checks";
 
 interface Props {
   lang: Lang;
+  path: string;
 }
-const { lang } = Astro.props;
+const { lang, path } = Astro.props;
 const t = makeT(lang);
 
 validateDeployments();
@@ -26,7 +27,7 @@ const live = rows.filter((row) => !row.archived && row.health.status === "live")
 const homeHref = lang === "en" ? "/" : "/am/";
 ---
 
-<Base lang={lang} title={t("archive.meta.title")} description={t("archive.meta.description")}>
+<Base lang={lang} path={path} title={t("archive.meta.title")} description={t("archive.meta.description")}>
   <Nav t={t} lang={lang} home={false} search={false} />
 
   <main class="relative z-10">

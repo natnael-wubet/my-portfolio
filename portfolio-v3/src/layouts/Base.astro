@@ -2,18 +2,28 @@
 import "../styles/global.css";
 import { locales, makeT, type Lang } from "../i18n";
 import { structuredData } from "../lib/structured-data";
+import { SITE } from "../lib/site";
 
 interface Props {
   lang?: Lang;
   title?: string;
   description?: string;
+  /** Route path for canonical + hreflang, e.g. "/archive" or "/am/archive". */
+  path?: string;
 }
-const { lang = "en", title, description } = Astro.props;
+const { lang = "en", title, description, path } = Astro.props;
 
 const t = makeT(lang);
 const loc = locales[lang];
 const pageTitle = title ?? t("meta.title");
 const pageDescription = description ?? t("meta.description");
+
+// One canonical per route, with both locales pointing at each other. The
+// archive is the only route besides home, so deriving the pair is cheap.
+const route = path ?? locales[lang].href;
+const enPath = route.startsWith("/am") ? route.replace(/^\/am/, "") || "/" : route;
+const amPath = route.startsWith("/am") ? route : `/am${route === "/" ? "/" : route}`;
+const canonical = `${SITE.url}${route}`;
 
 // Machine-readable siblings: the profile, the LLM index and the Markdown CV.
 // JSON-LD is generated from the same profile, so it cannot drift from the page.
@@ -38,10 +48,11 @@ const fontHrefAm =
     <meta name="description" content={pageDescription} />
     <meta name="theme-color" content="#08090a" id="theme-color-meta" />
     <meta name="author" content="Natnael Wubet" />
+    <link rel="canonical" href={canonical} />
     <!-- Both locales are static; tell crawlers they exist as siblings. -->
-    <link rel="alternate" hreflang="en" href="/" />
-    <link rel="alternate" hreflang="am" href="/am/" />
-    <link rel="alternate" hreflang="x-default" href="/" />
+    <link rel="alternate" hreflang="en" href={`${SITE.url}${enPath}`} />
+    <link rel="alternate" hreflang="am" href={`${SITE.url}${amPath}`} />
+    <link rel="alternate" hreflang="x-default" href={`${SITE.url}${enPath}`} />
     <!-- The same person, in formats a tool can consume. -->
     <link rel="alternate" type="application/json" href="/profile.json" title="Machine-readable profile" />
     <link rel="alternate" type="application/schema+json" href="/profile.schema.json" title="Profile schema" />
@@ -49,19 +60,20 @@ const fontHrefAm =
     <link rel="alternate" type="text/markdown" href="/resume.md" title="Markdown CV" />
     <link rel="author" href="/profile.json" />
     <script type="application/ld+json" set:html={ld} />
+    <meta property="og:url" content={canonical} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content={loc.ogLocale} />
     <meta property="og:locale:alternate" content={lang === "en" ? "am_ET" : "en_US"} />
-    <meta property="og:image" content="/og.png" />
+    <meta property="og:image" content={`${SITE.url}/og.png`} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Natnael Wubet · Software Engineer" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />
-    <meta name="twitter:image" content="/og.png" />
+    <meta name="twitter:image" content={`${SITE.url}/og.png`} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href={lang === "am" ? fontHrefAm : fontHref} rel="stylesheet" />

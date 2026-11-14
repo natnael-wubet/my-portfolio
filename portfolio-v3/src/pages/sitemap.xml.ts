@@ -20,6 +20,22 @@ const text = () => `<?xml version="1.0" encoding="UTF-8"?>
     <xhtml:link rel="alternate" hreflang="am" href="${SITE.url}/am/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="${SITE.url}/" />
   </url>
+  <url>
+    <loc>${SITE.url}/archive</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="${SITE.url}/archive" />
+    <xhtml:link rel="alternate" hreflang="am" href="${SITE.url}/am/archive" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE.url}/archive" />
+  </url>
+  <url>
+    <loc>${SITE.url}/am/archive</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="${SITE.url}/archive" />
+    <xhtml:link rel="alternate" hreflang="am" href="${SITE.url}/am/archive" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE.url}/archive" />
+  </url>
 </urlset>
 `;
 
