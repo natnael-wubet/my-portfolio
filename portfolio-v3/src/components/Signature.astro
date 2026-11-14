@@ -1,0 +1,154 @@
+---
+/**
+ * The forwardable hook, high on the page.
+ *
+ * Everything here is generated from the same data the page renders, so the
+ * strip can be read as a promise: the site is a public record, not a screen.
+ * The full panel lives beside the contact section (#machine).
+ */
+import { rich, type T } from "../i18n";
+
+interface Props {
+  t: T;
+}
+const { t } = Astro.props;
+
+const files = [
+  { label: t("signature.profile"), href: "/profile.json", meta: "JSON" },
+  { label: t("signature.llms"), href: "/llms.txt", meta: "TXT" },
+  { label: t("signature.resume"), href: "/resume.md", meta: "MD" },
+];
+---
+
+<aside class="signature" aria-label={t("signature.label")} data-reveal>
+  <div class="signature-lead">
+    <span class="signature-dot" aria-hidden="true"></span>
+    <p set:html={rich(t("signature.lead"))} />
+  </div>
+
+  <div class="signature-links">
+    {
+      files.map((file) => (
+        <a class="signature-link" href={file.href} target="_blank" rel="noopener">
+          <span class="signature-ext" aria-hidden="true">{file.meta}</span>
+          {file.label}
+          <span aria-hidden="true">↗</span>
+        </a>
+      ))
+    }
+    <a class="signature-how" href="#machine">
+      {t("signature.how")}
+      <span aria-hidden="true">→</span>
+    </a>
+  </div>
+</aside>
+
+<style>
+  .signature {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 2rem;
+    width: min(100% - 2.5rem, 1320px);
+    margin: 0 auto;
+    padding: 0.9rem 0;
+    border-block: 1px solid var(--color-line);
+  }
+
+  .signature-lead {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    min-width: 0;
+  }
+
+  .signature-dot {
+    flex: none;
+    width: 5px;
+    height: 5px;
+    margin-top: 0.45rem;
+    border-radius: 50%;
+    background: var(--color-signal);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-signal) 14%, transparent);
+  }
+
+  .signature-lead p {
+    margin: 0;
+    max-width: 78ch;
+    color: var(--color-fog-2);
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    line-height: 1.7;
+    letter-spacing: 0.04em;
+  }
+
+  .signature-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 1.1rem;
+  }
+
+  .signature-link,
+  .signature-how {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+  }
+
+  .signature-link:hover,
+  .signature-link:focus-visible,
+  .signature-how:hover,
+  .signature-how:focus-visible {
+    color: var(--color-signal);
+  }
+
+  .signature-link:focus-visible,
+  .signature-how:focus-visible {
+    outline: 1px solid var(--color-signal);
+    outline-offset: 3px;
+  }
+
+  .signature-ext {
+    padding: 0.1rem 0.22rem;
+    border: 1px solid var(--color-line-2);
+    color: var(--color-line-2);
+    font-size: 0.4375rem;
+    letter-spacing: 0.08em;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .signature-link:hover .signature-ext,
+  .signature-link:focus-visible .signature-ext {
+    border-color: var(--color-signal);
+    color: var(--color-signal);
+  }
+
+  .signature-how {
+    color: var(--color-signal);
+  }
+
+  @media (max-width: 860px) {
+    .signature {
+      width: min(100% - 2rem, 1320px);
+      align-items: flex-start;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .signature-link,
+    .signature-how,
+    .signature-ext {
+      transition: none;
+    }
+  }
+</style>

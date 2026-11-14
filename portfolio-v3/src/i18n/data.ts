@@ -63,9 +63,13 @@ export const amData: Record<string, string> = {
 
   /* ─── Deployments ────────────────────────────────────────── */
   "Ultimate Tic Tac Toe": "የመጨረሻው ቲክ ታክ ቶ",
+  "Spatial tic-tac-toe with an AI opponent, shipped as a Telegram Mini App and an Android build.":
+    "ባለ አካባቢ ቲክ-ታክ-ቶ ከAI ተቀናቃኝ ጋር፣ እንደ Telegram Mini App እና የAndroid ግንባታ የተላከ።",
   "3×3×3 spatial tic-tac-toe with a single-player AI opponent and local pass-and-play multiplayer. Ships as a Telegram Mini App and a native Android build via Capacitor, with Supabase-backed auth and WebAuthn.":
     "ባለ 3×3×3 አካባቢያዊ ቲክ-ታክ-ቶ ከአንድ ተጫዋች AI ተቀናቃኝና ከአካባቢ ፈረቃ ተጫዋችነት ጋር። እንደ Telegram Mini App እና በCapacitor እንደ ኔቲቭ Android ግንባታ ይላካል፣ ከSupabase የተመሠረተ ማረጋገጫና WebAuthn ጋር።",
   "Real-money Ethiopian Bingo": "በእውነተኛ ገንዘብ የሚጫወት የኢትዮጵያ ቢንጎ",
+  "Live bingo rooms with real-money rails: Chapa deposits, Ethiopian bank payouts and a 5% rake.":
+    "ቀጥታ የቢንጎ ክፍሎች በእውነተኛ ገንዘብ መስመሮች፦ በChapa ተቀማጭ፣ በኢትዮጵያ ባንኮች ክፍያና 5% የመድረክ ክፍያ።",
   "Live bingo rooms with buy-ins, a 5% platform rake, in-app wallets, Chapa payment rails for deposits and Ethiopian bank payouts for withdrawals, plus a full Amharic/English locale switch and a live admin console.":
     "በመግቢያ ክፍያ፣ በ5% የመድረክ ክፍያ፣ በመተግበሪያ ውስጥ ቦርሳዎች፣ ለተቀማጭ በChapa የክፍያ መስመሮችና ለወጪ በኢትዮጵያ ባንኮች ክፍያ፣ እንዲሁም ሙሉ የአማርኛ/እንግሊዝኛ ቋንቋ መቀየሪያና ቀጥታ የአስተዳዳሪ ኮንሶል ያላቸው ቀጥታ የቢንጎ ክፍሎች።",
   "Blockchain-verified research attribution": "በብሎክቸይን የተረጋገጠ የምርምር ምስክርነት",

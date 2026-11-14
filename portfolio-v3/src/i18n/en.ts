@@ -82,6 +82,13 @@ export const en = {
   "hero.craft.cpu": "CPU first",
   "hero.ctaWork": "See featured work →",
   "hero.ctaContact": "Get in touch →",
+  "signature.label": "Machine-readable record",
+  "signature.lead":
+    "This portfolio is its own public record: canonical JSON profile, LLM index and Markdown CV, generated from the same data at build time and never written twice.",
+  "signature.profile": "Profile",
+  "signature.llms": "LLM index",
+  "signature.resume": "Markdown CV",
+  "signature.how": "How this works",
   "hero.hint": "⌘K or / to search everything · ? for shortcuts",
   "hero.stat.deploy.k": "Live deployments",
   "hero.stat.deploy.s": "verified at build",

@@ -81,6 +81,13 @@ export const am: Dict & Record<string, string> = {
   "hero.craft.cpu": "CPU ቅድሚያ",
   "hero.ctaWork": "የተመረጡ ሥራዎችን አሳይ →",
   "hero.ctaContact": "አግኙኝ →",
+  "signature.label": "በማሽን የሚነበብ መዝገብ",
+  "signature.lead":
+    "ይህ ፖርትፎሊዮ የራሱ ይፋዊ መዝገብ ነው፦ ቀኖናዊ የJSON መገለጫ፣ የLLM መዝገብና የMarkdown ሲቪ፣ በግንባታ ጊዜ ከዚያው መረጃ የሚመነጩ፣ ሁለት ጊዜ ያልተጻፉ።",
+  "signature.profile": "መገለጫ",
+  "signature.llms": "የLLM መዝገብ",
+  "signature.resume": "የMarkdown ሲቪ",
+  "signature.how": "እንዴት እንደሚሠራ",
   "hero.hint": "⌘K ወይም / ሁሉንም ፈልግ · ? ለቁልፍ አቁሮች",
   "hero.stat.deploy.k": "ቀጥታ ማስተላለፊያ",
   "hero.stat.deploy.s": "በبناء ጊዜ ተረጋግጧል",

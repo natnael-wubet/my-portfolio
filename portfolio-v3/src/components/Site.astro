@@ -10,6 +10,7 @@
 import Base from "../layouts/Base.astro";
 import Nav from "./Nav.astro";
 import Hero from "./Hero.astro";
+import Signature from "./Signature.astro";
 import HeroProject from "./HeroProject.astro";
 import FeaturedWork from "./FeaturedWork.astro";
 import ReadClosely from "./ReadClosely.astro";
@@ -62,6 +63,7 @@ const description = t("meta.descriptionCounted", { live, repos: repos.length });
   <Nav t={t} lang={lang} />
   <main class="relative z-10">
     <Hero t={t} />
+    <Signature t={t} />
     <HeroProject t={t} projects={[...featured, hero]} />
     <FeaturedWork t={t} projects={featured} count={rows.length} />
     <ReadClosely t={t} />
