@@ -8,6 +8,7 @@
  * sites at three viewports, stored as WebP under /public/shots.
  */
 import type { T } from "../i18n";
+import type { CaseStudy } from "../data/caseStudies";
 import ProjectLogo from "./ProjectLogo.astro";
 
 export interface ProjectRecord {
@@ -27,6 +28,8 @@ export interface ProjectRecord {
   ms: number | null;
   host: string;
   shots: { desktop: boolean; tablet: boolean; phone: boolean };
+  metric?: string;
+  study: CaseStudy | null;
 }
 
 interface Props {
@@ -53,10 +56,15 @@ const devices = [
   data-archived={t("sec.deployments.archivedStatus")}
   data-open={t("sec.deployments.dialog.open")}
   data-source={t("sec.deployments.dialog.source")}
+  data-metric={t("sec.deployments.study.metric")}
 >
   <div class="pd-shell">
     <header class="pd-top">
       <div class="pd-top-left">
+        <button class="pd-back" type="button" id="pd-back">
+          <span aria-hidden="true">←</span>
+          {t("sec.deployments.dialog.back")}
+        </button>
         <span class="pd-kicker">{t("sec.deployments.dialog.label")}</span>
         <span class="pd-counter" id="pd-counter">01 / {String(projects.length).padStart(2, "0")}</span>
       </div>
@@ -69,6 +77,7 @@ const devices = [
     </header>
 
     <div class="pd-body">
+      <div class="pd-main">
       <div class="pd-stage" id="pd-stage">
         <div class="pd-rail" role="group" aria-label={t("sec.deployments.dialog.viewport")}>
           {
@@ -145,6 +154,54 @@ const devices = [
           </div>
         </div>
       </div>
+      </div>
+
+      <section class="pd-study" id="pd-study" hidden>
+        <header class="pd-study-head">
+          <span class="pd-label">{t("sec.deployments.study.label")}</span>
+          <span class="pd-study-role" id="pd-study-role"></span>
+        </header>
+
+        <div class="pd-tldr">
+          <span class="pd-label">{t("sec.deployments.study.tldr")}</span>
+          <ul id="pd-tldr"></ul>
+        </div>
+
+        <div class="pd-study-grid">
+          <section class="pd-chapter">
+            <h3>{t("sec.deployments.study.problem")}</h3>
+            <div id="pd-problem"></div>
+          </section>
+          <section class="pd-chapter">
+            <h3>{t("sec.deployments.study.approach")}</h3>
+            <div id="pd-approach"></div>
+          </section>
+          <section class="pd-chapter">
+            <h3>{t("sec.deployments.study.tradeoffs")}</h3>
+            <ul id="pd-tradeoffs"></ul>
+          </section>
+          <section class="pd-chapter">
+            <h3>{t("sec.deployments.study.outcome")}</h3>
+            <div id="pd-outcome"></div>
+            <p class="pd-metric" id="pd-study-metric" hidden></p>
+          </section>
+          <section class="pd-chapter">
+            <h3>{t("sec.deployments.study.differently")}</h3>
+            <ul id="pd-differently"></ul>
+          </section>
+        </div>
+
+        <footer class="pd-study-foot">
+          <button class="pd-back" type="button" id="pd-back-2">
+            <span aria-hidden="true">←</span>
+            {t("sec.deployments.dialog.back")}
+          </button>
+          <div class="pd-pager">
+            <button class="pd-arrow" type="button" id="pd-prev-2" aria-label={t("sec.deployments.dialog.prev")}>←</button>
+            <button class="pd-arrow" type="button" id="pd-next-2" aria-label={t("sec.deployments.dialog.next")}>→</button>
+          </div>
+        </footer>
+      </section>
     </div>
   </div>
 </dialog>
@@ -170,7 +227,9 @@ const devices = [
     statusLabel: string;
     ms: number | null;
     host: string;
+    metric?: string;
     shots: Record<"desktop" | "tablet" | "phone", boolean>;
+    study: CaseStudy | null;
   }>;
 
   if (dialog && projects.length) {
@@ -193,6 +252,16 @@ const devices = [
     const status = $("pd-status");
     const statusText = $("pd-status-text");
     const deviceButtons = Array.from(document.querySelectorAll<HTMLButtonElement>(".pd-device"));
+    const body = dialog.querySelector<HTMLElement>(".pd-body");
+    const study = $("pd-study");
+    const studyRole = $("pd-study-role");
+    const tldr = $("pd-tldr");
+    const problem = $("pd-problem");
+    const approach = $("pd-approach");
+    const tradeoffs = $("pd-tradeoffs");
+    const outcome = $("pd-outcome");
+    const differently = $("pd-differently");
+    const studyMetric = $("pd-study-metric");
     const labels = {
       platform: dialog.dataset.platform ?? "",
       category: dialog.dataset.category ?? "",
@@ -254,6 +323,25 @@ const devices = [
       frame.classList.add("is-switching");
     };
 
+    const renderStudy = (p: (typeof projects)[number]) => {
+      const s = p.study;
+      study.hidden = !s;
+      if (!s) return;
+      studyRole.textContent = s.role;
+      tldr.innerHTML = s.tldr.map((item) => `<li>${item}</li>`).join("");
+      problem.innerHTML = s.problem.map((item) => `<p>${item}</p>`).join("");
+      approach.innerHTML = s.approach
+        .map((step) => `<div class="pd-decision"><h4>${step.title}</h4><p>${step.body}</p></div>`)
+        .join("");
+      tradeoffs.innerHTML = s.tradeoffs.map((item) => `<li>${item}</li>`).join("");
+      outcome.innerHTML = s.outcome.map((item) => `<p>${item}</p>`).join("");
+      differently.innerHTML = s.differently.map((item) => `<li>${item}</li>`).join("");
+
+      const hasMetric = Boolean(p.metric && !p.metric.startsWith("TODO("));
+      studyMetric.hidden = !hasMetric;
+      studyMetric.textContent = hasMetric ? `${dialog.dataset.metric ?? ""}: ${p.metric}` : "";
+    };
+
     const render = (nextPos: number) => {
       pos = ((nextPos % order.length) + order.length) % order.length;
       const p = current();
@@ -269,6 +357,7 @@ const devices = [
       dialog.style.setProperty("--pd-accent", p.accent);
 
       renderFacts(p);
+      renderStudy(p);
 
       stack.innerHTML = p.stack.map((item) => `<li>${item}</li>`).join("");
 
@@ -276,6 +365,8 @@ const devices = [
       openText.textContent = p.archived ? (dialog.dataset.source ?? "") : (dialog.dataset.open ?? "");
       open.setAttribute("aria-label", `${p.name}: ${openText.textContent}`);
       open.classList.toggle("is-source", p.archived);
+
+      if (body) body.scrollTop = 0;
 
       const preferred: Array<"desktop" | "tablet" | "phone"> = ["desktop", "tablet", "phone"];
       const fallback = preferred.find((key) => p.shots[key]);
@@ -318,8 +409,12 @@ const devices = [
     });
 
     $("pd-close").addEventListener("click", closeDialog);
+    $("pd-back").addEventListener("click", closeDialog);
+    $("pd-back-2").addEventListener("click", closeDialog);
     $("pd-prev").addEventListener("click", () => render(pos - 1));
     $("pd-next").addEventListener("click", () => render(pos + 1));
+    $("pd-prev-2").addEventListener("click", () => render(pos - 1));
+    $("pd-next-2").addEventListener("click", () => render(pos + 1));
 
     /*
      * The card grid can be filtered. When it is, the dossier's prev/next walk
@@ -460,6 +555,27 @@ const devices = [
     letter-spacing: 0.14em;
   }
 
+  .pd-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-fog);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .pd-back:hover,
+  .pd-back:focus-visible {
+    color: var(--color-signal);
+  }
+
   .pd-close {
     display: inline-flex;
     align-items: center;
@@ -482,15 +598,21 @@ const devices = [
   }
 
   .pd-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+
+  .pd-main {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    overflow: auto;
   }
 
   @media (min-width: 1000px) {
-    .pd-body {
+    .pd-main {
       grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
-      overflow: hidden;
     }
   }
 
@@ -845,7 +967,6 @@ const devices = [
     gap: 1.05rem;
     min-width: 0;
     padding: 1.4rem;
-    overflow: auto;
   }
 
   @media (min-width: 1000px) {
@@ -988,6 +1109,174 @@ const devices = [
     border-color: var(--color-chalk);
     background: var(--color-chalk);
     color: var(--color-ink);
+  }
+
+  /* ── Case study ─────────────────────────────────────────── */
+  .pd-study {
+    border-top: 1px solid var(--color-line-2);
+    padding: 1.5rem 1.4rem 1.8rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--pd-accent, var(--color-signal)) 5%, transparent), transparent 220px),
+      var(--color-ink);
+  }
+
+  @media (min-width: 1000px) {
+    .pd-study {
+      padding: 2rem 2.4rem 2.4rem;
+    }
+  }
+
+  .pd-study-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .pd-study-role {
+    color: var(--pd-accent, var(--color-signal));
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .pd-tldr {
+    display: grid;
+    gap: 0.65rem;
+    margin: 1.25rem 0 0;
+    padding: 1rem 1.1rem;
+    border-left: 2px solid var(--pd-accent, var(--color-signal));
+    background: color-mix(in srgb, var(--pd-accent, var(--color-signal)) 6%, transparent);
+  }
+
+  .pd-tldr ul,
+  .pd-chapter ul {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pd-tldr li,
+  .pd-chapter li {
+    position: relative;
+    padding-left: 1rem;
+    color: var(--color-fog-2);
+    font-size: 0.8125rem;
+    line-height: 1.65;
+  }
+
+  .pd-tldr li::before,
+  .pd-chapter li::before {
+    content: "";
+    position: absolute;
+    top: 0.62em;
+    left: 0;
+    width: 4px;
+    height: 4px;
+    background: var(--pd-accent, var(--color-signal));
+    transform: rotate(45deg);
+  }
+
+  .pd-tldr li {
+    color: var(--color-chalk);
+    font-size: 0.875rem;
+  }
+
+  .pd-study-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem 2.5rem;
+    margin-top: 1.75rem;
+  }
+
+  @media (min-width: 760px) {
+    .pd-study-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .pd-chapter {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    min-width: 0;
+  }
+
+  .pd-chapter h3 {
+    margin: 0;
+    color: var(--color-chalk);
+    font-family: var(--font-display);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .pd-chapter p {
+    margin: 0 0 0.55rem;
+    max-width: 62ch;
+    color: var(--color-fog-2);
+    font-size: 0.8125rem;
+    line-height: 1.7;
+  }
+
+  .pd-chapter p:last-child {
+    margin-bottom: 0;
+  }
+
+  :global(.pd-decision) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.75rem 0 0.75rem 0.9rem;
+    border-left: 1px solid var(--color-line-2);
+  }
+
+  :global(.pd-decision:first-child) {
+    padding-top: 0;
+  }
+
+  :global(.pd-decision h4) {
+    margin: 0;
+    color: var(--color-chalk);
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  :global(.pd-decision p) {
+    margin: 0;
+  }
+
+  .pd-study-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--color-line);
+  }
+
+  .pd-metric {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    width: fit-content;
+    margin: 0.4rem 0 0;
+    padding: 0.45rem 0.65rem;
+    border: 1px solid color-mix(in srgb, var(--pd-accent, var(--color-signal)) 45%, var(--color-line));
+    color: var(--color-chalk);
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.08em;
   }
 
   :global(html.pd-open),

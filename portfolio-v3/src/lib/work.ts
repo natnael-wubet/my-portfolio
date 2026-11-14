@@ -7,6 +7,7 @@
  */
 import { existsSync } from "node:fs";
 import { checkHealth, deployments, type Deployment } from "../data/deployments";
+import { caseStudies, type CaseStudy } from "../data/caseStudies";
 import { td, type T } from "../i18n";
 import type { ProjectRecord } from "../components/ProjectDialog.astro";
 
@@ -69,4 +70,5 @@ export const toProjectRecords = (rows: WorkRow[]): ProjectRecord[] =>
     ms: d.health.ms ?? null,
     host: d.host,
     shots: d.shots,
+    study: caseStudies[d.slug] ?? null,
   }));
