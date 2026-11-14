@@ -76,7 +76,21 @@ const fontHrefAm =
     <meta name="twitter:image" content={`${SITE.url}/og.png`} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href={lang === "am" ? fontHrefAm : fontHref} rel="stylesheet" />
+    <!--
+      The font stylesheet is cross-origin, so a plain <link rel="stylesheet">
+      holds the first paint until Google answers. It loads off the critical
+      path instead and swaps in when it arrives; display=swap already paints
+      the fallback in the meantime.
+    -->
+    <link
+      rel="stylesheet"
+      href={lang === "am" ? fontHrefAm : fontHref}
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link rel="stylesheet" href={lang === "am" ? fontHrefAm : fontHref} />
+    </noscript>
     <!--
       Opt-in reveal: only mark the document as scriptable once JS is confirmed
       running, so a failed script leaves every [data-reveal] block visible
@@ -236,13 +250,25 @@ const fontHrefAm =
     <slot />
     <script>
       import Lenis from "lenis";
-      const lenis = new Lenis({ lerp: 0.075, smoothWheel: true });
-      function raf(time: number) {
-        lenis.raf(time);
+
+      // Smooth scrolling is a desktop affordance. Lenis keeps a frame loop
+      // running for as long as the page is open, and on a phone that loop costs
+      // more than the smoothing is worth, so touch devices, narrow viewports
+      // and reduced-motion users get native scrolling instead.
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+      const smooth = !reduced && finePointer && window.innerWidth >= 768;
+
+      let lenis: Lenis | null = null;
+      if (smooth) {
+        lenis = new Lenis({ lerp: 0.075, smoothWheel: true });
+        const raf = (time: number) => {
+          lenis?.raf(time);
+          requestAnimationFrame(raf);
+        };
         requestAnimationFrame(raf);
       }
-      requestAnimationFrame(raf);
-      (window as unknown as { lenis: Lenis }).lenis = lenis;
+      (window as unknown as { lenis: Lenis | null }).lenis = lenis;
 
       // ── Scroll progress ────────────────────────────────────────
       const bar = document.getElementById("scroll-progress-bar");
@@ -255,12 +281,7 @@ const fontHrefAm =
       window.addEventListener("scroll", paintProgress, { passive: true });
       window.addEventListener("resize", paintProgress);
 
-      // ── Reduced motion: stop the smooth scroll, reveal everything ─
-      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (reduced) {
-        lenis.destroy();
-        (window as unknown as { lenis?: Lenis }).lenis = undefined;
-      }
+      // ── Reduced motion: reveal everything ──────────────────────
 
       // ── Anchors: account for the fixed header ───────────────────
       document.addEventListener("click", (e) => {

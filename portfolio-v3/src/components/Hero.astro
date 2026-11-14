@@ -86,9 +86,12 @@ const stats = [
         </h1>
 
         <div class="mt-6 border-t border-[var(--color-line)] pt-6">
+          <!--
+            No entrance animation here: this paragraph is the largest paint
+            on the page, so delaying it delays LCP by the length of the delay.
+          -->
           <p
-            class="fade-up max-w-2xl text-lg leading-relaxed text-[var(--color-fog-2)] lg:text-xl"
-            style="animation-delay: 0.35s"
+            class="max-w-2xl text-lg leading-relaxed text-[var(--color-fog-2)] lg:text-xl"
             set:html={rich(t("hero.lead"))}
           />
 
@@ -137,7 +140,7 @@ const stats = [
                 {stat.v}
               </span>
               <span class="font-mono text-[0.625rem] tracking-[0.16em] text-[var(--color-fog)] uppercase">{stat.k}</span>
-              <span class="font-mono text-[0.5625rem] tracking-[0.14em] text-[var(--color-line-2)] uppercase">
+              <span class="font-mono text-[0.5625rem] tracking-[0.14em] text-[var(--color-fog)] uppercase">
                 {stat.s}
                 {stat.since && (
                   <>
@@ -390,8 +393,11 @@ const stats = [
       const THREE = await import("three");
       const { GLTFLoader } = await import("three/examples/jsm/loaders/GLTFLoader.js");
 
-      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      // Phones get a lighter scene: no MSAA, one device pixel per CSS pixel,
+      // and a third of the points. The instrument still reads at arm's length,
+      // and the frame budget goes to scrolling and taps instead.
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: !phone, alpha: true });
+      renderer.setPixelRatio(phone ? 1 : Math.min(window.devicePixelRatio, 2));
       renderer.setClearColor(0x000000, 0);
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -422,7 +428,7 @@ const stats = [
       // Points store a *role* (which palette entry) plus a brightness,
       // not a baked colour, repaint() can then recolor the whole field
       // when the theme or accent changes without rebuilding geometry.
-      const STARS = 2400;
+      const STARS = phone ? 900 : 2400;
       const sPos = new Float32Array(STARS * 3);
       const sCol = new Float32Array(STARS * 3);
       const sRole = new Uint8Array(STARS);
@@ -473,7 +479,7 @@ const stats = [
       const orb = new THREE.Group();
       anchor.add(orb);
 
-      const N = 2800;
+      const N = phone ? 1100 : 2800;
       const bPos = new Float32Array(N * 3);
       const bCol = new Float32Array(N * 3);
       const bRole = new Uint8Array(N);
@@ -952,10 +958,17 @@ const stats = [
 
 
       // Even reduced motion needs the loop: the specimen arrives after the
-      // first paint, but the scene itself remains still.
+      // first paint, but the scene itself remains still. Phones draw at 30fps
+      // because the motion is slow enough to read and the saved frames matter
+      // more than the extra samples.
+      let lastDraw = 0;
       const animate = () => {
         requestAnimationFrame(animate);
-        if (visible) frame();
+        if (!visible) return;
+        const now = performance.now();
+        if (phone && now - lastDraw < 33) return;
+        lastDraw = now;
+        frame();
       };
       animate();
     } catch {
@@ -1070,7 +1083,7 @@ const stats = [
   }
 
   .hero-hint-sep {
-    color: var(--color-line-2);
+    color: var(--color-fog);
   }
 
   .hero-scan {
