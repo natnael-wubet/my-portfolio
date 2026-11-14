@@ -209,7 +209,9 @@ const slides = projects.map((d) => {
         progress.style.transition = "none";
         progress.style.width = "0%";
       }
-      if (!playing || reduced || hovering || !onScreen || document.hidden) {
+      // `playing` already carries the reduced-motion default, so pressing play
+      // is an explicit request and starts the rotation even then.
+      if (!playing || hovering || !onScreen || document.hidden) {
         if (progress) progress.style.width = playing ? "0%" : "100%";
         return;
       }
@@ -313,6 +315,9 @@ const slides = projects.map((d) => {
       select(current + (delta < 0 ? 1 : -1));
     });
 
+    // Start paused for readers who asked for reduced motion, and say so on the
+    // button, instead of showing a pause icon for something that is not running.
+    setPlaying(!reduced);
     select(0);
   }
 </script>
