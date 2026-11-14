@@ -47,8 +47,6 @@ const { t } = Astro.props;
 </section>
 
 <script>
-  import * as THREE from "three";
-
   const canvas = document.getElementById("vault-canvas") as HTMLCanvasElement | null;
   const section = document.getElementById("vault") as HTMLElement | null;
   const counter = document.getElementById("vault-counter") as HTMLElement | null;
@@ -57,7 +55,14 @@ const { t } = Astro.props;
   // downgrade this to a classic script and break the `import` above.
   const pageList: string[] = canvas?.dataset.pages ? JSON.parse(canvas.dataset.pages) : [];
 
-  if (canvas && section && counter && pageList.length) {
+  // Three is ~180 KB and the ring is far below the fold. Build the scene only
+  // when the vault approaches the viewport, and keep the section readable if
+  // WebGL never arrives.
+  const start = async () => {
+    const THREE = await import("three");
+
+    if (!canvas || !section || !counter || !pageList.length) return;
+
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 0);
@@ -319,6 +324,22 @@ const { t } = Astro.props;
       if (visible) renderer.render(scene, camera);
     };
     tick();
+  };
+
+  if (canvas && section && pageList.length) {
+    if ("IntersectionObserver" in window) {
+      const boot = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((entry) => entry.isIntersecting)) return;
+          boot.disconnect();
+          start();
+        },
+        { rootMargin: "900px 0px" }
+      );
+      boot.observe(section);
+    } else {
+      start();
+    }
   }
 </script>
 
