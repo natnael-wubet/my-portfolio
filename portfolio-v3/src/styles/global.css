@@ -69,39 +69,39 @@ html[data-theme="light"] {
   --color-fog: #5d6570;
   --color-fog-2: #3a4149;
   --color-chalk: #101315;
-  --color-amber: #b45309;
-  --color-cyan: #0e7490;
-  --color-rose: #e11d48;
-  --color-violet: #6d28d9;
+  --color-amber: #9a4708;
+  --color-cyan: #0b6178;
+  --color-rose: #b91c3c;
+  --color-violet: #5b21b6;
   /* light default accent = lime */
-  --color-signal: #4d7c0f;
-  --color-signal-dim: #3f6b00;
+  --color-signal: #436a0a;
+  --color-signal-dim: #3a5c08;
   --color-on-signal: #ffffff;
 }
 
 html[data-theme="light"][data-accent="lime"] {
-  --color-signal: #4d7c0f;
-  --color-signal-dim: #3f6b00;
+  --color-signal: #436a0a;
+  --color-signal-dim: #3a5c08;
   --color-on-signal: #ffffff;
 }
 html[data-theme="light"][data-accent="cyan"] {
-  --color-signal: #0e7490;
-  --color-signal-dim: #0b5d75;
+  --color-signal: #0b6178;
+  --color-signal-dim: #0a5468;
   --color-on-signal: #ffffff;
 }
 html[data-theme="light"][data-accent="amber"] {
-  --color-signal: #b45309;
-  --color-signal-dim: #92400e;
+  --color-signal: #9a4708;
+  --color-signal-dim: #7f3c0c;
   --color-on-signal: #ffffff;
 }
 html[data-theme="light"][data-accent="rose"] {
-  --color-signal: #be123c;
-  --color-signal-dim: #9f1239;
+  --color-signal: #b91c3c;
+  --color-signal-dim: #96112f;
   --color-on-signal: #ffffff;
 }
 html[data-theme="light"][data-accent="violet"] {
-  --color-signal: #6d28d9;
-  --color-signal-dim: #5b21b6;
+  --color-signal: #5b21b6;
+  --color-signal-dim: #4c1d95;
   --color-on-signal: #ffffff;
 }
 
@@ -117,7 +117,7 @@ html[data-theme="light"][data-accent="violet"] {
     -moz-osx-font-smoothing: grayscale;
     color-scheme: dark;
     background: var(--color-ink);
-    scrollbar-color: var(--color-line-2) var(--color-ink);
+    scrollbar-color: var(--color-fog) var(--color-ink);
   }
 
   body {
@@ -210,7 +210,7 @@ html[data-theme="light"][data-accent="violet"] {
     font-family: var(--font-mono);
     font-size: 0.6875rem;
     letter-spacing: 0.24em;
-    color: var(--color-line-2);
+    color: var(--color-fog);
   }
 
   /* ─── Headings ──────────────────────────────────────────── */

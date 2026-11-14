@@ -952,7 +952,7 @@ const devices = [
 
   .pd-hint {
     max-width: 58%;
-    color: var(--color-line-2);
+    color: var(--color-fog);
     font-family: var(--font-mono);
     font-size: 0.5rem;
     letter-spacing: 0.1em;
@@ -977,7 +977,7 @@ const devices = [
 
   .pd-tagline {
     margin: 0;
-    color: var(--pd-accent, var(--color-signal));
+    color: color-mix(in srgb, var(--pd-accent, var(--color-signal)) 55%, var(--color-chalk));
     font-family: var(--font-mono);
     font-size: 0.625rem;
     letter-spacing: 0.16em;
@@ -1137,7 +1137,7 @@ const devices = [
   }
 
   .pd-study-role {
-    color: var(--pd-accent, var(--color-signal));
+    color: color-mix(in srgb, var(--pd-accent, var(--color-signal)) 55%, var(--color-chalk));
     font-family: var(--font-mono);
     font-size: 0.5625rem;
     letter-spacing: 0.14em;

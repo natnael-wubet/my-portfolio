@@ -274,7 +274,7 @@ const hasMetric = Boolean(d.metric && !d.metric.startsWith("TODO("));
   }
 
   .deploy-open-arrow {
-    color: var(--deploy-accent);
+    color: color-mix(in srgb, var(--deploy-accent) 55%, var(--color-chalk));
     transition: transform 0.22s ease;
   }
 
@@ -288,7 +288,7 @@ const hasMetric = Boolean(d.metric && !d.metric.startsWith("TODO("));
 
   .deploy-card:has(.deploy-hit:hover) .deploy-open-arrow,
   .deploy-card:has(.deploy-hit:focus-visible) .deploy-open-arrow {
-    color: var(--deploy-accent);
+    color: var(--color-chalk);
     transform: translateX(2px);
   }
 
@@ -391,8 +391,10 @@ const hasMetric = Boolean(d.metric && !d.metric.startsWith("TODO("));
     letter-spacing: -0.01em;
   }
 
+  /* Accents are picked against a dark ground. Mixing them toward the text
+     colour keeps the hue and holds 4.5:1 on paper as well. */
   .deploy-tagline {
-    color: color-mix(in srgb, var(--deploy-accent) 72%, var(--color-chalk));
+    color: color-mix(in srgb, var(--deploy-accent) 55%, var(--color-chalk));
   }
 
   .deploy-foot {

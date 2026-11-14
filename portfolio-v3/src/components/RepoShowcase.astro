@@ -32,7 +32,7 @@ const frames = conanimFrames(6);
           <span class="terminal-title ml-2 font-mono text-[0.5625rem] tracking-[0.14em] uppercase">
             conanim / ffttest.py
           </span>
-          <span class="ml-auto font-mono text-[0.5rem] tracking-[0.18em] text-[var(--color-line-2)] uppercase">py 3</span>
+          <span class="terminal-meta ml-auto font-mono text-[0.5rem] tracking-[0.18em] uppercase">py 3</span>
         </div>
 
         <div class="conanim-screen flex-1">
@@ -60,7 +60,7 @@ const frames = conanimFrames(6);
           <h3 class="font-display text-3xl font-semibold tracking-tight text-[var(--color-chalk)] lg:text-4xl">
             {conanim.name}
           </h3>
-          <span class="font-mono text-[0.625rem] tracking-[0.16em] text-[var(--color-line-2)] uppercase">
+          <span class="font-mono text-[0.625rem] tracking-[0.16em] text-[var(--color-fog)] uppercase">
             Python · {conanim.files} {t("sec.repos.files")}
           </span>
         </div>
@@ -123,7 +123,7 @@ const frames = conanimFrames(6);
       <span class="eyebrow">{t("sec.repos.fieldNotes")}</span>
       <p class="max-w-xl text-sm leading-relaxed text-[var(--color-fog-2)]">{t("sec.repos.fieldNotesLead")}</p>
     </div>
-    <span class="font-mono text-[0.5625rem] tracking-[0.18em] text-[var(--color-line-2)] uppercase">
+    <span class="font-mono text-[0.5625rem] tracking-[0.18em] text-[var(--color-fog)] uppercase">
       {fieldNotes.length} / {t("sec.repos.total")}
     </span>
   </div>
@@ -133,7 +133,7 @@ const frames = conanimFrames(6);
       fieldNotes.map((repo, i) => (
         <article class="note group flex flex-col gap-4 bg-[var(--color-ink)] p-5 lg:p-6">
           <div class="flex items-center justify-between gap-3">
-            <span class="font-mono text-[0.5rem] tracking-[0.2em] text-[var(--color-line-2)] uppercase">
+            <span class="font-mono text-[0.5rem] tracking-[0.2em] text-[var(--color-fog)] uppercase">
               {String(i + 2).padStart(2, "0")} · {t("sec.repos.note")}
             </span>
             <span class="font-mono text-[0.5rem] tracking-[0.18em] text-[var(--color-fog)] uppercase">
@@ -245,7 +245,8 @@ const frames = conanimFrames(6);
   /* The terminal is an object; its labels must not inherit the page's
      light-mode fog, which is dark enough to disappear on the screen. */
   .terminal figcaption,
-  .terminal-title {
+  .terminal-title,
+  .terminal-meta {
     color: #8b949e;
   }
 

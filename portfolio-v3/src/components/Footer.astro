@@ -58,10 +58,10 @@ const sections: [string, string][] = [
     </div>
 
     <div class="mt-12 flex flex-col gap-3 border-t border-[var(--color-line)] pt-6 sm:flex-row sm:items-center sm:justify-between">
-      <span class="font-mono text-[0.625rem] tracking-[0.18em] text-[var(--color-line-2)] uppercase">
+      <span class="font-mono text-[0.625rem] tracking-[0.18em] text-[var(--color-fog)] uppercase">
         {t("footer.built", { year })}
       </span>
-      <span class="font-mono text-[0.625rem] tracking-[0.18em] text-[var(--color-line-2)] uppercase" set:html={rich(t("footer.probed"))} />
+      <span class="font-mono text-[0.625rem] tracking-[0.18em] text-[var(--color-fog)] uppercase" set:html={rich(t("footer.probed"))} />
     </div>
   </div>
 </footer>

@@ -695,12 +695,12 @@ const slides = projects.map((d) => {
   }
 
   .hero-tab-num {
-    color: var(--color-line-2);
+    color: var(--color-fog);
     font-size: 0.5rem;
   }
 
   .hero-tab[aria-selected="true"] .hero-tab-num {
-    color: var(--tab-accent);
+    color: color-mix(in srgb, var(--tab-accent) 55%, var(--color-chalk));
   }
 
   .hero-tab-name {

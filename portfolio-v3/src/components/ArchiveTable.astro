@@ -117,7 +117,7 @@ const captures = (row: WorkRow) => Object.values(row.shots).filter(Boolean).leng
   <p class="archive-empty" id="archive-empty" hidden>{t("archive.empty")}</p>
 </div>
 
-<p class="mt-5 font-mono text-[0.5625rem] tracking-[0.14em] text-[var(--color-line-2)] uppercase">{t("archive.note")}</p>
+<p class="mt-5 font-mono text-[0.5625rem] tracking-[0.14em] text-[var(--color-fog)] uppercase">{t("archive.note")}</p>
 
 <script>
   const chips = Array.from(document.querySelectorAll<HTMLButtonElement>(".archive-chip"));
@@ -402,7 +402,7 @@ const captures = (row: WorkRow) => Object.values(row.shots).filter(Boolean).leng
   }
 
   .row-captures {
-    color: var(--color-line-2);
+    color: var(--color-fog);
     font-size: 0.5rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
