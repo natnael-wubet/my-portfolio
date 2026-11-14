@@ -49,9 +49,11 @@ What changed:
 - `--color-line-2` is no longer used as type, project accents are mixed toward the text colour where they are type, and the light accent tokens were darkened. The light theme now clears 4.5:1 everywhere.
 - Signature links are 24px tall targets, and the language switch announces its visible label.
 
-Desktop TBT before the change was measured with headless Chrome's software WebGL
-(SwiftShader); the after figure uses the machine's GPU via ANGLE. Both runs use
-the same Lighthouse config otherwise.
+The mobile rows are like for like: both runs used headless Chrome's software
+WebGL (SwiftShader). A repeat mobile run with the machine's GPU scored 94, which
+is inside run-to-run variance. The desktop before figure used SwiftShader too,
+where a 1440px hero costs far more than it does on any real GPU; the desktop
+after figure uses the GPU through ANGLE. Everything else in the config matches.
 
 ### Open items
 
