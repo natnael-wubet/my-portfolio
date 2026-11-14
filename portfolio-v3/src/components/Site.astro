@@ -83,5 +83,5 @@ const description = t("meta.descriptionCounted", { live, repos: repos.length });
   <Brief t={t} lang={lang} build={build} />
   <Fit t={t} lang={lang} />
   <ArchiveDialog t={t} rows={rows} />
-  <ProjectDialog t={t} projects={toProjectRecords(rows)} />
+  <ProjectDialog t={t} projects={toProjectRecords(rows, lang)} />
 </Base>

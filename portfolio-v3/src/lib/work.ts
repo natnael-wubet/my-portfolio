@@ -8,7 +8,7 @@
 import { existsSync } from "node:fs";
 import { checkHealth, deployments, type Deployment } from "../data/deployments";
 import { caseStudies, type CaseStudy } from "../data/caseStudies";
-import { td, type T } from "../i18n";
+import { td, type Lang, type T } from "../i18n";
 import type { ProjectRecord } from "../components/ProjectDialog.astro";
 
 export interface WorkRow extends Deployment {
@@ -52,7 +52,7 @@ export async function getWorkRows(t: T): Promise<WorkRow[]> {
   });
 }
 
-export const toProjectRecords = (rows: WorkRow[]): ProjectRecord[] =>
+export const toProjectRecords = (rows: WorkRow[], lang: Lang): ProjectRecord[] =>
   rows.map((d) => ({
     slug: d.slug,
     name: d.name,
@@ -70,5 +70,6 @@ export const toProjectRecords = (rows: WorkRow[]): ProjectRecord[] =>
     ms: d.health.ms ?? null,
     host: d.host,
     shots: d.shots,
-    study: caseStudies[d.slug] ?? null,
+    metric: d.metric,
+    study: caseStudies[lang][d.slug] ?? null,
   }));
