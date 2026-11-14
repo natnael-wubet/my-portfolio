@@ -17,9 +17,10 @@ The homepage now makes an argument instead of listing everything it can.
 
 ### Content
 
-- Case studies for Big XO, GameO, Ticketye and Cite-Chain: TL;DR, problem, approach, tradeoffs, outcome, what I would do differently, prev/next and a back link. Every other project keeps its record.
-- Amharic parity for every new UI string, plus the four carousel outcomes that were falling back to English.
+- Case studies for Big XO, GameO, Ticketye and Cite-Chain in both locales: TL;DR, problem, approach, tradeoffs, outcome, what I would do differently, prev/next and a back link. Every other project keeps its record.
+- Amharic parity for every new UI string, the four carousel outcomes, and the four case studies.
 - No user-facing "dossier", "Scroll Section NN" or "Build-time probe" remains.
+- The downloadable CV now says 13 years, matching the site. The Canva export has a real text layer, so the single glyph and the document title were patched in place instead of rebuilding the PDF.
 
 ### Build and correctness
 
@@ -58,5 +59,5 @@ after figure uses the GPU through ANGLE. Everything else in the config matches.
 ### Open items
 
 - `TODO(metric)` for Ticketye, Big XO and Cite-Chain. Real numbers must come from the projects, not from this repository.
-- Amharic prose for the four case studies is still English in `src/data/caseStudies.ts`; the fallback is intentional and documented there.
-- `public/assets/cv.pdf` still says "11 years"; the site says 13.
+- The architecture claims in `src/data/caseStudies.ts` are a plausible reconstruction and still need the author's review.
+- Desktop CLS is 0.025, from the web font swapping in after first paint. Green, but a self-hosted font with matched fallback metrics would remove it.
