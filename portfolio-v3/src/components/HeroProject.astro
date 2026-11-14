@@ -352,6 +352,9 @@ const slides = projects.map((d) => {
   .hero-slides {
     display: grid;
     margin-top: 2rem;
+    /* Inactive slides wait 46px to the right of the stage. Clip the scrollable
+       overflow so the page never gains a horizontal scrollbar on phones. */
+    overflow-x: clip;
   }
 
   .hero-slide {

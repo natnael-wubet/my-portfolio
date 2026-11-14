@@ -558,6 +558,14 @@ const xrayTokens = [
     }
   }
 
+  @media (max-width: 640px) {
+    /* Keep the chip off the hero's CTA column on phones. */
+    .diag-chip {
+      left: auto;
+      right: 1rem;
+    }
+  }
+
   @media print {
     .diag-chip,
     .diag-panel,
@@ -745,5 +753,6 @@ const xrayTokens = [
     .xray-hud {
       display: none;
     }
+
   }
 </style>

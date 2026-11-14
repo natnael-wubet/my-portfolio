@@ -39,9 +39,9 @@ const links = [
         height="96"
         class="h-9 w-9 flex-none border border-[var(--color-line-2)] object-cover transition-all duration-500 group-hover:border-[var(--color-signal)] group-hover:shadow-[0_0_18px_-4px_var(--color-signal)]"
       />
-      <span class="flex flex-col leading-none">
+      <span class="nav-name flex flex-col leading-none">
         <span class="font-display text-sm font-semibold tracking-tight">Natnael Wubet</span>
-        <span class="font-mono text-[0.625rem] tracking-[0.18em] text-[var(--color-fog)] uppercase">{t("nav.role")}</span>
+        <span class="nav-role font-mono text-[0.625rem] tracking-[0.18em] text-[var(--color-fog)] uppercase">{t("nav.role")}</span>
       </span>
     </a>
 
@@ -119,6 +119,21 @@ const links = [
           </a>
         ))
       }
+      <a
+        href={`${prefix}#connect`}
+        class="flex items-center justify-between gap-4 border-b border-[var(--color-line)] py-3.5 font-mono text-[0.75rem] tracking-[0.18em] text-[var(--color-signal)] uppercase no-underline"
+      >
+        {t("nav.contact")}
+        <span aria-hidden="true">→</span>
+      </a>
+      <a
+        href={target.href}
+        hreflang={target.htmlLang}
+        data-lang-switch
+        class="flex items-center gap-4 py-3.5 font-mono text-[0.75rem] tracking-[0.18em] text-[var(--color-fog-2)] uppercase no-underline"
+      >
+        {switchLabel}
+      </a>
     </div>
   </div>
 </header>
@@ -129,7 +144,7 @@ const links = [
   const toggle = document.getElementById("nav-toggle") as HTMLButtonElement;
   const menu = document.getElementById("nav-menu") as HTMLElement;
   const header = document.getElementById("nav") as HTMLElement;
-  const langSwitch = document.querySelector<HTMLAnchorElement>("a[data-lang-switch]");
+  const langSwitches = Array.from(document.querySelectorAll<HTMLAnchorElement>("a[data-lang-switch]"));
 
   // ── Language switching ────────────────────────────────────
   // Both locales are static pages, so switching is a navigation, but the
@@ -137,10 +152,12 @@ const links = [
   const goToLocale = (href: string) => {
     location.href = href + location.hash;
   };
-  langSwitch?.addEventListener("click", (e) => {
-    e.preventDefault();
-    const href = langSwitch.getAttribute("href");
-    if (href) goToLocale(href);
+  langSwitches.forEach((link) => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      const href = link.getAttribute("href");
+      if (href) goToLocale(href);
+    });
   });
   document.addEventListener("opt:lang", (e) => {
     const want = (e as CustomEvent<string>).detail;
@@ -195,6 +212,30 @@ const links = [
 </script>
 
 <style>
+  /* Below 640px the bar cannot hold the name, the utilities, the language
+     switch and Contact. The language switch moves into the menu; Contact
+     stays, because it must be one click away at every width. */
+  @media (max-width: 639px) {
+    #nav .shell {
+      gap: 0.5rem;
+    }
+
+    #nav > .shell a[data-lang-switch] {
+      display: none;
+    }
+
+    .nav-role {
+      display: none;
+    }
+  }
+
+  /* At 320px even the wordmark has to go; the logo and Contact remain. */
+  @media (max-width: 379px) {
+    .nav-name {
+      display: none;
+    }
+  }
+
   #nav.is-scrolled {
     background-color: color-mix(in srgb, var(--color-ink) 86%, transparent);
     backdrop-filter: blur(14px);
