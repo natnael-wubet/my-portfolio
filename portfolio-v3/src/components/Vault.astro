@@ -21,12 +21,12 @@ const { t } = Astro.props;
           <span class="status" data-state="live"><span class="status-dot"></span>WebGL</span>
           <span id="vault-counter">01 / {String(cvPages.length).padStart(2, "0")}</span>
         </div>
-        <a class="btn btn-sm" href="/assets/cv.pdf" download>{t("sec.vault.download")}</a>
+        <a class="btn btn-primary" href="/assets/cv.pdf" download>{t("sec.vault.download")}</a>
       </div>
     </div>
   </div>
 
-  <div class="relative h-[min(78vh,720px)] w-full">
+  <div id="vault-stage" class="relative h-[min(78vh,720px)] w-full">
     <!-- soft stage glow so the ring sits in a lit volume rather than a void -->
     <div
       class="pointer-events-none absolute inset-0"
@@ -44,12 +44,48 @@ const { t } = Astro.props;
       </div>
     </div>
   </div>
+
+  <!-- If WebGL never arrives, the same pages stay readable as a document. -->
+  <div id="vault-fallback" class="vault-fallback" hidden>
+    <p class="vault-fallback-note">{t("sec.vault.fallback")}</p>
+    <ul class="vault-fallback-pages">
+      {
+        cvPages.map((src, i) => (
+          <li>
+            <a href={src} target="_blank" rel="noopener">
+              <img
+                src={src}
+                alt={t("sec.vault.pageAlt", { n: i + 1 })}
+                width="596"
+                height="812"
+                loading="lazy"
+                decoding="async"
+              />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+  <noscript>
+    <p class="vault-fallback-note">
+      <a class="btn btn-primary" href="/assets/cv.pdf" download>{t("sec.vault.download")}</a>
+    </p>
+  </noscript>
 </section>
 
 <script>
   const canvas = document.getElementById("vault-canvas") as HTMLCanvasElement | null;
   const section = document.getElementById("vault") as HTMLElement | null;
   const counter = document.getElementById("vault-counter") as HTMLElement | null;
+  const stage = document.getElementById("vault-stage") as HTMLElement | null;
+  const fallback = document.getElementById("vault-fallback") as HTMLElement | null;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const showFallback = () => {
+    if (stage) stage.hidden = true;
+    if (fallback) fallback.hidden = false;
+  };
 
   // Page list rides on the canvas as JSON, avoids define:vars, which would
   // downgrade this to a classic script and break the `import` above.
@@ -59,11 +95,23 @@ const { t } = Astro.props;
   // when the vault approaches the viewport, and keep the section readable if
   // WebGL never arrives.
   const start = async () => {
-    const THREE = await import("three");
+    let THREE: typeof import("three");
+    try {
+      THREE = await import("three");
+    } catch {
+      showFallback();
+      return;
+    }
 
     if (!canvas || !section || !counter || !pageList.length) return;
 
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    let renderer: import("three").WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    } catch {
+      showFallback();
+      return;
+    }
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 0);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -256,6 +304,7 @@ const { t } = Astro.props;
 
     // Scroll anywhere in the section advances the ring
     const onWheel = (e: WheelEvent) => {
+      if (reduce) return;
       const rect = section.getBoundingClientRect();
       if (rect.top > window.innerHeight * 0.8 || rect.bottom < window.innerHeight * 0.2) return;
       scrollBoost += e.deltaY * 0.0009;
@@ -296,9 +345,11 @@ const { t } = Astro.props;
       if (!dragging) {
         targetRotation += velocity;
         velocity *= 0.94;
-        targetRotation += scrollBoost;
-        scrollBoost *= 0.9;
-        targetRotation += dt * 0.055; // idle drift
+        if (!reduce) {
+          targetRotation += scrollBoost;
+          scrollBoost *= 0.9;
+          targetRotation += dt * 0.055; // idle drift
+        }
       }
 
       currentRotation += (targetRotation - currentRotation) * 0.075;
@@ -332,13 +383,13 @@ const { t } = Astro.props;
         (entries) => {
           if (!entries.some((entry) => entry.isIntersecting)) return;
           boot.disconnect();
-          start();
+          start().catch(showFallback);
         },
         { rootMargin: "900px 0px" }
       );
       boot.observe(section);
     } else {
-      start();
+      start().catch(showFallback);
     }
   }
 </script>
@@ -347,5 +398,43 @@ const { t } = Astro.props;
   #vault-counter {
     font-family: var(--font-mono);
     color: var(--color-chalk);
+  }
+
+  .vault-fallback {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0 1.5rem 6rem;
+  }
+
+  .vault-fallback-note {
+    margin: 0 0 1.5rem;
+    color: var(--color-fog-2);
+    font-size: 0.9375rem;
+  }
+
+  .vault-fallback-pages {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .vault-fallback-pages a {
+    display: block;
+    border: 1px solid var(--color-line);
+    background: var(--color-ink-2);
+    transition: border-color 0.2s ease;
+  }
+
+  .vault-fallback-pages a:hover {
+    border-color: var(--color-signal);
+  }
+
+  .vault-fallback-pages img {
+    display: block;
+    width: 100%;
+    height: auto;
   }
 </style>

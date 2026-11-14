@@ -194,6 +194,13 @@ const fontHrefAm =
         top: 1rem;
       }
 
+      /* The skip link focuses <main> so the next Tab starts in the content.
+         The jump itself is the indicator; a 2px frame around the whole page
+         would only add noise. */
+      #main:focus {
+        outline: none;
+      }
+
       /* ── Reduced motion ───────────────────────────────────────── */
       @media (prefers-reduced-motion: reduce) {
         *,
@@ -246,7 +253,7 @@ const fontHrefAm =
     <div class="rule-grid" aria-hidden="true"></div>
     <!-- Scroll progress: one hairline of signal, top of viewport -->
     <div class="scroll-progress" aria-hidden="true"><span id="scroll-progress-bar"></span></div>
-    <a class="skip-link" href="#top">{t("nav.skip")}</a>
+    <a class="skip-link" href="#main">{t("nav.skip")}</a>
     <slot />
     <script>
       import Lenis from "lenis";
@@ -299,6 +306,11 @@ const fontHrefAm =
           window.lenis.scrollTo(Math.max(top, 0), { duration: 1.1 });
         }
         history.replaceState(null, "", id);
+        // The handler owns the scroll, so it also has to move focus for the
+        // skip link. Otherwise keyboard users stay parked on the link.
+        if (target instanceof HTMLElement && (link.classList.contains("skip-link") || target.hasAttribute("tabindex"))) {
+          target.focus({ preventScroll: true });
+        }
       });
 
       // ── Scroll reveals ────────────────────────────────────────

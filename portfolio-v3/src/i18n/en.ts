@@ -75,7 +75,7 @@ export const en = {
   "hero.utc": "EAT",
   "hero.liveCount": "{n} live deployments",
   "hero.lead":
-    "I have been writing code since 2013 and still ask the same question: how much can a machine be trusted to do? The answers so far are games with real money in them, a Bitcoin-anchored citation ledger, security tooling, and engines written from scratch: graphics, games and physics.",
+    "I have been writing code since 2013: graphics, game and physics engines from scratch, then the systems that depend on them.",
   "hero.craft.engines": "Engines, from scratch",
   "hero.craft.domains": "graphics · games · physics",
   "hero.craft.branchless": "Branchless paths",
@@ -336,6 +336,8 @@ export const en = {
   "sec.vault.lead":
     "These frames are the actual rendered pages of [[cv.pdf]], extracted from the source document and mapped onto a volumetric carousel. Drag to rotate.",
   "sec.vault.download": "Download PDF",
+  "sec.vault.fallback": "The 3D ring needs WebGL. Every page is still here as a document.",
+  "sec.vault.pageAlt": "CV page {n}",
   "sec.vault.drag": "Drag",
   "sec.vault.advance": "Scroll to advance",
   "sec.vault.rotate": "Rotate",
@@ -425,6 +427,8 @@ export const en = {
   "footer.blurb":
     "Software engineer working across games, protocols, platforms and security tooling. Based in Bahir Dar, shipping worldwide.",
   "footer.operational": "All systems operational",
+  "footer.nowLabel": "Now",
+  "footer.now": "Branchless graphics and physics work in ConAnim, plus the public record this site generates.",
   "footer.sections": "Sections",
   "footer.direct": "Direct",
   "footer.work": "Deployments",

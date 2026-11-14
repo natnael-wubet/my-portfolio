@@ -6,12 +6,13 @@ The homepage now makes an argument instead of listing everything it can.
 
 ### Structure
 
-- Hero: one positioning line, a short body, and two CTAs (featured work, contact). The engines-from-scratch claim leads, with branchless paths and CPU-first work as craft chips.
+- Hero: one positioning line, one sentence of body, one primary CTA and the email address. The engines-from-scratch claim leads; craft chips and the stats strip sit below the first screen so a 375px phone still gets the claim, the CTA and the email without scrolling.
 - Signature strip: the machine-readable record (profile JSON, LLM index, Markdown CV) sits directly under the hero instead of in the footer.
 - Selected projects: a carousel of the four strongest projects (Big XO, GameO, Cite-Chain, Ticketye). It advances on its own with a dwell bar, pauses on hover, focus, off-screen or hidden tab, and never autoplays under reduced motion. Named tabs, arrows, swipe and Home/End work.
 - Featured work: three cards with one outcome, one metric, stack tags and a case-study affordance. No paragraph descriptions.
 - Repositories, read closely: ConAnim leads, tagged `branchless · no if statements`.
 - Origin, interior, vault, record, photos: unchanged order, compressed copy.
+- Vault: the 3D ring stops drifting under reduced motion, keeps the PDF download as the primary action, and falls back to a readable grid of all eight CV pages when WebGL is unavailable.
 - Live status: the remaining live projects as a compact table with human status labels and response times. Green under 300ms, amber under 800ms, red beyond. The measurement is build-time and the tooltip says so.
 - Archive: the archive button opens every project in a large dialog with category filters and counts. `/archive` and `/am/archive` remain for direct links and crawlers.
 
@@ -30,6 +31,8 @@ The homepage now makes an argument instead of listing everything it can.
 - One row builder (`src/lib/work.ts`) feeds the carousel, cards, tables, archive and dialog, so a project cannot appear differently in two places.
 - Canonical URLs and hreflang pairs for `/` and `/archive` in both locales, now on the Vercel production origin. Sitemap lists all four routes. OG image URLs are absolute.
 - Phone layout no longer scrolls sideways: inactive carousel slides are clipped, the language switch moves into the menu, and the diagnostics chip moves off the hero CTA column.
+- The skip link now targets and focuses `<main>`, so the next Tab starts in the content instead of staying on the link.
+- The footer carries a short "Now" line, so the page has a freshness cue without adding another homepage section.
 
 ### Performance and accessibility
 

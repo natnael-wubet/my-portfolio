@@ -35,6 +35,10 @@ const sections: [string, string][] = [
           {t("footer.blurb")}
         </p>
         <span class="status" data-state="live"><span class="status-dot"></span>{t("footer.operational")}</span>
+        <p class="flex max-w-sm flex-wrap items-baseline gap-x-2 gap-y-1 text-sm leading-relaxed text-[var(--color-fog-2)]">
+          <span class="font-mono text-[0.625rem] tracking-[0.18em] text-[var(--color-signal)] uppercase">{t("footer.nowLabel")}</span>
+          <span>{t("footer.now")}</span>
+        </p>
       </div>
 
       <nav class="flex flex-col gap-2.5">

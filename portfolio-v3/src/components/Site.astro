@@ -61,7 +61,7 @@ const description = t("meta.descriptionCounted", { live, repos: repos.length });
 
 <Base lang={lang} description={description}>
   <Nav t={t} lang={lang} />
-  <main class="relative z-10">
+  <main id="main" tabindex="-1" class="relative z-10">
     <Hero t={t} />
     <Signature t={t} />
     <HeroProject t={t} projects={[...featured, hero]} />

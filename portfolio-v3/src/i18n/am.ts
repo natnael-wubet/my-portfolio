@@ -74,7 +74,7 @@ export const am: Dict & Record<string, string> = {
   "hero.utc": "EAT",
   "hero.liveCount": "{n} ቀጥታ ማስተላለፊያ",
   "hero.lead":
-    "ከ2013 ጀምሮ ኮድ እጽፋለሁ፤ አሁንም ያንን ጥያቄ እጠይቃለሁ፦ ማሽን ምን ድረስ ልትታመን ትችላለች? እስካሁን የመጡት መልሶች በእውነተኛ ገንዘብ የሚጫወቱ ጨዋታዎች፣ በባዊትኮይን የተመሠረተ የጥቅስ መዝገብ፣ የደህንነት መሣሪያዎችና ከባዶ የተገነቡ ሞተሮች ናቸው፦ ግራፊክስ፣ ጨዋታና ፊዚክስ።",
+    "ከ2013 ጀምሮ ኮድ እጽፋለሁ፦ ግራፊክስ፣ ጨዋታና ፊዚክስ ሞተሮችን ከባዶ፣ ከዚያም በእነሱ ላይ የተመሠረቱ ስርዓቶችን።",
   "hero.craft.engines": "ከባዶ የተገነቡ ሞተሮች",
   "hero.craft.domains": "ግራፊክስ · ጨዋታ · ፊዚክስ",
   "hero.craft.branchless": "ያለ if መንገዶች",
@@ -335,6 +335,8 @@ export const am: Dict & Record<string, string> = {
   "sec.vault.lead":
     "እነዚህ አጋዣዎች ባውታሪው [[cv.pdf]] የተቀረጹ ቀጥታ ገጾች ናቸው። ከእጅጉ ሰነድ ተውጣ በአካባቢ ማሰሪያ ዙር ላይ ተለጥፈዋል። ለማዞር ጎትት።",
   "sec.vault.download": "PDF አውርድ",
+  "sec.vault.fallback": "የ3D ቀለበቱ WebGL ይፈልጋል። እያንዳንዱ ገጽ አሁንም እንደ ሰነድ እዚህ አለ።",
+  "sec.vault.pageAlt": "የCV ገጽ {n}",
   "sec.vault.drag": "ጎትት",
   "sec.vault.advance": "ለቀጣይ ተንቀሳቅስ",
   "sec.vault.rotate": "አወርብ",
@@ -424,6 +426,8 @@ export const am: Dict & Record<string, string> = {
   "footer.blurb":
     "በጨዋታዎች፣ ፕሮቶኮሎች፣ መድረኮችና የደህንነት መሣሪያዎች ላይ የሚሠራ ሶፍትዌር ኢንጂነር። ባህር ዳር ላይ ተመስርቶ ዓለም ዙሪያ ይልካል።",
   "footer.operational": "ሁሉም ስርዓት በሥራ ላይ ነው",
+  "footer.nowLabel": "አሁን",
+  "footer.now": "በConAnim ውስጥ branchless ግራፊክስና ፊዚክስ ሥራ፣ እና ይህ ጣቢያ የሚያመነጨው ይፋዊ መዝገብ።",
   "footer.sections": "ክፍሎች",
   "footer.direct": "ቀጥታ",
   "footer.work": "ማስተላለፊያዎች",
